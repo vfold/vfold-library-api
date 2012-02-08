@@ -9,16 +9,16 @@
  
 define(
     function (){
-        function Folder(){
+        function Folders(){
 
         }
-        Folder.prototype={
+        Folders.prototype={
 
             test:function test(){
                 alert("sss");
             }
 
         };
-        return Folder;
+        return Folders;
     }
 );

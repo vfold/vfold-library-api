@@ -7,56 +7,112 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-const WorkspaceEvents = {
-    CHANGE: "workspaceChange",
-    ADD: "workspaceAdd"
+    /****************************************************************
+     * Event Constants
+     ****************************************************************/
+const VfoldEvents = {
+    WORKSPACE_CHANGE: "workspaceChange",
+    WORKSPACE_ADD: "workspaceAdd"
 };
+
 var Page = {};
+var Stage = {};
 
 define([
-    "vfold/component/folder",
-    "vfold/component/tool",
-    "vfold/component/wallpaper",
-    "vfold/component/widget"
-    ], function() {
+    "vfold/layer/folders",
+    "vfold/layer/panel",
+    "vfold/layer/dekstop",
+    "vfold/layer/widgets"
+    ],
+
+function() {
 
     var blnInstantiated = false;
+    
+                /****************************************************************
+     * Main Layers
+     ****************************************************************/
 
-    function Page(options, gui) {
+    var folders = null,
+        widgets = null,
+        panel = null,
+        desktop = null;
+
+    /****************************************************************
+     * Rest of properties
+     ****************************************************************/
+
+     var intWorkspaceIndex:int=0;
+
+     const dctLibraries={};
+     const vctWorkspaces=[];
+
+    /*********************************
+     * Core Options
+     *********************************/
+     var AES_KEY;
+     var FACEBOOK_APP_ID;
+    /*********************************
+     * Secure Value Object for User
+     *********************************/
+    var USER;
+    /*********************************
+     *  Gateway Session and if is Root
+     *********************************/
+    var HEADER;
+    /**********************************
+     *  Gateway KEY for acceptable calls
+     **********************************/
+    var ROOT_ENCRYPTED;
+    /*********************************
+     * Net Connection Pool
+     *********************************/
+     const NET_POOL:UtilityPooling=new UtilityPooling(NetConn);
 
 
-
-        gui = gui ? gui : true;
-
-        /***********************
-         *  Check Instance
-         ***********************/
-
-        if (!blnInstantiated) {
-            blnInstantiated = true;
-        }
-        else {
-            alert("Only one instance of this Class is permitted!");
-            return;
-        }
-
-        var stage = new Kinetic.Stage("stage", window.innerWidth || document.body.clientWidth, window.innerHeight || document.body.clientHeight);
-
-        if (gui) {
-            var folders = new require("vfold/component/folder")();
-            var widget = new require("vfold/component/folder")();
-        }
-
-        Page.dispatcher = new EventDispatcher();
-        Page.dispatcher.fire(WorkspaceEvents.ADD);
+    function Page() {
 
     }
+    
     Page.prototype = {
 
-        test: function test() {
-            alert("sss");
+        test: function init(options, gui) {
+
+            gui = gui ? gui : true;
+
+            /***********************
+             *  Check Instance
+             ***********************/
+
+            if (!blnInstantiated) {
+                blnInstantiated = true;
+            }
+            else {
+                alert("Only one instance of this Class is permitted!");
+                return;
+            }
+
+            Stage = new Kinetic.Stage("stage", window.innerWidth || document.body.clientWidth, window.innerHeight || document.body.clientHeight);
+
+            if (gui) {
+
+                folders = new require("./component/folders")();
+                widgets = new require("./component/widgets")();
+                panel = new require("./component/panel")();
+                desktop = new require("./component/desktop")();
+
+            }
+            
+            Stage.add(folders);
+            Stage.add(widgets);
+            Stage.add(panel);
+            Stage.add(desktop);
+
+            Page.dispatcher = new EventDispatcher();
+            Page.dispatcher.fire(WorkspaceEvents.ADD);
         }
 
     };
+
     return Page;
 });
