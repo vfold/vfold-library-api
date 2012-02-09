@@ -10,15 +10,20 @@
 define(
 
 function() {
-
-    // Available Objects
-    var availableOBJs = [];
-    // Contemporary Objects
-    var activeOBJs = [];
-    // Object Class
-    var OC;
-    // If getObject function instantiated the Class
-    var ib;
+   
+   /*****************************************
+     *  Objects in the Pool (Active/Inactive)
+     *****************************************/
+    var availableOBJs = [],
+        activeOBJs = [],
+        /*********************************
+         *  Object Class
+         *********************************/
+        OC,
+        /*****************************************
+         *  If last Object got was instantiated
+         *****************************************/
+        ib;
 
     function Class(ObjectClass) {
 

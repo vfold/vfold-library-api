@@ -7,82 +7,69 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-    /****************************************************************
-     * Event Constants
-     ****************************************************************/
+/****************************************************************
+ * Event Constants
+ ****************************************************************/
 const VfoldEvents = {
     WORKSPACE_CHANGE: "workspaceChange",
     WORKSPACE_ADD: "workspaceAdd"
 };
 
-var Page = {};
-var Stage = {};
-
 define([
-    "vfold/layer/folders",
-    "vfold/layer/panel",
-    "vfold/layer/dekstop",
-    "vfold/layer/widgets"
+    "./layer/folders",
+    "./layer/panel",
+    "./layer/desktop",
+    "./layer/widgets"
     ],
 
 function() {
 
-    var blnInstantiated = false;
-    
-                /****************************************************************
-     * Main Layers
-     ****************************************************************/
 
-    var folders = null,
-        widgets = null,
-        panel = null,
-        desktop = null;
+    const dctLibraries, vctWorkspaces = [];
 
-    /****************************************************************
-     * Rest of properties
-     ****************************************************************/
-
-     var intWorkspaceIndex:int=0;
-
-     const dctLibraries={};
-     const vctWorkspaces=[];
-
-    /*********************************
-     * Core Options
-     *********************************/
-     var AES_KEY;
-     var FACEBOOK_APP_ID;
-    /*********************************
-     * Secure Value Object for User
-     *********************************/
-    var USER;
-    /*********************************
-     *  Gateway Session and if is Root
-     *********************************/
-    var HEADER;
-    /**********************************
-     *  Gateway KEY for acceptable calls
-     **********************************/
-    var ROOT_ENCRYPTED;
-    /*********************************
-     * Net Connection Pool
-     *********************************/
-     const NET_POOL:UtilityPooling=new UtilityPooling(NetConn);
-
+    var blnInstantiated = false,
+        /*********************************
+         * Net Connection Pool
+         *********************************/
+        netPool,
+        /*********************************
+         * Main Layers
+         *********************************/
+        folders, widgets, panel, desktop,
+        /*********************************
+         * Main Layers
+         *********************************/
+        intWorkspaceIndex,
+        /*********************************
+         * Core Options
+         *********************************/
+        AES_KEY, FACEBOOK_APP_ID,
+        /*********************************
+         * Secure Value Object for User
+         *********************************/
+        USER,
+        /*********************************
+         *  Gateway Session and if is Root
+         *********************************/
+        HEADER,
+        /*********************************
+         *  Gateway KEY for valid calls
+         *********************************/
+        ROOT_ENCRYPTED;
 
     function Page() {
 
     }
-    
+
     Page.prototype = {
 
-        test: function init(options, gui) {
+        init: function (options, gui) {
 
             gui = gui ? gui : true;
 
-            /***********************
-             *  Check Instance
-             ***********************/
+            /****************************************
+             *  Check Instantiation
+             ****************************************/
 
             if (!blnInstantiated) {
                 blnInstantiated = true;
@@ -92,7 +79,7 @@ function() {
                 return;
             }
 
-            Stage = new Kinetic.Stage("stage", window.innerWidth || document.body.clientWidth, window.innerHeight || document.body.clientHeight);
+            stage = new Kinetic.Stage("stage", window.innerWidth || document.body.clientWidth, window.innerHeight || document.body.clientHeight);
 
             if (gui) {
 
@@ -102,11 +89,13 @@ function() {
                 desktop = new require("./component/desktop")();
 
             }
+
+            stage.add(folders);
+            stage.add(widgets);
+            stage.add(panel);
+            stage.add(desktop);
             
-            Stage.add(folders);
-            Stage.add(widgets);
-            Stage.add(panel);
-            Stage.add(desktop);
+            alert("awesome");
 
             Page.dispatcher = new EventDispatcher();
             Page.dispatcher.fire(WorkspaceEvents.ADD);

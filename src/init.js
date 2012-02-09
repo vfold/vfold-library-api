@@ -1,16 +1,40 @@
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+
+/********************************************
+ * Global Classes
+ ********************************************/
+var Pooling,
+/********************************************
+ * Global variables
+ ********************************************/
+stage;
+
 require([
     "vfold/page",
     "vfold/options",
+    "vfold/utility/pooling",
     "lib/event",
     "lib/kinetic"],
 
-function(Page,Options) {
+function(page, options, pooling) {
 
-    var options = new Options();
+    Page = page;
+    Pooling = pooling;
     
-    options.aesKey = "796x9qh27xcrb69q27xcrb61274xcr6b";
-    options.facebookAppID = "";
-    options.rootPassword = "w957cbnooo5796";
+    var opt = new options();
 
-    new Page(options);
+    opt.aesKey = "796x9qh27xcrb69q27xcrb61274xcr6b";
+    opt.facebookAppID = "";
+    opt.rootPassword = "w957cbnooo5796";
+
+    var pge = new Page();
+    
+    pge.init(opt)
 });
