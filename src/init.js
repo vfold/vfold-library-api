@@ -16,6 +16,14 @@ var Pooling,
  ********************************************/
 stage;
 
+/********************************************
+ * Global Constants
+ ********************************************/
+const VFoldEvent = {
+    WORKSPACE_CHANGE: "workspaceChange",
+    WORKSPACE_ADD: "workspaceAdd"
+};
+
 require([
     "vfold/page",
     "vfold/options",

@@ -7,14 +7,6 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-/****************************************************************
- * Event Constants
- ****************************************************************/
-const VfoldEvents = {
-    WORKSPACE_CHANGE: "workspaceChange",
-    WORKSPACE_ADD: "workspaceAdd"
-};
-
 define([
     "./layer/folders",
     "./layer/panel",
@@ -23,7 +15,6 @@ define([
     ],
 
 function() {
-
 
     const dctLibraries, vctWorkspaces = [];
 
@@ -83,11 +74,10 @@ function() {
 
             if (gui) {
 
-                folders = new require("./component/folders")();
-                widgets = new require("./component/widgets")();
-                panel = new require("./component/panel")();
-                desktop = new require("./component/desktop")();
-
+                folders = new (require("vfold/layer/folders"))();
+                widgets = new (require("vfold/layer/widgets"))();
+                panel   = new (require("vfold/layer/panel"))();
+                desktop = new (require("vfold/layer/desktop"))();
             }
 
             stage.add(folders);
@@ -95,10 +85,8 @@ function() {
             stage.add(panel);
             stage.add(desktop);
             
-            alert("awesome");
-
             Page.dispatcher = new EventDispatcher();
-            Page.dispatcher.fire(WorkspaceEvents.ADD);
+            Page.dispatcher.fire(VFoldEvent.WORKSPACE_ADD);
         }
 
     };

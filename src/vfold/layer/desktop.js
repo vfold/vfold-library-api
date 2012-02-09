@@ -9,17 +9,13 @@
  
 define(
     function (){
-        function Class
-        (){
+    Class.prototype = new Kinetic.Layer("desktop");
+    Class.prototype.constructor = Class;
 
-        }
-        Class.prototype={
+    function Class() {
 
-            test:function test(){
-                alert("sss");
-            }
+    }
 
-        };
-        return Class;
+    return Class;
     }
 );
