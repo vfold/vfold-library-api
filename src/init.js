@@ -6,11 +6,12 @@
  * following licensing notice adjacent to the copyright notice for   *
  * the Original Work                                                 *
  *********************************************************************/
+ 
 
 /********************************************
  * Global Classes
  ********************************************/
-var Pooling,
+var Pooling,VFold,
 /********************************************
  * Global variables
  ********************************************/
@@ -28,15 +29,16 @@ const VFoldEvent = {
 };
 
 require([
+        "vfold/vfold",
     "vfold/page",
     "vfold/options",
     "vfold/utility/pooling",
     "lib/event",
     "lib/kinetic"],
 
-function(page, options, pooling) {
-
-    Page = page;
+function(vfold, page, options, pooling) {
+    
+    VFold = vfold;
     Pooling = pooling;
 
     var opt = new options();
@@ -45,7 +47,7 @@ function(page, options, pooling) {
     opt.facebookAppID = "";
     opt.rootPassword = "w957cbnooo5796";
 
-    var pge = new Page();
+    var pge = new page();
 
     pge.init(opt)
 });
