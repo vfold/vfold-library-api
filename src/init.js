@@ -21,7 +21,10 @@ stage;
  ********************************************/
 const VFoldEvent = {
     WORKSPACE_CHANGE: "workspaceChange",
-    WORKSPACE_ADD: "workspaceAdd"
+    WORKSPACE_ADD: "workspaceAdd",
+    FOLDER_CREATE: "FolderAdd",
+    FOLDER_CLOSING: "FolderClose",
+    FOLDER_SELECT: "FolderSelect"
 };
 
 require([
@@ -35,7 +38,7 @@ function(page, options, pooling) {
 
     Page = page;
     Pooling = pooling;
-    
+
     var opt = new options();
 
     opt.aesKey = "796x9qh27xcrb69q27xcrb61274xcr6b";
@@ -43,6 +46,6 @@ function(page, options, pooling) {
     opt.rootPassword = "w957cbnooo5796";
 
     var pge = new Page();
-    
+
     pge.init(opt)
 });

@@ -15,7 +15,7 @@ EventDispatcher.prototype = {
         this._listeners[type].push(listener);
     },
 
-    fire:function(event){
+    dispatch:function(event){
         if (typeof event == "string"){
             event = { type: event };
         }
