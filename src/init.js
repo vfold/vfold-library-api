@@ -9,10 +9,6 @@
  
 
 /********************************************
- * Global Classes
- ********************************************/
-var Pooling,VFold,
-/********************************************
  * Global variables
  ********************************************/
 stage;
@@ -28,10 +24,13 @@ const VFoldEvent = {
     FOLDER_SELECT: "FolderSelect"
 };
 
+function init(){
+
 require([
-        "vfold/vfold",
+    "vfold/vfold",
     "vfold/page",
     "vfold/options",
+    "vfold/utility/pooling",
     "vfold/utility/pooling",
     "lib/event",
     "lib/kinetic"],
@@ -51,5 +50,6 @@ function(vfold, page, options, pooling) {
 
     var pge = new page();
 
-    //pge.init(opt)
+    pge.init(opt)
 });
+}
