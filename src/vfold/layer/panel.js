@@ -12,132 +12,130 @@ var Panel;
 define(
 
 function() {
-   
-   Class.prototype = new Kinetic.Layer("panel");
-   Class.prototype.constructor = Class;
 
-        const menuLauncher = new PanelMenuLauncher, menu_ = new Menu(), toolbar_ = new PanelToolBar;
+    Class.prototype = new Kinetic.Layer("panel");
+    Class.prototype.constructor = Class;
 
-        var folderBar;
+    const menuLauncher = new PanelMenuLauncher, menu_ = new Menu(), toolbar_ = new PanelToolBar;
 
-        const CONTENT_GAP = 3,
-        LOADER_BAR_HEIGHT = 3,
-        CONTENT_HEIGHT = VFOLD.PANEL_HEIGHT - LOADER_BAR_HEIGHT;
+    var folderBar;
 
-        function Class() {
-
-        }
-
-        p.init=function() {
-            const background = new PanelBackground;
-
-            folderBar = Core.folderHandler.folderBar;
-            menu_.x = menu_.gap;
-            menu_.y = VFOLD.PANEL_HEIGHT + menu_.gap;
-            menu_.onMenuButtonDown = function(btn) {
-                Core.folderHandler.addFolder(btn.options.launch);
-            };
-
-            addChild(background);
-            addChild(menuLauncher);
-            addChild(folderBar);
-            addChild(toolbar_);
-            addChild(menu_);
-
-            mouseEnabled = false;
-
-            VFOLD.onStageResize = function() {
-                background.draw();
-            }
-        }
-        p.addTool=function(tool) {
-            toolbar_.addTool(tool)
-        }
-        p.onWorkspaceChange=function() {
-            // Default Logo
-            var
-            bmpDEF = Core.defaultWorkspace.menu.icon,
-                bdtCUR = Core.currentWorkspace.menu.icon;
-
-            menu_.addButtons(Core.currentWorkspace.menu.children);
-            menuLauncher.changeLogo(bdtCUR ? bdtCUR : bmpDEF);
-
-            toolbar_.x = folderBar.x = menuLauncher.width;
-            toolbar_.onStageResize();
-        }
-
-        p.getMenu=function() {
-            return menu_
-        }
-        p.getToolbar=function() {
-            return toolbar_
-        }
-
-
-function PanelBackground() {
-
-    var p = Class.prototype;
-    p = new Kinetic.Group();
-    p.constructor = Class;
-
-    // Background
-    var bg = new Kinetic.Shape("panelBackground");
-    // Loader Line TODO: Make a Sync/ASync PreLoader
-    var ln = new Kinetic.Shape("panelLoader");
-    // Shadow
-    var sh = new Kinetic.Shape("shadow");
-
-    const gt = GradientType.LINEAR;
-    var m = new Matrix;
+    const CONTENT_GAP = 3, LOADER_BAR_HEIGHT = 3, CONTENT_HEIGHT = VFOLD.PANEL_HEIGHT - LOADER_BAR_HEIGHT;
 
     function Class() {
 
-        bg.alpha = .8;
-        addChild(bg);
-        addChild(sh);
-        addChild(ln);
-        mouseEnabled = mouseChildren = false;
-        ln.y = PanelHandler.CONTENT_HEIGHT;
-        sh.y = VFOLD.PANEL_HEIGHT;
     }
-    p.draw = function() {
-        var g;
-        /*********************************
-         *  Background
-         *********************************/
-        g = bg.getContext();
-        g.clear();
-        g.beginFill(VFOLD.color, .7);
-        g.drawRect(0, 0, VFOLD.stage.stageWidth, PanelHandler.CONTENT_HEIGHT);
-        g.endFill();
-        /*********************************
-         *  Shadow
-         *********************************/
-        g = sh.getContext();
-        g.clear();
-        m.createGradientBox(VFOLD.stage.stageWidth, 20, Math.PI / 2);
-        g.beginGradientFill(gt, [0, 0], [.7, 0], [0, 255], m);
-        g.drawRect(0, 0, VFOLD.stage.stageWidth, 20);
-        g.endFill();
-        /*********************************
-         *  Loader Line
-         *********************************/
-        g = ln.getContext();
-        g.clear();
-        g.beginFill(UtilityColor.brightness(VFOLD.color, .7));
-        g.drawRect(0, 0, VFOLD.stage.stageWidth, PanelHandler.LOADER_BAR_HEIGHT);
-        g.endFill();
+
+    p.init = function() {
+        const background = new PanelBackground;
+
+        folderBar = Core.folderHandler.folderBar;
+        menu_.x = menu_.gap;
+        menu_.y = VFOLD.PANEL_HEIGHT + menu_.gap;
+        menu_.onMenuButtonDown = function(btn) {
+            Core.folderHandler.addFolder(btn.options.launch);
+        };
+
+        addChild(background);
+        addChild(menuLauncher);
+        addChild(folderBar);
+        addChild(toolbar_);
+        addChild(menu_);
+
+        mouseEnabled = false;
+
+        VFOLD.onStageResize = function() {
+            background.draw();
+        }
     }
-    return Class;
-}
+    p.addTool = function(tool) {
+        toolbar_.addTool(tool)
+    }
+    p.onWorkspaceChange = function() {
+        // Default Logo
+        var
+        bmpDEF = Core.defaultWorkspace.menu.icon,
+            bdtCUR = Core.currentWorkspace.menu.icon;
 
-function PanelBackground() {
+        menu_.addButtons(Core.currentWorkspace.menu.children);
+        menuLauncher.changeLogo(bdtCUR ? bdtCUR : bmpDEF);
 
-    var p = Class.prototype;
-    p = new Kinetic.Group();
-    p.constructor = Class;
-    
-            // Clicked Boolean
+        toolbar_.x = folderBar.x = menuLauncher.width;
+        toolbar_.onStageResize();
+    }
+
+    p.getMenu = function() {
+        return menu_
+    }
+    p.getToolbar = function() {
+        return toolbar_
+    }
+
+
+    function PanelBackground() {
+
+        var p = Class.prototype;
+        p = new Kinetic.Group();
+        p.constructor = Class;
+
+        // Background
+        var bg = new Kinetic.Shape("panelBackground");
+        // Loader Line TODO: Make a Sync/ASync PreLoader
+        var ln = new Kinetic.Shape("panelLoader");
+        // Shadow
+        var sh = new Kinetic.Shape("shadow");
+
+        const gt = GradientType.LINEAR;
+        var m = new Matrix;
+
+        function Class() {
+
+            bg.alpha = .8;
+            addChild(bg);
+            addChild(sh);
+            addChild(ln);
+            mouseEnabled = mouseChildren = false;
+            ln.y = PanelHandler.CONTENT_HEIGHT;
+            sh.y = VFOLD.PANEL_HEIGHT;
+        }
+        p.draw = function() {
+            var g;
+            /*********************************
+             *  Background
+             *********************************/
+            g = bg.getContext();
+            g.clear();
+            g.beginFill(VFOLD.color, .7);
+            g.drawRect(0, 0, VFOLD.stage.stageWidth, PanelHandler.CONTENT_HEIGHT);
+            g.endFill();
+            /*********************************
+             *  Shadow
+             *********************************/
+            g = sh.getContext();
+            g.clear();
+            m.createGradientBox(VFOLD.stage.stageWidth, 20, Math.PI / 2);
+            g.beginGradientFill(gt, [0, 0], [.7, 0], [0, 255], m);
+            g.drawRect(0, 0, VFOLD.stage.stageWidth, 20);
+            g.endFill();
+            /*********************************
+             *  Loader Line
+             *********************************/
+            g = ln.getContext();
+            g.clear();
+            g.beginFill(UtilityColor.brightness(VFOLD.color, .7));
+            g.drawRect(0, 0, VFOLD.stage.stageWidth, PanelHandler.LOADER_BAR_HEIGHT);
+            g.endFill();
+        }
+        return Class;
+    }
+
+    function PanelBackground() {
+
+        var p = Class.prototype;
+        p = new Kinetic.Group();
+        p.constructor = Class;
+
+        // Clicked Boolean
         var cB = false;
         // Tween Max
         var TM;
@@ -146,7 +144,7 @@ function PanelBackground() {
         // Height
         var h;
 
-    function Class() {
+        function Class() {
 
 
             var c = UtilityColor.hexToRGB(VFOLD.color);
@@ -184,7 +182,7 @@ function PanelBackground() {
                 }
             });
         }
-        p.changeLogo=function(logo) {
+        p.changeLogo = function(logo) {
             if (logo) bL.bitmapData = logo.bitmapData;
             y = (height - bL.height) / 2;
         }
@@ -220,31 +218,32 @@ function PanelBackground() {
             if (!cB) TM.reverse()
         }
 
-        p.getWidth=function() {
+        p.getWidth = function() {
             return x * 2 + super.width
         }
-        p.getHeight=function() {
+        p.getHeight = function() {
             return h
         }
 
     }
-    function PanelToolBar(){
-        
-            var p = Class.prototype;
-    p = new Kinetic.Group();
-    p.constructor = Class;
-        
+
+    function PanelToolBar() {
+
+        var p = Class.prototype;
+        p = new Kinetic.Group();
+        p.constructor = Class;
+
 
         // Left Container
         var lc = new Kinetic.Group();
         // Right Container
         var rc = new Kinetic.Group();
         // Width
-        var w: Number;
+        var w;
         // Height
-        var h: Number;
+        var h;
         // Tool Gap
-        const g: uint = 2;
+        const g = 2;
 
         /******************************************
          * GLOBAL TOOLS *
@@ -253,7 +252,7 @@ function PanelBackground() {
         // Workspace Switcher Tool
         var ws;
 
-        function Class(){
+        function Class() {
 
             y = PanelHandler.CONTENT_GAP;
             h = (PanelHandler.CONTENT_HEIGHT - PanelHandler.CONTENT_GAP) / 2 - PanelHandler.CONTENT_GAP;
@@ -266,15 +265,16 @@ function PanelBackground() {
 
             VFOLD.onStageResize = onStageResize;
         }
-        p.onStageResize(): void {
+
+        p.onStageResize = function() {
             w = VFOLD.stage.stageWidth - x - PanelHandler.CONTENT_GAP - g;
             rc.x = w;
             dispatchEvent(new Event(DropBox.ADJUST_OFFSET));
         }
 
         function onToolChange(e) {
-            var t: Tool = Tool(e.target);
-            var i: uint;
+            var t = Tool(e.target);
+            var i;
             switch (t.align) {
             case Tool.ALIGN_LEFT:
                 for (i = 0; i < lc.numChildren; i++) {
@@ -290,8 +290,9 @@ function PanelBackground() {
                 break;
             }
         }
-        p.addTool(tool: Tool): void {
-            var i: uint;
+
+        p.addTool = function(tool) {
+            var i;
             switch (tool.align) {
 
             case Tool.ALIGN_LEFT:
@@ -308,10 +309,12 @@ function PanelBackground() {
                 break;
             }
         }
-        p.getWidth=function() {
+
+        p.getWidth = function() {
             return w
         }
-        p.getHeight=function() {
+
+        p.getHeight = function() {
             return h
         }
 
