@@ -7,6 +7,8 @@
  * the Original Work                                                 *
  *********************************************************************/
 
+var Panel;
+
 define(
 
 function() {
@@ -16,23 +18,23 @@ function() {
 
         const menuLauncher = new PanelMenuLauncher, menu_ = new Menu(), toolbar_ = new PanelToolBar;
 
-        var folderBar: DisplayObject;
+        var folderBar;
 
-        public static const CONTENT_GAP: uint = 3;
-        public static const LOADER_BAR_HEIGHT: uint = 3;
-        public static const CONTENT_HEIGHT: uint = VFOLD.PANEL_HEIGHT - LOADER_BAR_HEIGHT;
+        const CONTENT_GAP = 3,
+        LOADER_BAR_HEIGHT = 3,
+        CONTENT_HEIGHT = VFOLD.PANEL_HEIGHT - LOADER_BAR_HEIGHT;
 
         function Class() {
 
         }
 
-        p.init(): void {
-            const background: PanelBackground = new PanelBackground;
+        p.init=function() {
+            const background = new PanelBackground;
 
             folderBar = Core.folderHandler.folderBar;
             menu_.x = menu_.gap;
             menu_.y = VFOLD.PANEL_HEIGHT + menu_.gap;
-            menu_.onMenuButtonDown = function(btn: MenuButton): void {
+            menu_.onMenuButtonDown = function(btn) {
                 Core.folderHandler.addFolder(btn.options.launch);
             };
 
@@ -44,19 +46,18 @@ function() {
 
             mouseEnabled = false;
 
-            VFOLD.onStageResize = function(): void {
+            VFOLD.onStageResize = function() {
                 background.draw();
             }
         }
-        p.addTool(tool: Tool): void {
+        p.addTool=function(tool) {
             toolbar_.addTool(tool)
         }
-        override protected
-        function onWorkspaceChange(e: Event): void {
+        p.onWorkspaceChange=function() {
             // Default Logo
             var
-            bmpDEF: Bitmap = Core.defaultWorkspace.menu.icon,
-                bdtCUR: Bitmap = Core.currentWorkspace.menu.icon;
+            bmpDEF = Core.defaultWorkspace.menu.icon,
+                bdtCUR = Core.currentWorkspace.menu.icon;
 
             menu_.addButtons(Core.currentWorkspace.menu.children);
             menuLauncher.changeLogo(bdtCUR ? bdtCUR : bmpDEF);
@@ -65,15 +66,13 @@ function() {
             toolbar_.onStageResize();
         }
 
-        p.get menu(): Menu {
+        p.getMenu=function() {
             return menu_
         }
-        p.get toolbar(): DisplayObject {
+        p.getToolbar=function() {
             return toolbar_
         }
 
-    }
-}
 
 function PanelBackground() {
 
@@ -88,8 +87,8 @@ function PanelBackground() {
     // Shadow
     var sh = new Kinetic.Shape("shadow");
 
-    const gt: String = GradientType.LINEAR;
-    var m: Matrix = new Matrix;
+    const gt = GradientType.LINEAR;
+    var m = new Matrix;
 
     function Class() {
 
@@ -137,20 +136,20 @@ function PanelBackground() {
     var p = Class.prototype;
     p = new Kinetic.Group();
     p.constructor = Class;
-
-    function {
-
-        // Clicked Boolean
-        var cB: Boolean = false;
+    
+            // Clicked Boolean
+        var cB = false;
         // Tween Max
-        var TM: TweenMax;
+        var TM;
         // Logo Bitmap
-        var bL: Bitmap = new Images.VFoldMenu;
+        var bL = new Images.VFoldMenu;
         // Height
-        var h: Number;
+        var h;
 
-        p.PanelMenuLauncher(): void {
-            var c: Object = UtilityColor.hexToRGB(VFOLD.color);
+    function Class() {
+
+
+            var c = UtilityColor.hexToRGB(VFOLD.color);
             TweenMax.to(bL, 0, {
                 colorTransform: {
                     redOffset: c.red,
@@ -185,12 +184,12 @@ function PanelBackground() {
                 }
             });
         }
-        p.changeLogo(logo: Bitmap): void {
+        p.changeLogo=function(logo) {
             if (logo) bL.bitmapData = logo.bitmapData;
             y = (height - bL.height) / 2;
         }
 
-        function onMouseDown(e: MouseEvent = null): void {
+        function onMouseDown() {
             if (cB) {
                 cB = false;
                 Core.panelHandler.menu.fadeOut();
@@ -207,34 +206,39 @@ function PanelBackground() {
             }
         }
 
-        function onStageDown(e: Event): void {
+        function onStageDown() {
             if (e.target != this) {
                 onMouseDown()
             }
         }
 
-        function onBtnOver(e: MouseEvent = null): void {
+        function onBtnOver() {
             if (!cB) TM.play()
         }
 
-        function onBtnOut(e: MouseEvent = null): void {
+        function onBtnOut() {
             if (!cB) TM.reverse()
         }
 
-        overridep.get width(): Number {
+        p.getWidth=function() {
             return x * 2 + super.width
         }
-        overridep.get height(): Number {
+        p.getHeight=function() {
             return h
         }
 
     }
-    class PanelToolBar extends Sprite {
+    function PanelToolBar(){
+        
+            var p = Class.prototype;
+    p = new Kinetic.Group();
+    p.constructor = Class;
+        
 
         // Left Container
-        var lc: Sprite = new Sprite;
+        var lc = new Kinetic.Group();
         // Right Container
-        var rc: Sprite = new Sprite;
+        var rc = new Kinetic.Group();
         // Width
         var w: Number;
         // Height
@@ -247,9 +251,9 @@ function PanelBackground() {
          ******************************************/
 
         // Workspace Switcher Tool
-        var ws: WorkspaceSwitcher;
+        var ws;
 
-        p.PanelToolBar() {
+        function Class(){
 
             y = PanelHandler.CONTENT_GAP;
             h = (PanelHandler.CONTENT_HEIGHT - PanelHandler.CONTENT_GAP) / 2 - PanelHandler.CONTENT_GAP;
@@ -268,7 +272,7 @@ function PanelBackground() {
             dispatchEvent(new Event(DropBox.ADJUST_OFFSET));
         }
 
-        function onToolChange(e: Event): void {
+        function onToolChange(e) {
             var t: Tool = Tool(e.target);
             var i: uint;
             switch (t.align) {
@@ -304,12 +308,12 @@ function PanelBackground() {
                 break;
             }
         }
-        overridep.get width(): Number {
+        p.getWidth=function() {
             return w
         }
-        overridep.get height(): Number {
+        p.getHeight=function() {
             return h
         }
 
-        return Class;
+        Panel = Class;
     });

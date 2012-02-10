@@ -7,6 +7,8 @@
  * the Original Work                                                 *
  *********************************************************************/
  
+var Desktop;
+
 define(
     function (){
     Class.prototype = new Kinetic.Layer("desktop");
@@ -16,6 +18,6 @@ define(
 
     }
 
-    return Class;
+    Desktop = Class;
     }
 );

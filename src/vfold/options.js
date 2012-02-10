@@ -7,6 +7,8 @@
  * the Original Work                                                 *
  *********************************************************************/
 
+var Options;
+
 define(
 
 function() {
@@ -15,12 +17,12 @@ function() {
      *  Security options for the vfold platform
      ********************************************************************/
 
-    function Options(rootPassword, aesKey, facebookAppID) {
+    function Class(rootPassword, aesKey, facebookAppID) {
 
         this.rootPassword = rootPassword;
         this.aesKey = aesKey;
         this.facebookAppID = facebookAppID;
     }
 
-    return Options;
+    Options=Class;
 });

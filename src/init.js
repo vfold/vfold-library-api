@@ -11,7 +11,7 @@
 /********************************************
  * Global variables
  ********************************************/
-stage;
+var stage;
 
 /********************************************
  * Global Constants
@@ -24,32 +24,23 @@ const VFoldEvent = {
     FOLDER_SELECT: "FolderSelect"
 };
 
-function init(){
-
 require([
     "vfold/vfold",
     "vfold/page",
     "vfold/options",
     "vfold/utility/pooling",
-    "vfold/utility/pooling",
     "lib/event",
     "lib/kinetic"],
 
-function(vfold, page, options, pooling) {
+function() {
     
-
-    
-    VFold = vfold;
-    Pooling = pooling;
-
-    var opt = new options();
+    var opt = new Options();
 
     opt.aesKey = "796x9qh27xcrb69q27xcrb61274xcr6b";
     opt.facebookAppID = "";
     opt.rootPassword = "w957cbnooo5796";
 
-    var pge = new page();
-
+    var pge = new Page();
+    
     pge.init(opt)
 });
-}

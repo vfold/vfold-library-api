@@ -7,6 +7,8 @@
  * the Original Work                                                 *
  *********************************************************************/
 
+var Page;
+
 define([
     "./layer/folders",
     "./layer/panel",
@@ -48,11 +50,11 @@ function() {
          *********************************/
         ROOT_ENCRYPTED;
 
-    function Page() {
+    function Class() {
 
     }
 
-    Page.prototype = {
+    Class.prototype = {
 
         init: function(options, gui) {
 
@@ -74,10 +76,10 @@ function() {
 
             if (gui) {
 
-                folders = new(require("vfold/layer/folders"))();
-                widgets = new(require("vfold/layer/widgets"))();
-                panel = new(require("vfold/layer/panel"))();
-                desktop = new(require("vfold/layer/desktop"))();
+                folders = new Folders();
+                widgets = new Widgets();
+                panel = new Panel();
+                desktop = new Desktop();
 
                 stage.add(folders);
                 stage.add(widgets);
@@ -89,11 +91,11 @@ function() {
                 stage.setSize(window.innerWidth || document.body.clientWidth, window.innerHeight || document.body.clientHeight);
             });
 
-            Page.dispatcher = new EventDispatcher();
-            Page.dispatcher.fire(VFoldEvent.WORKSPACE_ADD);
+            Class.dispatcher = new EventDispatcher();
+            Class.dispatcher.fire(VFoldEvent.WORKSPACE_ADD);
         }
 
     };
 
-    return Page;
+    Page=Class;
 });

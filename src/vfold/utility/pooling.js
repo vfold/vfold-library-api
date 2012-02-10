@@ -7,6 +7,8 @@
  * the Original Work                                                 *
  *********************************************************************/
 
+var Pooling;
+
 define(
 
 function() {
@@ -72,5 +74,5 @@ function() {
         }
 
     };
-    return Class;
+    Pooling=Class;
 });

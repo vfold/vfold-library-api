@@ -6,7 +6,9 @@
  * following licensing notice adjacent to the copyright notice for   *
  * the Original Work                                                 *
  *********************************************************************/
- 
+
+var Widgets;
+
 define(
     function (){
    
@@ -17,6 +19,6 @@ define(
 
     }
 
-    return Class;
+    Widgets = Class;
     }
 );
