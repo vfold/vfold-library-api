@@ -25,12 +25,13 @@ const VFoldEvent = {
 };
 
 require([
+    "lib/kinetic",
     "vfold/vfold",
     "vfold/page",
     "vfold/options",
     "vfold/utility/pooling",
     "lib/event",
-    "lib/kinetic"],
+    ],
 
 function() {
     

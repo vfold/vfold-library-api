@@ -12,11 +12,11 @@ var Panel;
 define(
 
 function() {
+    
+    var p = new Kinetic.Layer("panel");
+    p.constructor = Class;
 
-    Class.prototype = new Kinetic.Layer("panel");
-    Class.prototype.constructor = Class;
-
-    const menuLauncher = new PanelMenuLauncher, menu_ = new Menu(), toolbar_ = new PanelToolBar;
+    const menuLauncher = new PanelMenuLauncher(), menu_ = new Menu(), toolbar_ = new PanelToolBar;
 
     var folderBar;
 
@@ -129,10 +129,9 @@ function() {
         return Class;
     }
 
-    function PanelBackground() {
+    function PanelMenuLauncher() {
 
-        var p = Class.prototype;
-        p = new Kinetic.Group();
+        var p = new Kinetic.Group();
         p.constructor = Class;
 
         // Clicked Boolean
@@ -219,7 +218,7 @@ function() {
         }
 
         p.getWidth = function() {
-            return x * 2 + super.width
+            return x * 2 + this.width
         }
         p.getHeight = function() {
             return h
@@ -318,5 +317,6 @@ function() {
             return h
         }
 
-        Panel = Class;
-    });
+    }
+    Panel = Class;
+});
