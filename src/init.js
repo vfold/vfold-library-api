@@ -38,6 +38,8 @@ require([
 
 function(vfold, page, options, pooling) {
     
+
+    
     VFold = vfold;
     Pooling = pooling;
 
@@ -49,5 +51,5 @@ function(vfold, page, options, pooling) {
 
     var pge = new page();
 
-    pge.init(opt)
+    //pge.init(opt)
 });

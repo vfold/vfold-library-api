@@ -54,7 +54,7 @@ function() {
 
     Page.prototype = {
 
-        init: function (options, gui) {
+        init: function(options, gui) {
 
             gui = gui ? gui : true;
 
@@ -70,21 +70,25 @@ function() {
                 return;
             }
 
-            stage = new Kinetic.Stage("stage", window.innerWidth || document.body.clientWidth, window.innerHeight || document.body.clientHeight);
+            stage = new Kinetic.Stage("stage");
 
             if (gui) {
 
-                folders = new (require("vfold/layer/folders"))();
-                widgets = new (require("vfold/layer/widgets"))();
-                panel   = new (require("vfold/layer/panel"))();
-                desktop = new (require("vfold/layer/desktop"))();
+                folders = new(require("vfold/layer/folders"))();
+                widgets = new(require("vfold/layer/widgets"))();
+                panel = new(require("vfold/layer/panel"))();
+                desktop = new(require("vfold/layer/desktop"))();
+
+                stage.add(folders);
+                stage.add(widgets);
+                stage.add(panel);
+                stage.add(desktop);
             }
 
-            stage.add(folders);
-            stage.add(widgets);
-            stage.add(panel);
-            stage.add(desktop);
-            
+            VFold.addResizeCallback(function() {
+                stage.setSize(window.innerWidth || document.body.clientWidth, window.innerHeight || document.body.clientHeight);
+            });
+
             Page.dispatcher = new EventDispatcher();
             Page.dispatcher.fire(VFoldEvent.WORKSPACE_ADD);
         }
