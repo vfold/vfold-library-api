@@ -15,6 +15,8 @@ function() {
 
     var callbacks = [];
     var p = Class.prototype;
+    
+    window.onresize = onWindowResize;
 
     function onWindowResize() {
 
@@ -67,8 +69,8 @@ function() {
         /*********************************
          * Core Options
          *********************************/
-        var AES_KEY: String;
-        var FACEBOOK_APP_ID: String;
+        var AES_KEY;
+        var FACEBOOK_APP_ID;
         /*********************************
          * Secure Value Object for User
          *********************************/
@@ -86,7 +88,7 @@ function() {
          *********************************/
         const NET_POOL = new Pooling(NetConn);
 
-        c.init = function(options, onReady): void {
+        c.init = function(options, onReady) {
 
 
             /***********************************************
@@ -104,10 +106,10 @@ function() {
              * INIT your session via this validation and authentication Function
              *********************************************************************/
 
-            rootCall("Session.init", function(session: Object): void {
+            rootCall("Session.init", function(session) {
                 var
-                sov: VOSession = VOSession(session),
-                    sobSES: SharedObject = SharedObject.getLocal("vfold_session", "/");
+                sov = session,
+                    sobSES = SharedObject.getLocal("vfold_session", "/");
 
                 HEADER.session.id = sobSES.data.id = sov.id;
                 HEADER.session.code = sobSES.data.code = sov.code;
@@ -116,8 +118,8 @@ function() {
             },
             [HEADER.session, ROOT_ENCRYPTED]);
 
-            Facebook.init(FACEBOOK_APP_ID, function(success: Object,
-            failure: Object): void {
+            Facebook.init(FACEBOOK_APP_ID, function(success,
+            failure) {
                 onFacebookLogin(success, failure);
             });
 
@@ -135,19 +137,19 @@ function() {
             desktops = new DesktopHandler();
             widgets = new WidgetHandler;
 
-            for each(var work: VOWorkspace in workspaces) {
-                var workspace: Workspace = new Workspace();
+            for(var work in workspaces) {
+                var workspace = new Workspace();
                 workspace.title = work.title;
-                for each(var comp: VOComponent in work.components) {
+                for(var comp in work.components) {
                     workspace.setComponent(new WorkspaceComponent(comp));
                     if (comp.type == VOComponent.FOLDER) {
 
-                        var path: Array = comp.menu_path.split(".");
+                        var path = comp.menu_path.split(".");
 
-                        var parent: MenuOptions = workspace.menu;
-                        var child: MenuOptions;
+                        var parent = workspace.menu;
+                        var child;
 
-                        for (var i: int = 0;
+                        for (var i = 0;
                         i < path.length;
                         i++) {
                             child = parent.children[path[i]];
@@ -171,9 +173,9 @@ function() {
              * Check POST URL Parameters
              ************************************************/
 
-            var pr: Object = VFOLD.stage.loaderInfo.parameters;
+            var pr = VFOLD.stage.loaderInfo.parameters;
             if (pr.confirm) {
-                rootCall("User.confirm", function(confirmed: Boolean): void {
+                rootCall("User.confirm", function(confirmed) {
                     if (confirmed) {
                         notify("Your account has been confirmed!\nNow you can sign-in");
                     }
@@ -201,84 +203,77 @@ function() {
 
             useWorkspace(0);
 
-            //TODO: 2D/3D ACCELERATION /////////////////////////////////////////////////////
-            VFOLD.stage.stage3Ds[0].addEventListener(Event.CONTEXT3D_CREATE, function(e: Event): void {
-                notify(VFOLD.stage.stage3Ds[0].context3D.driverInfo);
-            });
-            VFOLD.stage.stage3Ds[0].requestContext3D();
-
-            //////////////////////////////////////////////////////////////////////////////
             notify("Powered by vfold");
         }
-        c.notify(...rest): void {
+        c.notif=function() {
 
-            var t: String = " ";
-            for each(var s: * in rest) {
+            var t = " ";
+            for(var s in rest) {
                 t += String(s) + " ";
             }
             widgets.notifier.notify(t);
         }
-        c.useWorkspace(index: uint): void {
+        c.useWorkspace=function(index) {
 
             intWorkspaceIndex = index;
             dispatcher.dispatchEvent(new Event(WORKSPACE_CHANGE));
         }
 
-        c.get desktopHandler(): DesktopHandler {
+        c.getDesktopHandler=function() {
             return desktops
         }
-        c.get panelHandler(): PanelHandler {
+        c.getPanelHandler=function() {
             return panels
         }
-        c.get folderHandler(): FolderHandler {
+        c.getFolderHandler=function() {
             return folders
         }
-        c.get widgetHandler(): WidgetHandler {
+        c.getWidgetHandler=function() {
             return widgets
         }
 
-        c.get dispatcher(): EventDispatcher {
-            return eventDispatcher_
+        c.getDispatcher=function() {
+            return eventDispatcher_;
         }
-        c.get currentWorkspace(): Workspace {
-            return vctWorkspaces[intWorkspaceIndex]
+        c.getCurrentWorkspace=function() {
+            return vctWorkspaces[intWorkspaceIndex];
         }
-        c.get defaultWorkspace(): Workspace {
-            return vctWorkspaces[0]
+        c.getDefaultWorkspace=function() {
+            return vctWorkspaces[0];
         }
-        c.get currentWorkspaceIndex(): uint {
-            return intWorkspaceIndex
+        c.getCurrentWorkspaceIndex=function() {
+            return intWorkspaceIndex;
         }
-        c.get currentUser(): VOUser {
-            return USER
-        }
-
-        c.get libraries(): Dictionary {
-            return dctLibraries
+        c.getCurrentUser=function() {
+            return USER;
         }
 
-        c.appCall(command: String,
-        onSuccess: Function,
-        params: Array = null,
-        onError: Function = null): void {
+        c.getLibraries=function() {
+            return dctLibraries;
+        }
+
+        c.appCall=function(command,
+        onSuccess,
+        params,
+        onError) {
 
             getConnection(onSuccess, onError).amfCall(command, params, false);
         }
-        c.rootCall(command: String,
-        onSuccess: Function,
-        params: Array = null,
-        onError: Function = null): void {
+        c.rootCall=function(command,
+        onSuccess,
+        params,
+        onError) {
 
             getConnection(onSuccess, onError).amfCall(command, params, true);
         }
 
-        function getConnection(onSuccess: Function,
-        onError: Function): NetConn {
+        function getConnection(onSuccess,
+        onError) {
 
-            var conn: NetConn = NetConn(NET_POOL.getObject());
+            var conn = NetConn(NET_POOL.getObject());
 
             if (NET_POOL.instantiated) {
-                conn.onClose = function(conn: NetConn): void {
+                conn.onClose = function(conn) {
                     NET_POOL.returnToPool(conn)
                 }
             }
@@ -289,11 +284,11 @@ function() {
             return conn;
         }
 
-        c.getExternalClass(srcAppDomain: ApplicationDomain,
-        library: String,
-        classPath: String): Object {
+        c.getExternalClass=function(srcAppDomain,
+        library,
+        classPath) {
 
-            var tgtAppDomain: ApplicationDomain = ApplicationDomain(dctLibraries[library]);
+            var tgtAppDomain = dctLibraries[library];
             if (!tgtAppDomain) {
                 return null;
             }
@@ -302,17 +297,17 @@ function() {
             }
             return tgtAppDomain.getDefinition(classPath)
         }
-        c.checkRootPassword(password: String): Boolean {
+        c.checkRootPassword=function(password) {
             return AES_KEY == decrypt(ROOT_ENCRYPTED, password, 128);
         }
-        c.signInFacebook(): void {
+        c.signInFacebook=function() {
             Facebook.login(onFacebookLogin, {
                 perms: "user_about_me, user_birthday, email, publish_stream, offline_access"
             });
         }
-        c.onFacebookLogin(success: Object,
-        fail: Object): void {
-            var m: String;
+        c.onFacebookLogin=function(success,
+        fail) {
+            var m;
 /* if(success){
 Facebook.api("/me",
 function(success:Object,failure:Object):void{
@@ -343,21 +338,21 @@ else{
 
 } */
         }
-        c.signInUser(email: String,
-        password: String,
-        callback: Function): void {
+        c.signInUser=function(email,
+        password,
+        callback) {
 
-            var strNTF: String;
+            var strNTF;
             rootCall("User.getOneBy",
 
-            function(response: Object): void {
+            function(response) {
                 trace(response.role_value);
                 if (response.role_value == UserRole.GUEST) {
                     callback(false);
                     Core.notify("User has not yet been confirmed..Check your email");
                 }
                 else {
-                    rootCall("User.get", function(user: VOUserSecure): void {
+                    rootCall("User.get", function(user) {
                         if (AES_KEY == decrypt(user.password, password)) {
                             USER = user;
                             Core.dispatcher.dispatchEvent(new Event(VFOLD.USER_CHANGE));
@@ -377,30 +372,25 @@ else{
                 email: email
             }, ["role_value", "id"]],
 
-            function(errorCode: int): void {
+            function(errorCode) {
                 if (errorCode == ErrorUser.NOT_FOUND) Core.notify("Wrong email,try again");
             });
         }
         /************************************************
          * AES Encryption
          ************************************************/
-        c.encrypt(password: String,
-        bitKey: int = 256): String {
-            return UtilityCryptography.encrypt(AES_KEY, password, bitKey);
+        c.encrypt=function(password,
+        bitKey) {
+            return UtilityCryptography.encrypt(AES_KEY, password, bitKey?bitKey:256);
         }
         /************************************************
          * AES Decryption
          ************************************************/
-        c.decrypt(encrypted: String,
-        password: String,
-        bitKey: int = 256): String {
-            return UtilityCryptography.decrypt(encrypted, password, bitKey);
+        c.decrypt=function(encrypted,
+        password,
+        bitKey) {
+            return UtilityCryptography.decrypt(encrypted, password, bitKey?bitKey:256);
         }
+         VFold = Class;
     }
-}
-};
-
-window.onresize = onWindowResize;
-
-VFold = Class;
 });
