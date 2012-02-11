@@ -393,4 +393,5 @@ else{
         }
          VFold = Class;
     }
-});
+}
+);
