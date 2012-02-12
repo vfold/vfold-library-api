@@ -17,15 +17,14 @@ function() {
     createMenuButtons();
     createMenu();
 
-
     /********************************************
      * Drop down list of menu Buttons that can 
      * have manu additional attributes
      ********************************************/
 
     function createMenu() {
-
-        var p = new MenuButtons(VFOLD.color, intGAP);
+        // Menu Parent
+        var p = new MenuButtons(VFold.color, intGAP);
 
         // Target Event ParentContainer
         var intGAP = 7;
@@ -42,9 +41,7 @@ function() {
              * Child Menu Buttons
              *********************************/
             mbs;
-
-
-
+            
             addEventListener(MouseEvent.MOUSE_OVER, function(e) {
                 if (MenuButton) {
 
@@ -75,181 +72,174 @@ function() {
                     if (fncDWN) fncDWN(mbt);
                 }
             });
-
-            p.getGap = function() {
-                return intGAP
-            }
-
-            p.setMenuButtonCallback = function(callback) {
-                fncDWN = callback;
-            }
-
-            Menu = Class;
         }
 
-        /********************************************
-         * Drop down list of menu Buttons that can 
-         * have manu additional attributes
-         ********************************************/
-
-        function createMenuButton() {
-
-            var p = new Kinetic.Group("menuButton");
-
-
-            function Class() {
-
-            }
-            MenuButton = Class;
+        p.getGap = function() {
+            return intGAP;
         }
 
-        /********************************************
-         * Drop down list of menu Buttons that can 
-         * have manu additional attributes
-         ********************************************/
+        p.setMenuButtonCallback = function(callback) {
+            fncDWN = callback;
+        }
 
-        function createMenuButtons() {
+        Menu = Class;
+    }
 
-            var p = new Kinetic.Layer("menuButtons");
+    /********************************************
+     * Drop down list of menu Buttons that can 
+     * have manu additional attributes
+     ********************************************/
 
+    function createMenuButtons() {
 
-            function Class() {
+        var p = new Kinetic.Layer("menuButtons");
 
+        function Class(buttonColor, buttonGap) {
+
+            bC = buttonColor;
+            bG = buttonGap;
+
+            ttl = new TimelineLite({
+                paused: true
+            });
+        }
+
+        // Button Vector
+        var bV = [],
+            // Button Color
+            bC,
+            // Button Gap
+            bG,
+            // Tween Time-line Lite
+            ttl,
+            // Tween-Max Array
+            tma = [],
+            // Tween-Objects Array
+            toa = [],
+            // Tween Duration
+            tdr = .35,
+
+            // Previous Index
+            pI;
+
+        p.addButtons = function(dataButtons) {
+
+            var i = 0;
+            var j = bV.length;
+            var mxW = 0;
+
+            for (var button in dataButtons) {
+                bV[i] = new MenuParent(
+                bC, bG, button);
+                bV[i].button.index = i;
+                bV[i].button.alpha = 0;
+                if (i != 0) {
+
+                    bV[i].y += i * (bV[i - 1].height + bG);
+                }
+                if (i != j) {
+
+                    mxW = Math.max(mxW, bV[i].button.width);
+                }
+                else {
+
+                    mxW = bV[i].button.width;
+                }
+                toa.push(bV[i].button);
+                addChild(bV[i]);
+                i++;
             }
 
-            // Button Vector
-            var bV = [],
-                // Button Color
-                bC,
-                // Button Gap
-                bG,
+            i = j;
+            if (j > 1) if (mxW > bV[j - 1].button.width) i = 0;
 
-                // Tween Time-line Lite
-                ttl,
-                // Tween-Max Array
-                tma = [],
-                // Tween-Objects Array
-                toa = [],
-                // Tween Duration
-                tdr = .35,
+            for (i; i < bV.length; i++) {
 
-                // Previous Index
-                pI;
+                bV[i].width = mxW;
+            }
+            ttl.clear();
+            tma = TweenMax.allFromTo(toa, tdr, {
+                alpha: 0,
+                y: "50"
+            }, {
+                alpha: 1,
+                y: "-50"
+            }, tdr / toa.length);
+            ttl.insertMultiple(tma);
+        }
+        p.fadeIn = function() {
 
-            p.MenuButtons = function(buttonColor, buttonGap) {
+            ttl.play();
+            mouseChildren = true;
+        }
+        p.fadeOut = function() {
 
-                mouseEnabled = false;
-                mouseChildren = false;
-                bC = buttonColor;
+            ttl.reverse();
+            mouseChildren = false;
+
+            if (bV.length > 0) {
+
+                bV[pI].buttonContainer.fadeOut();
+            }
+        }
+        p.setPreviousIndex = function(value) {
+            pI = value
+        }
+
+        function MenuParent() {
+
+            var p = MenuParent.prototype;
+
+            // Button Container
+            var bC;
+            // Button Label
+            var bL;
+            // Button Gap
+            var bG;
+
+            function Class(buttonColor, buttonGap, buttonData) {
                 bG = buttonGap;
+                bC = new MenuButtons(buttonColor, bG);
+                bL = new MenuButton(buttonColor, buttonData, buttonData.children.length > 0);
 
-                ttl = new TimelineLite({
-                    paused: true
-                });
+                addChild(bC);
+                addChild(bL);
+
+                if (buttonData) bC.addButtons(buttonData.children);
             }
-            p.addButtons = function(dataButtons) {
-
-                var i = 0;
-                var j = bV.length;
-                var mxW = 0;
-
-                for (var button in dataButtons) {
-                    bV[i] = new MenuParent(
-                    bC, bG, button);
-                    bV[i].button.index = i;
-                    bV[i].button.alpha = 0;
-                    if (i != 0) {
-
-                        bV[i].y += i * (bV[i - 1].height + bG);
-                    }
-                    if (i != j) {
-
-                        mxW = Math.max(mxW, bV[i].button.width);
-                    }
-                    else {
-
-                        mxW = bV[i].button.width;
-                    }
-                    toa.push(bV[i].button);
-                    addChild(bV[i]);
-                    i++;
-                }
-
-                i = j;
-                if (j > 1) if (mxW > bV[j - 1].button.width) i = 0;
-
-                for (i; i < bV.length; i++) {
-
-                    bV[i].width = mxW;
-                }
-                ttl.clear();
-                tma = TweenMax.allFromTo(toa, tdr, {
-                    alpha: 0,
-                    y: "50"
-                }, {
-                    alpha: 1,
-                    y: "-50"
-                }, tdr / toa.length);
-                ttl.insertMultiple(tma);
+            p.getButtonContainer = function() {
+                return bC
             }
-            p.fadeIn = function() {
-
-                ttl.play();
-                mouseChildren = true;
-            }
-            p.fadeOut = function() {
-
-                ttl.reverse();
-                mouseChildren = false;
-
-                if (bV.length > 0) {
-
-                    bV[pI].buttonContainer.fadeOut();
-                }
-            }
-            p.setPreviousIndex = function(value) {
-                pI = value
+            p.getButton = function() {
+                return bL
             }
 
-            function MenuParent() {
+            p.setWidth = function(value) {
 
-                var p = MenuParent.prototype;
+                bL.width = value;
+                bC.x = value + bG;
+            }
+            p.getHeight = function() {
 
-                // Button Container
-                var bC;
-                // Button Label
-                var bL;
-                // Button Gap
-                var bG;
-
-                function Class(buttonColor, buttonGap, buttonData) {
-                    bG = buttonGap;
-                    bC = new MenuButtons(buttonColor, bG);
-                    bL = new MenuButton(buttonColor, buttonData, buttonData.children.length > 0);
-
-                    addChild(bC);
-                    addChild(bL);
-
-                    if (buttonData) bC.addButtons(buttonData.children);
-                }
-                p.getButtonContainer = function() {
-                    return bC
-                }
-                p.getButton = function() {
-                    return bL
-                }
-
-                p.setWidth = function(value) {
-
-                    bL.width = value;
-                    bC.x = value + bG;
-                }
-                p.getHeight = function() {
-
-                    return bL.height;
-                }
-                MenuButtons = Class;
+                return bL.height;
             }
         }
+            MenuButtons = Class;
+    }
+
+    /********************************************
+     * The Child Button of a group belonging in   
+     * menu tree hierarchy
+     ********************************************/
+
+    function createMenuButton() {
+
+        var p = new Kinetic.Group("menuButton");
+
+
+        function Class() {
+
+        }
+        MenuButton = Class;
     }
 });

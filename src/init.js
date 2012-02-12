@@ -30,6 +30,7 @@ require([
     "vfold/page",
     "vfold/options",
     "vfold/utility/pooling",
+    "vfold/controls/menu",
     "lib/event",
     ],
 

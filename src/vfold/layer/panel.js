@@ -16,13 +16,18 @@ function() {
     var p = new Kinetic.Layer("panel");
     p.constructor = Class;
 
-    const menuLauncher = new PanelMenuLauncher(), menu_ = new Menu(), toolbar_ = new PanelToolBar;
+    var menuLauncher, menu_, toolbar_;
 
-    var folderBar;
+    var folderBar,
 
-    const CONTENT_GAP = 3, LOADER_BAR_HEIGHT = 3, CONTENT_HEIGHT = VFOLD.PANEL_HEIGHT - LOADER_BAR_HEIGHT;
+    CONTENT_GAP = 3, LOADER_BAR_HEIGHT = 3, CONTENT_HEIGHT;
 
     function Class() {
+        
+        menuLauncher = new PanelMenuLauncher()
+        menu_  = new Menu();
+        PanelToolBar = new PanelToolbar();
+        CONTENT_HEIGHT = VFold.PANEL_HEIGHT - LOADER_BAR_HEIGHT
 
     }
 
@@ -36,11 +41,11 @@ function() {
             Core.folderHandler.addFolder(btn.options.launch);
         };
 
-        addChild(background);
-        addChild(menuLauncher);
-        addChild(folderBar);
-        addChild(toolbar_);
-        addChild(menu_);
+        p.add(background);
+        p.add(menuLauncher);
+        p.add(folderBar);
+        p.add(toolbar_);
+        p.add(menu_);
 
         mouseEnabled = false;
 
@@ -253,8 +258,8 @@ function() {
 
         function Class() {
 
-            y = PanelHandler.CONTENT_GAP;
-            h = (PanelHandler.CONTENT_HEIGHT - PanelHandler.CONTENT_GAP) / 2 - PanelHandler.CONTENT_GAP;
+            y = CONTENT_GAP;
+            h = (CONTENT_HEIGHT - CONTENT_GAP) / 2 - CONTENT_GAP;
             addEventListener(Tool.TOOL_CHANGE, onToolChange);
 
             ws = new WorkspaceSwitcher();
@@ -266,7 +271,7 @@ function() {
         }
 
         p.onStageResize = function() {
-            w = VFOLD.stage.stageWidth - x - PanelHandler.CONTENT_GAP - g;
+            w = VFOLD.stage.stageWidth - x - CONTENT_GAP - g;
             rc.x = w;
             dispatchEvent(new Event(DropBox.ADJUST_OFFSET));
         }

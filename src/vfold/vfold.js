@@ -14,7 +14,7 @@ define(
 function() {
 
     var callbacks = [];
-    var p = Class.prototype;
+    var p = Class.prototype,c=p.constructor;
 
     window.onresize = onWindowResize;
 
@@ -31,12 +31,12 @@ function() {
     }
 
 
-    p.addResizeCallback = function(func) {
+    c.addResizeCallback = function(func) {
         callbacks.push(func);
 
     }
-
-    var c = Core;
+    
+    c.PANEL_HEIGHT=50;
 
     /****************************************************************
      * Core Components
