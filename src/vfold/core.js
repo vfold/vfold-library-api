@@ -7,17 +7,19 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var Math = {};
+var Core;
 
 define(
 
-function() {
+[
+    "./layer/folders",
+    "./layer/panel",
+    "./layer/desktop",
+    "./layer/widgets"
+    ], function() {
 
-    var c = Math;
+    function Class() {
 
-    // Returns a random integer from 0 to range - 1.
-    c.randomInt = function(range) {
-        return Math.floor(Math.random() * range);
-    };
-
+    }
+    Core = Class;
 });

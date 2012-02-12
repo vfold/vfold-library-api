@@ -109,10 +109,9 @@ function() {
         Facebook.init(FACEBOOK_APP_ID, function(success, failure) {
             onFacebookLogin(success, failure);
         });
-
-
     }
-    c.startGUI = function(workspaces) {
+   
+   c.startGUI = function(workspaces) {
 
         /*********************************************************
          * Init the the Secure Class for a session Request and

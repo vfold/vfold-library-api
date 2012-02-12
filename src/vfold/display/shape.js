@@ -20,6 +20,8 @@ function() {
 
         var canvas = document.getElementById("canvas");
         var gl = canvas.getContext("experimental-webgl");
+        
+
 
 
     }   
@@ -38,7 +40,8 @@ function() {
         var x2 = x + width;
         var y1 = y;
         var y2 = y + height;
-        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+       
+       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
             x1, y1,
             x2, y1,
             x1, y2,
@@ -48,6 +51,10 @@ function() {
 
         // Draw the rectangle.
         gl.drawArrays(gl.TRIANGLES, 0, 6);
+    }
+    
+    p.clear = function(){
+            gl.clear(gl.COLOR_BUFFER_BIT);
     }
 
     Shape = Class;
