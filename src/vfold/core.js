@@ -9,14 +9,7 @@
 
 var Core;
 
-define(
-
-[
-    "./layer/folders",
-    "./layer/panel",
-    "./layer/desktop",
-    "./layer/widgets"
-    ], function() {
+define(function() {
 
     function Class() {
 

@@ -25,6 +25,7 @@ const VFoldEvent = {
 };
 
 require([
+    "vfold/core",
     "vfold/vfold",
     "vfold/page",
     "vfold/options",
@@ -32,7 +33,6 @@ require([
     "vfold/display/container",
     "vfold/utility/pooling",
     "vfold/utility/webgl",
-    "vfold/controls/menu",
     "lib/event",
     ],
 

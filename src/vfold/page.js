@@ -7,15 +7,24 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var Page={};
+var Page = {};
 
 define(
-function() {
-    
-    var c = Page;
-    
-    c.init=function(){
-        Stage.init();
-    }
 
+function() {
+
+    var c = Page;
+
+    c.init = function() {
+
+        require([
+            "vfold/layer/folders",
+            "vfold/layer/panel",
+            "vfold/layer/desktop",
+            "vfold/layer/widgets",
+
+            'vfold/controls/menu'], function() {
+            Stage.init();
+        });
+    };
 });

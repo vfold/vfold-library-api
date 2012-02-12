@@ -23,16 +23,17 @@ function() {
 
         var canvas = document.createElement("canvas");
 
-        function hasGL() {
+
+
+        if (!
+        function() {
             try {
                 return ( !! (window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))));
             }
             catch (e) {
                 return false;
             }
-        }
-
-        if (!hasGL()) {
+        }) {
             alert("WebGL not working..");
         }
 
@@ -45,9 +46,9 @@ function() {
         /*****************************************************************
          * Setup a GLSL program
          *****************************************************************/
-
-        var vertexShader = WebGL.createShaderFromScriptElement(gl, "2d-vertex-shader");
-        var fragmentShader = WebGL.createShaderFromScriptElement(gl, "2d-fragment-shader");
+         
+        var vertexShader = WebGL.createShaderFromScript(gl, "2d-vertex-shader");
+        var fragmentShader = WebGL.createShaderFromScript(gl, "2d-fragment-shader");
         var program = WebGL.createProgram(gl, [vertexShader, fragmentShader]);
         gl.useProgram(program);
 
@@ -67,7 +68,6 @@ function() {
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.enableVertexAttribArray(positionLocation);
         gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-
     };
 
     /*****************************************************************

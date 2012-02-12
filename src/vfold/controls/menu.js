@@ -99,9 +99,9 @@ function() {
             bC = buttonColor;
             bG = buttonGap;
 
-            ttl = new TimelineLite({
-                paused: true
-            });
+           // ttl = new TimelineLite({
+        //        paused: true
+          //  });
         }
 
         // Button Vector

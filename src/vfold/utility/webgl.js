@@ -152,7 +152,7 @@ define(function(){
      * @param {function(string): void) opt_errorCallback callback for errors.
      * @return {!WebGLShader} The created shader.
      */
-    var createShaderFromScript = function(
+    c.createShaderFromScript = function(
         gl, scriptId, opt_shaderType, opt_errorCallback) {
             var shaderSource = "";
             var shaderType;
