@@ -92,7 +92,7 @@ function() {
 
     function createMenuButtons() {
 
-        var p = new Kinetic.Layer("menuButtons");
+        var p = new Container();
 
         function Class(buttonColor, buttonGap) {
 
@@ -234,7 +234,7 @@ function() {
 
     function createMenuButton() {
 
-        var p = new Kinetic.Group("menuButton");
+        var p = new Container();
 
 
         function Class() {

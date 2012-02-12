@@ -13,29 +13,14 @@ define(
 
 function() {
 
-    var callbacks = [];
+    
     var p = Class.prototype,c=p.constructor;
-
-    window.onresize = onWindowResize;
-
-    function onWindowResize() {
-
-        for (var i = 0; i < callbacks.length; i++) {
-            callbacks[i]();
-        }
-    }
 
     function Class() {
 
         this.color = 0x232323;
     }
 
-
-    c.addResizeCallback = function(func) {
-        callbacks.push(func);
-
-    }
-    
     c.PANEL_HEIGHT=50;
 
     /****************************************************************

@@ -11,7 +11,7 @@ var Desktop;
 
 define(
     function (){
-    Class.prototype = new Kinetic.Layer("desktop");
+    Class.prototype = new Container();
     Class.prototype.constructor = Class;
 
     function Class() {

@@ -7,17 +7,17 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var Container;
+var Math = {};
 
 define(
-    function (){
-   
-    Class.prototype.constructor = Class;
 
-    function Class() {
+function() {
 
+    var c = Math;
+
+    // Returns a random integer from 0 to range - 1.
+    c.randomInt = function(range) {
+        return Math.floor(Math.random() * range);
     }
 
-    Container = Class;
-    }
-);
+});

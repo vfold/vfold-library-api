@@ -13,7 +13,7 @@ define(
 
 function() {
 
-    var p = new Kinetic.Layer("folders"),
+    var p = new Container(),
 
         /*********************************
          *  Workspace Containers

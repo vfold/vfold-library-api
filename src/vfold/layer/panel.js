@@ -13,7 +13,7 @@ define(
 
 function() {
     
-    var p = new Kinetic.Layer("panel");
+    var p = new Container();
     p.constructor = Class;
 
     var menuLauncher, menu_, toolbar_;

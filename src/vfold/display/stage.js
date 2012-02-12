@@ -7,66 +7,74 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var Stage;
+var Stage = {};
 
 define(
 
 function() {
 
-    function Class() {
-        
-        var containerID="stage";
+    var c = Stage;
 
-        function hasGL() {
-            try {
-                var canvas = document.createElement(containerID;
-                return ( !! (window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))))
-            }
-            catch (e) {
-                return false;
-            }
+    /*****************************************************************
+     * Check the WebGL context support
+     *****************************************************************/
+     
+     var canvas = document.createElement("canvas");
+
+    function hasGL() {
+        try {
+            return ( !! (window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))));
         }
-
-        if (!hasGL()) {
-            alert("WebGL not working..");
+        catch (e) {
+            return false;
         }
-
-        // Get A WebGL context
-        var canvas = document.getElementById(containerID;
-        var gl = canvas.getContext("experimental-webgl");
-
-        if (!gl) {
-            gl = canvas.getContext('webgl');
-        }
-
-        // setup a GLSL program
-        var vertexShader = createShaderFromScriptElement(gl, "2d-vertex-shader");
-        var fragmentShader = createShaderFromScriptElement(gl, "2d-fragment-shader");
-        var program = createProgram(gl, [vertexShader, fragmentShader]);
-        gl.useProgram(program);
-
-        // look up where the vertex data needs to go.
-        var positionLocation = gl.getAttribLocation(program, "a_position");
-
-        // Create a buffer and put a single clipspace rectangle in
-        // it (2 triangles)
-        var buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.bufferData(
-        gl.ARRAY_BUFFER, new Float32Array([
-            -1.0, -1.0,
-             1.0, -1.0,
-            -1.0, 1.0,
-            -1.0, 1.0,
-             1.0, -1.0,
-             1.0, 1.0]), gl.STATIC_DRAW);
-        gl.enableVertexAttribArray(positionLocation);
-        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-
-        // draw
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
 
-    Stage = Class;
+    if (!hasGL()) {
+        alert("WebGL not working..");
+    }
 
+    var gl = canvas.getContext("experimental-webgl");
+
+    if (!gl) {
+        gl = canvas.getContext('webgl');
+    }
+
+    /*****************************************************************
+     * On Stage resize callback
+     *****************************************************************/
+
+    var callbacks = [];
+
+    window.onresize = function onWindowResize() {
+
+        Stage.width = canvas.width = window.innerWidth || document.body.clientWidth;
+        Stage.height = canvas.height = window.innerHeight || document.body.clientHeight;
+        gl.viewport(0, 0, canvas.width, canvas.height);
+
+        for (var i = 0; i < callbacks.length; i++) {
+            callbacks[i]();
+        }
+    };
+
+    c.addResizeCallback = function(func) {
+        callbacks.push(func);
+
+    }
+
+    /*****************************************************************
+     * Setup a GLSL program
+     *****************************************************************/
+
+    var vertexShader = createShaderFromScriptElement(gl, "2d-vertex-shader");
+    var fragmentShader = createShaderFromScriptElement(gl, "2d-fragment-shader");
+    var program = createProgram(gl, [vertexShader, fragmentShader]);
+    gl.useProgram(program);
+
+    var positionLocation = gl.getAttribLocation(program, "a_position");
+
+    var buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.enableVertexAttribArray(positionLocation);
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 });

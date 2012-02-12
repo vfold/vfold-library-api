@@ -25,10 +25,11 @@ const VFoldEvent = {
 };
 
 require([
-    "lib/kinetic",
     "vfold/vfold",
     "vfold/page",
     "vfold/options",
+    "vfold/display/stage",
+    "vfold/display/container",
     "vfold/utility/pooling",
     "vfold/controls/menu",
     "lib/event",
@@ -42,7 +43,4 @@ function() {
     opt.facebookAppID = "";
     opt.rootPassword = "w957cbnooo5796";
 
-    var pge = new Page();
-    
-    pge.init(opt)
 });

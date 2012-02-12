@@ -12,7 +12,7 @@ var Widgets;
 define(
     function (){
    
-   Class.prototype = new Kinetic.Layer("widgets");
+   Class.prototype = new Container();
     Class.prototype.constructor = Class;
 
     function Class() {
