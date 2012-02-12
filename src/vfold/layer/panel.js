@@ -139,7 +139,7 @@ function() {
         // Tween Max
         var TM;
         // Logo Bitmap
-        var bL = VFold.call.System.getImage("menu");
+        var bL = VFold.call("System.getImage","menu");
         // Height
         var h;
 
