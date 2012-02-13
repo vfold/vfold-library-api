@@ -1,12 +1,48 @@
+<!--*******************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ ******************************************************************-->
+ 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>My Sample Project</title>
-    <!-- data-main attribute tells require.js to load
-scripts/init.js after require.js loads. -->
-    <script id="2d-fragment-shader" type="x-shader/x-fragment">
-    <script id="2d-vertex-shader" type="x-shader/x-vertex">
-    <script data-main="src/init" src="src/lib/require.js"></script>
+<meta charset="utf-8"> 
+<title> My Sample Project </title>
+   
+   <!-- data-main attribute tells require.js to load
+scripts/init.js after require.js loads.--> 
+
+<script data-main="src/init" src="src/lib/require.js"></script>
+    
+    <!-- vertex shader -->
+<script id="vertex-shader" type="x-shader/x-vertex">
+attribute vec2 a_position;
+uniform vec2 u_resolution;
+uniform vec2 u_translation;
+void main() {
+// Add in the translation.
+vec2 position = a_position + u_translation;
+// convert the position from pixels to 0.0 to 1.0   
+vec2 zeroToOne = position / u_resolution;
+// convert from 0->1 to 0->2
+vec2 zeroToTwo = zeroToOne * 2.0;
+// convert from 0->2 to -1->+1 (clipspace)
+vec2 clipSpace = zeroToTwo - 1.0;
+gl_Position = vec4(clipSpace * vec2(1, -1), 0, 1);
+}
+</script>
+<!-- fragment shader -->
+<script id="fragment-shader" type="x-shader/x-fragment">
+precision mediump float;
+uniform vec4 u_color;
+void main() {
+gl_FragColor = u_color;
+}
+</script> 
 </head>
 <body>
 </body>

@@ -1,6 +1,7 @@
 // Licensed under a BSD license. See ../license.html for license
 // These funcitions are meant solely to help unclutter the tutorials.
 // They are not meant as production type functions.
+
 var WebGL={};
 
 define(function(){
@@ -13,6 +14,7 @@ define(function(){
      * @param {number} value The enum value.
      * @return {string} The enum as a string.
      */
+     
     c.glEnumToString = function(gl, value) {
         for (var p in gl) {
             if (gl[p] == value) {
@@ -121,7 +123,7 @@ define(function(){
      * @param {!Array.<string>} opt_attribs The attribs names.
      * @param {!Array.<number>} opt_locations The locations for the attribs.
      */
-    c.loadProgram = function(gl, shaders, opt_attribs, opt_locations) {
+    c.createProgram = function(gl, shaders, opt_attribs, opt_locations) {
         var program = gl.createProgram();
         for (var ii = 0; ii < shaders.length; ++ii) {
             gl.attachShader(program, shaders[ii]);

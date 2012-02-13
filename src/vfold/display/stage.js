@@ -14,8 +14,19 @@ define(
 function() {
 
     var c = Stage;
+    var blnInit = false;
 
     c.init = function() {
+
+        /*****************************************************************
+         * Check if Stage is already active
+         *****************************************************************/
+
+        if (blnInit) {
+            error("Stage is already active");
+            return;
+        }
+        blnInit = true;
 
         /*****************************************************************
          * Check the WebGL context support
@@ -46,9 +57,9 @@ function() {
         /*****************************************************************
          * Setup a GLSL program
          *****************************************************************/
-         
-        var vertexShader = WebGL.createShaderFromScript(gl, "2d-vertex-shader");
-        var fragmentShader = WebGL.createShaderFromScript(gl, "2d-fragment-shader");
+
+        var vertexShader = WebGL.createShaderFromScript(gl, "vertex-shader");
+        var fragmentShader = WebGL.createShaderFromScript(gl, "fragment-shader");
         var program = WebGL.createProgram(gl, [vertexShader, fragmentShader]);
         gl.useProgram(program);
 
@@ -68,6 +79,7 @@ function() {
         gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.enableVertexAttribArray(positionLocation);
         gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
+        
     };
 
     /*****************************************************************
