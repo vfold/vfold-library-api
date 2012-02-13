@@ -11,12 +11,32 @@ var Container;
 
 define(
     function (){
+        
+        var children = [];
    
-    Class.prototype.constructor = Class;
+    var p = Class.prototype;
 
     function Class() {
 
     }
+    
+    p.addChild=function(child){
+       if(typeof child == "Shape"){
+       children[child.name]=child;
+       }
+       else{
+           error("Child is not a Display Object");
+       }
+    }
+    p.removeChild=function(child){
+      if(children[child]){
+      children.pop(child);
+      }  
+      else{
+          error("Child does exist ");
+      }
+    }
+    
 
     Container = Class;
     }

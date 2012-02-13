@@ -15,14 +15,13 @@ function() {
 
 
     var p=Class.prototype,gl;
+    var shpCount = 0;
 
     function Class() {
 
-        var canvas = document.getElementById("canvas");
-        var gl = canvas.getContext("experimental-webgl");
         
 
-
+        this.name="Instance_"+shpCount++;
 
     }   
 
