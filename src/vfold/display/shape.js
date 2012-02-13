@@ -14,14 +14,9 @@ define(
 function() {
 
 
-    var p=Class.prototype,gl;
-    var shpCount = 0;
+    var p=Class.prototype=new Child();
 
     function Class() {
-
-        
-
-        this.name="Instance_"+shpCount++;
 
     }   
 
@@ -33,7 +28,7 @@ function() {
     }
 
     // Fills the buffer with the values that define a rectangle.
-    p.drawRectangle = function(gl, x, y, width, height) {
+    p.drawRectangle = function(x, y, width, height) {
 
         var x1 = x;
         var x2 = x + width;
@@ -53,7 +48,7 @@ function() {
     }
     
     p.clear = function(){
-            gl.clear(gl.COLOR_BUFFER_BIT);
+            p.gl.clear(p.gl.COLOR_BUFFER_BIT);
     }
 
     Shape = Class;

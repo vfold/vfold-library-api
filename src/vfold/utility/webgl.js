@@ -1,28 +1,10 @@
 // Licensed under a BSD license. See ../license.html for license
 // These funcitions are meant solely to help unclutter the tutorials.
 // They are not meant as production type functions.
+var gl;
 
-var WebGL={};
+define(function() {
 
-define(function(){
-    
-    var c = WebGL;
-
-    /**
-     * Converts a WebGL enum to a string
-     * @param {!WebGLContext} gl The WebGLContext to use.
-     * @param {number} value The enum value.
-     * @return {string} The enum as a string.
-     */
-     
-    c.glEnumToString = function(gl, value) {
-        for (var p in gl) {
-            if (gl[p] == value) {
-                return p;
-            }
-        }
-        return "0x" + value.toString(16);
-    };
     /**
      * Creates the HTLM for a failure message
      * @param {string} canvasContainerId id of container of th
@@ -52,7 +34,8 @@ define(function(){
      * creation attributes you want to pass in.
      * @return {WebGLRenderingContext} The created context.
      */
-    c.setupWebGL = function(canvas, opt_attribs) {
+
+    function setupWebGL(canvas, opt_attribs) {
         function showLink(str) {
             var container = canvas.parentNode;
             if (container) {
@@ -98,7 +81,8 @@ define(function(){
      * @param {function(string): void) opt_errorCallback callback for errors.
      * @return {!WebGLShader} The created shader.
      */
-    c.loadShader = function(gl, shaderSource, shaderType, opt_errorCallback) {
+
+    function loadShader(gl, shaderSource, shaderType, opt_errorCallback) {
         var errFn = opt_errorCallback || error;
         // Create the shader object
         var shader = gl.createShader(shaderType);
@@ -115,7 +99,7 @@ define(function(){
             return null;
         }
         return shader;
-    }
+    };
     /**
      * Creates a program, attaches shaders, binds attrib locations, links the
      * program and calls useProgram.
@@ -123,7 +107,8 @@ define(function(){
      * @param {!Array.<string>} opt_attribs The attribs names.
      * @param {!Array.<number>} opt_locations The locations for the attribs.
      */
-    c.createProgram = function(gl, shaders, opt_attribs, opt_locations) {
+
+    function createProgram(gl, shaders, opt_attribs, opt_locations) {
         var program = gl.createProgram();
         for (var ii = 0; ii < shaders.length; ++ii) {
             gl.attachShader(program, shaders[ii]);
@@ -154,30 +139,31 @@ define(function(){
      * @param {function(string): void) opt_errorCallback callback for errors.
      * @return {!WebGLShader} The created shader.
      */
-    c.createShaderFromScript = function(
-        gl, scriptId, opt_shaderType, opt_errorCallback) {
-            var shaderSource = "";
-            var shaderType;
-            var shaderScript = document.getElementById(scriptId);
-            if (!shaderScript) {
-                throw ("*** Error: unknown script element" + scriptId);
+
+    function createShaderFromScript(
+    gl, scriptId, opt_shaderType, opt_errorCallback) {
+        var shaderSource = "";
+        var shaderType;
+        var shaderScript = document.getElementById(scriptId);
+        if (!shaderScript) {
+            throw ("*** Error: unknown script element" + scriptId);
+        }
+        shaderSource = shaderScript.text;
+        if (!opt_shaderType) {
+            if (shaderScript.type == "x-shader/x-vertex") {
+                shaderType = gl.VERTEX_SHADER;
             }
-            shaderSource = shaderScript.text;
-            if (!opt_shaderType) {
-                if (shaderScript.type == "x-shader/x-vertex") {
-                    shaderType = gl.VERTEX_SHADER;
-                }
-                else if (shaderScript.type == "x-shader/x-fragment") {
-                    shaderType = gl.FRAGMENT_SHADER;
-                }
-                else if (shaderType != gl.VERTEX_SHADER && shaderType != gl.FRAGMENT_SHADER) {
-                    throw ("*** Error: unknown shader type");
-                    return null;
-                }
+            else if (shaderScript.type == "x-shader/x-fragment") {
+                shaderType = gl.FRAGMENT_SHADER;
             }
-            return WebGL.loadShader(
-            gl, shaderSource, opt_shaderType ? opt_shaderType : shaderType, opt_errorCallback);
-        };
+            else if (shaderType != gl.VERTEX_SHADER && shaderType != gl.FRAGMENT_SHADER) {
+                throw ("*** Error: unknown shader type");
+                return null;
+            }
+        }
+        return loadShader(
+        gl, shaderSource, opt_shaderType ? opt_shaderType : shaderType, opt_errorCallback);
+    };
 
     /**
      * Provides requestAnimationFrame in a cross browser way.
@@ -196,4 +182,56 @@ define(function(){
     window.cancelRequestAnimFrame = (function() {
         return window.cancelCancelRequestAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelRequestAnimationFrame || window.oCancelRequestAnimationFrame || window.msCancelRequestAnimationFrame || window.clearTimeout;
     })();
+
+    /*****************************************************************
+     * Check the WebGL context support
+     *****************************************************************/
+
+    var canvas = document.createElement("canvas");
+
+    if (!
+    function() {
+        try {
+            return ( !! (window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))));
+        }
+        catch (e) {
+            return false;
+        }
+    }) {
+        alert("WebGL not working..");
+    }
+
+    gl = canvas.getContext("experimental-webgl");
+
+    if (!gl) {
+        gl = canvas.getContext('webgl');
+    }
+
+    /*****************************************************************
+     * Setup a GLSL program
+     *****************************************************************/
+
+    var vertexShader = createShaderFromScript(gl, "vertex-shader");
+    var fragmentShader = createShaderFromScript(gl, "fragment-shader");
+    var program = createProgram(gl, [vertexShader, fragmentShader]);
+    gl.useProgram(program);
+
+    // look up where the vertex data needs to go.
+    var positionLocation = gl.getAttribLocation(program, "a_position");
+    // lookup uniforms
+    var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+    var colorLocation = gl.getUniformLocation(program, "u_color");
+    var translationLocation = gl.getUniformLocation(program, "u_translation");
+    var rotationLocation = gl.getUniformLocation(program, "u_rotation");
+    // set the resolution
+    gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+
+    /*****************************************************************
+     * Create a buffer
+     *****************************************************************/
+
+    var buffer = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
+    gl.enableVertexAttribArray(positionLocation);
+    gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 }());

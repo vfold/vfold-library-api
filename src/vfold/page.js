@@ -18,6 +18,12 @@ function() {
     c.init = function() {
 
         require([
+            "vfold/display/child",
+            "vfold/display/container",
+            "vfold/display/shape",
+            "vfold/display/sprite",
+            "vfold/display/stage",
+
             "vfold/layer/folders",
             "vfold/layer/panel",
             "vfold/layer/desktop",
@@ -25,6 +31,11 @@ function() {
 
             'vfold/controls/menu'], function() {
             Stage.init();
+            var shape = new Shape();
+            shape.beginFill(.5, .2, 0, 1);
+            shape.drawRect(0, 0, 100, 100);
+            shape.endFill();
+            Stage.add(shape);
         });
     };
 });
