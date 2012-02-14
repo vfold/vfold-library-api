@@ -6,6 +6,10 @@ A project still in development with great potential for bringing developers toge
 Features:
 -------
 
+* ### WebGL enabled
+ 
+    A custom graphics engine implemented in the vfold platform for a great performance increase.
+
 * ### Your Components
 
     There is a nice API for you to develop your components quickly and easily. The library is still lacking, but more work to come!

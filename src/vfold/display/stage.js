@@ -7,50 +7,42 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var Stage = {};
+var stage = {};
 
 define(
 
 function() {
 
-    var c = Stage;
     var blnInit = false;
 
-    c.init = function() {
-
-        /*****************************************************************
-         * Check if Stage is already active
-         *****************************************************************/
-
-        if (blnInit) {
-            error("Stage is already active");
-            return;
-        }
-        blnInit = true;
+    stage.init = function() {
 
         /*****************************************************************
          * On Stage resize callback
          *****************************************************************/
 
-        gl.init();
+        stage = gl.init();
 
         var callbacks = [];
 
-        window.onresize = function onWindowResize() {
+        stage.addResizeCallback = function(func) {
+           
+           callbacks.push(func);
+        }
 
-            Stage.width = canvas.width = window.innerWidth || document.body.clientWidth;
-            Stage.height = canvas.height = window.innerHeight || document.body.clientHeight;
-            gl.viewport(0, 0, canvas.width, canvas.height);
+        window.onresize = function() {
             
+            stage.width = window.innerWidth;
+            stage.height = window.innerHeight;
+            gl.viewport(0, 0, stage.width, stage.height);
+            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+
             for (var i = 0; i < callbacks.length; i++) {
                 callbacks[i]();
             }
-        };
-
-        c.addResizeCallback = function(func) {
-            callbacks.push(func);
-
+            //draw();
         }
-        
+
+
     };
 });

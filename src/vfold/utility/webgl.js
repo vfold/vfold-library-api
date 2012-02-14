@@ -190,25 +190,7 @@ define(function() {
          * Check the WebGL context support
          *****************************************************************/
 
-        canvas = document.createElement("canvas");
-
-        if (!
-        function() {
-            try {
-                return ( !! (window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl'))));
-            }
-            catch (e) {
-                return false;
-            }
-        }) {
-            alert("WebGL not working..");
-        }
-
-        gl = canvas.getContext("experimental-webgl");
-
-        if (!gl) {
-            gl = canvas.getContext('webgl');
-        }
+        gl = setupWebGL(canvas = document.getElementById("canvas"));
 
         /*****************************************************************
          * Setup a GLSL program
@@ -245,6 +227,9 @@ define(function() {
         var triangleVertexPositionBuffer;
         var squareVertexPositionBuffer;
 
+        var mvMatrix = mat4.create();
+        var pMatrix = mat4.create();
+
         function initBuffers() {
             triangleVertexPositionBuffer = gl.createBuffer();
             gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
@@ -276,17 +261,24 @@ define(function() {
             mat4.identity(mvMatrix);
             mat4.translate(mvMatrix, [-1.5, 0.0, -7.0]);
             gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
-            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, triangleVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+            gl.vertexAttribPointer(program.vertexPositionAttribute, triangleVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
             setMatrixUniforms();
             gl.drawArrays(gl.TRIANGLES, 0, triangleVertexPositionBuffer.numItems);
             mat4.translate(mvMatrix, [3.0, 0.0, 0.0]);
             gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
-            gl.vertexAttribPointer(shaderProgram.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
+            gl.vertexAttribPointer(program.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
             setMatrixUniforms();
             gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer.numItems);
         }
-        
+
+        function setMatrixUniforms() {
+            gl.uniformMatrix4fv(program.pMatrixUniform, false, pMatrix);
+            gl.uniformMatrix4fv(program.mvMatrixUniform, false, mvMatrix);
+        }
+
         initBuffers();
         drawScene();
+        
+        return canvas;
     }
 }());
