@@ -9,7 +9,7 @@
 
 var Shape;
 
-define(
+define(["./child"],
 
 function() {
 
@@ -23,12 +23,12 @@ function() {
     p.beginFill = function(red, green, blue, alpha) {
         
         // Set a random color.
-        gl.uniform4f(colorLocation, red, green, blue, alpha);
+        //gl.uniform4f(colorLocation,red, green, blue, alpha);
 
     }
 
     // Fills the buffer with the values that define a rectangle.
-    p.drawRectangle = function(x, y, width, height) {
+    p.drawRect = function(x, y, width, height) {
 
         var x1 = x;
         var x2 = x + width;

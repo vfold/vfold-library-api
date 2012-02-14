@@ -34,8 +34,8 @@ function() {
             var shape = new Shape();
             shape.beginFill(.5, .2, 0, 1);
             shape.drawRect(0, 0, 100, 100);
-            shape.endFill();
-            Stage.add(shape);
+            //shape.endFill();
+            //Stage.add(shape);
         });
     };
 });

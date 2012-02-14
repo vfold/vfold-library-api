@@ -10,7 +10,6 @@
 var Child;
 
 define(
-
 function() {
 
     var idCount = 0;

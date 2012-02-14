@@ -34,6 +34,7 @@ require([
     "vfold/utility/pooling",
     "vfold/utility/webgl",
     "lib/event",
+    "lib/matrix"
     ],
 
 function() {
@@ -45,7 +46,8 @@ function() {
     opt.rootPassword = "w957cbnooo5796";
     
     Page.init();
-
+    
+    window.onresize;
 });
 
     /**

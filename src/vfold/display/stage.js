@@ -28,27 +28,29 @@ function() {
         }
         blnInit = true;
 
-    };
+        /*****************************************************************
+         * On Stage resize callback
+         *****************************************************************/
 
-    /*****************************************************************
-     * On Stage resize callback
-     *****************************************************************/
+        gl.init();
 
-    var callbacks = [];
+        var callbacks = [];
 
-    window.onresize = function onWindowResize() {
+        window.onresize = function onWindowResize() {
 
-        Stage.width = canvas.width = window.innerWidth || document.body.clientWidth;
-        Stage.height = canvas.height = window.innerHeight || document.body.clientHeight;
-        gl.viewport(0, 0, canvas.width, canvas.height);
+            Stage.width = canvas.width = window.innerWidth || document.body.clientWidth;
+            Stage.height = canvas.height = window.innerHeight || document.body.clientHeight;
+            gl.viewport(0, 0, canvas.width, canvas.height);
+            
+            for (var i = 0; i < callbacks.length; i++) {
+                callbacks[i]();
+            }
+        };
 
-        for (var i = 0; i < callbacks.length; i++) {
-            callbacks[i]();
+        c.addResizeCallback = function(func) {
+            callbacks.push(func);
+
         }
+        
     };
-
-    c.addResizeCallback = function(func) {
-        callbacks.push(func);
-
-    }
 });
