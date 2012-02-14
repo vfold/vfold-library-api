@@ -26,6 +26,5 @@ Features:
 Libraries used:
 ------------
 
-* [KineticJS - HTML5 Canvas JavaScript library] (http://www.kineticjs.com/)
 * [Zend Framework](http://framework.zend.com/)
 * [Doctrine - Object Relational Mapper] (http://www.doctrine-project.org/)
