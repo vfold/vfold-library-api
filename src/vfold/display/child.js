@@ -13,12 +13,11 @@ define(
 
 function() {
 
-    var idCount = 0;
-    var angleInRadians = 0;
-    var scale = [1, 1];
-    var translationMatrix;
-            var rotationMatrix;
-        var scaleMatrix;
+    var idCount = 0,
+        angleInRadians = 0,
+        translationMatrix, rotationMatrix, scaleMatrix, rotation = 0,
+        x = 0,
+        p = Class;
 
     function Class() {
         // Increment count and covert to string
@@ -26,42 +25,46 @@ function() {
         this.x = this.y = 0;
 
         this.buffer = gl.createBuffer();
+        updatePosition();
+        updateAngle();
+        updateScale();
+
+        this.draw = function() {
+
+            // Multiply the matrices.
+            var matrix = mat3.multiply(scaleMatrix, rotationMatrix);
+            matrix = mat3.multiply(matrix, translationMatrix);
+            matrix = mat3.multiply(matrix, gl.projectionMatrix);
+            // Set the matrix.
+            gl.uniformMatrix3fv(gl.matrixLocation, false, matrix);
+
+        }
     }
 
-    Class.prototype = {
-        get x() {
-            return this.x;
+    Object.defineProperty(p, "x", {
+        get: function() {
+            return x;
         },
-
-        set x(value) {
-            this.x = value;
+        set: function(value) {
+            x = value;
             updatePosition();
+            draw();
         }
-    };
+    });
 
 
     function updatePosition() {
-        translationMatrix = Math.makeTranslation(this.x,this.y);
+        translationMatrix = gl.makeTranslation(this.x, this.y);
     }
 
-    function updateAngle(event, ui) {
-        var angleInDegrees = 360 - ui.value;
+    function updateAngle() {
+        var angleInDegrees = 360 - rotation;
         angleInRadians = angleInDegrees * Math.PI / 180;
-        Math.makeRotation(angleInRadians);
+        rotationMatrix = gl.makeRotation(angleInRadians);
     }
 
     function updateScale() {
-        Math.makeScale(this.width,this.height);
-    }
-    
-    function draw(){
-       
-       // Multiply the matrices.
-        var matrix = Math.matrixMultiply(scaleMatrix, rotationMatrix);
-        matrix = Math.matrixMultiply(matrix, translationMatrix);
-        matrix = Math.matrixMultiply(matrix, gl.projectionMatrix);
-        // Set the matrix.
-        gl.uniformMatrix3fv(Math.matrixLocation, false, matrix);
+        scaleMatrix = gl.makeScale(this.width, this.height);
     }
 
     function drawScene() {

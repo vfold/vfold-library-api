@@ -203,16 +203,28 @@ define(function() {
 
         // look up where the vertex data needs to go.
         gl.positionLocation = gl.getAttribLocation(program, "a_position");
-        // lookup uniforms
-        gl.resolutionLocation = gl.getUniformLocation(program, "u_resolution");
-        
         gl.colorLocation = gl.getUniformLocation(program, "u_color");
-        gl.translationLocation = gl.getUniformLocation(program, "u_translation");
-        gl.rotationLocation = gl.getUniformLocation(program, "u_rotation");
+        gl.matrixLocation = gl.getUniformLocation(program, "u_matrix");
 
-
-        
-
+        gl.make2DProjection = function(width, height) {
+            // Note: This matrix flips the Y axis so 0 is at the top.
+            return [
+            2 / width, 0, 0, 0, -2 / height, 0, -1, 1, 1];
+        }
+        gl.makeTranslation = function(tx, ty) {
+            return [
+            1, 0, 0, 0, 1, 0, tx, ty, 1];
+        }
+        gl.makeRotation = function(angleInRadians) {
+            var c = Math.cos(angleInRadians);
+            var s = Math.sin(angleInRadians);
+            return [
+            c, -s, 0, s, c, 0, 0, 0, 1];
+        }
+        gl.makeScale = function(sx, sy) {
+            return [
+            sx, 0, 0, 0, sy, 0, 0, 0, 1];
+        }
         return canvas;
     }
 }());

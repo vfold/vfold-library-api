@@ -24,7 +24,7 @@ function() {
             var shape = new Shape();
             shape.beginFill(1, .2, 0, 1);
             shape.drawRect(0, 0, 200, 100);
-            shape.x=100;
+            //shape.x=100;
             //shape.endFill();
             //Stage.add(shape);
             

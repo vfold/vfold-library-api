@@ -45,7 +45,9 @@ function() {
             x1, y2,
             x2, y1,
             x2, y2]), gl.STATIC_DRAW);
-
+        
+        this.draw();
+        
         // Draw the rectangle.
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
