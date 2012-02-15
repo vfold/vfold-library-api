@@ -17,13 +17,13 @@ function() {
     var p=Class.prototype=new Child();
 
     function Class() {
-
+        
     }   
 
     p.beginFill = function(red, green, blue, alpha) {
         
         // Set a random color.
-        //gl.uniform4f(colorLocation,red, green, blue, alpha);
+        gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
 
     }
 

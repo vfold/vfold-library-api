@@ -204,12 +204,12 @@ define(function() {
         // look up where the vertex data needs to go.
         var positionLocation = gl.getAttribLocation(program, "a_position");
         // lookup uniforms
-        var resolutionLocation = gl.getUniformLocation(program, "u_resolution");
-        var colorLocation = gl.getUniformLocation(program, "u_color");
-        var translationLocation = gl.getUniformLocation(program, "u_translation");
-        var rotationLocation = gl.getUniformLocation(program, "u_rotation");
-        // set the resolution
-        gl.uniform2f(resolutionLocation, canvas.width, canvas.height);
+        gl.resolutionLocation = gl.getUniformLocation(program, "u_resolution");
+        
+        gl.colorLocation = gl.getUniformLocation(program, "u_color");
+        gl.translationLocation = gl.getUniformLocation(program, "u_translation");
+        gl.rotationLocation = gl.getUniformLocation(program, "u_rotation");
+
 
         /*****************************************************************
          * Create a buffer
@@ -223,62 +223,6 @@ define(function() {
         gl.clearColor(0.0, 0.0, 0.0, 1.0);
         gl.enable(gl.DEPTH_TEST);
 
-
-        var triangleVertexPositionBuffer;
-        var squareVertexPositionBuffer;
-
-        var mvMatrix = mat4.create();
-        var pMatrix = mat4.create();
-
-        function initBuffers() {
-            triangleVertexPositionBuffer = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
-            var vertices = [
-                0.0, 1.0, 0.0,
-                -1.0, -1.0, 0.0,
-                1.0, -1.0, 0.0
-                ];
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-            triangleVertexPositionBuffer.itemSize = 3;
-            triangleVertexPositionBuffer.numItems = 3;
-            squareVertexPositionBuffer = gl.createBuffer();
-            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
-            vertices = [
-                1.0, 1.0, 0.0,
-                -1.0, 1.0, 0.0,
-                1.0, -1.0, 0.0,
-                -1.0, -1.0, 0.0
-                ];
-            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array(vertices), gl.STATIC_DRAW);
-            squareVertexPositionBuffer.itemSize = 3;
-            squareVertexPositionBuffer.numItems = 4;
-        }
-
-        function drawScene() {
-            gl.viewport(0, 0, gl.viewportWidth, gl.viewportHeight);
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
-            mat4.perspective(45, gl.viewportWidth / gl.viewportHeight, 0.1, 100.0, pMatrix);
-            mat4.identity(mvMatrix);
-            mat4.translate(mvMatrix, [-1.5, 0.0, -7.0]);
-            gl.bindBuffer(gl.ARRAY_BUFFER, triangleVertexPositionBuffer);
-            gl.vertexAttribPointer(program.vertexPositionAttribute, triangleVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-            setMatrixUniforms();
-            gl.drawArrays(gl.TRIANGLES, 0, triangleVertexPositionBuffer.numItems);
-            mat4.translate(mvMatrix, [3.0, 0.0, 0.0]);
-            gl.bindBuffer(gl.ARRAY_BUFFER, squareVertexPositionBuffer);
-            gl.vertexAttribPointer(program.vertexPositionAttribute, squareVertexPositionBuffer.itemSize, gl.FLOAT, false, 0, 0);
-            setMatrixUniforms();
-            gl.drawArrays(gl.TRIANGLE_STRIP, 0, squareVertexPositionBuffer.numItems);
-        }
-
-        function setMatrixUniforms() {
-            gl.uniformMatrix4fv(program.pMatrixUniform, false, pMatrix);
-            gl.uniformMatrix4fv(program.mvMatrixUniform, false, mvMatrix);
-        }
-
-        initBuffers();
-        drawScene();
-        
         return canvas;
     }
 }());

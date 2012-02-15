@@ -6,7 +6,7 @@
  * following licensing notice adjacent to the copyright notice for   *
  * the Original Work                                                 *
  *********************************************************************/
- 
+
 
 /********************************************
  * Global variables
@@ -29,47 +29,48 @@ require([
     "vfold/vfold",
     "vfold/page",
     "vfold/options",
-    "vfold/display/stage",
-    "vfold/display/container",
+
     "vfold/utility/pooling",
     "vfold/utility/webgl",
+
     "lib/event",
-    "lib/matrix"
+    "lib/matrix",
+
+    "vfold/display/stage"
     ],
 
 function() {
-    
+
     var opt = new Options();
 
     opt.aesKey = "796x9qh27xcrb69q27xcrb61274xcr6b";
     opt.facebookAppID = "";
     opt.rootPassword = "w957cbnooo5796";
-    
-    Page.init();
-    
-    window.onresize;
+
+    stage.init();
+    page.init();
 });
 
-    /**
-     * Wrapped logging function.
-     * @param {string} msg The message to log.
-     */
-    var log = function(msg) {
-            if (window.console && window.console.log) {
+/**
+ * Wrapped logging function.
+ * @param {string} msg The message to log.
+ */
+var log = function(msg) {
+        if (window.console && window.console.log) {
+            window.console.log(msg);
+        }
+    };
+/**
+ * Wrapped logging function.
+ * @param {string} msg The message to log.
+ */
+var error = function(msg) {
+        if (window.console) {
+            if (window.console.error) {
+                window.console.error(msg);
+            }
+            else if (window.console.log) {
                 window.console.log(msg);
             }
-        };
-    /**
-     * Wrapped logging function.
-     * @param {string} msg The message to log.
-     */
-    var error = function(msg) {
-            if (window.console) {
-                if (window.console.error) {
-                    window.console.error(msg);
-                }
-                else if (window.console.log) {
-                    window.console.log(msg);
-                }
-            }
-        };
+        }
+    };

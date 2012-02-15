@@ -18,6 +18,8 @@ function() {
         // Increment count and covert to string
         this.id = (idCount++) + '';
         this.x = this.y = 0;
+        
+        this.buffer = gl.createBuffer();
     }
 
     var translation = [100, 150];

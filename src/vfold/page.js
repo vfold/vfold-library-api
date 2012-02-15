@@ -7,13 +7,13 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var Page = {};
+var page = {};
 
 define(
 
 function() {
 
-    var c = Page;
+    var c = page;
 
     c.init = function() {
 
@@ -22,7 +22,6 @@ function() {
             "vfold/display/container",
             "vfold/display/shape",
             "vfold/display/sprite",
-            "vfold/display/stage",
 
             "vfold/layer/folders",
             "vfold/layer/panel",
@@ -30,14 +29,14 @@ function() {
             "vfold/layer/widgets",
 
             'vfold/controls/menu'], function() {
-            stage.init();
+            
             var shape = new Shape();
-            shape.beginFill(.5, .2, 0, 1);
+            shape.beginFill(1, .2, 0, 1);
             shape.drawRect(0, 0, 100, 100);
             //shape.endFill();
             //Stage.add(shape);
             
-            window.onresize();
+            //window.onresize();
         });
     };
 });
