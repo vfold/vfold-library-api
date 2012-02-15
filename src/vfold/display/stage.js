@@ -32,22 +32,20 @@ function() {
 
         window.onresize = function() {
             
-                    // set the resolution
+            
+            
+            // set the resolution
             
             stage.width = window.innerWidth;
             stage.height = window.innerHeight;
             gl.viewport(0, 0, stage.width, stage.height);
-            gl.uniform2f(gl.resolutionLocation, stage.width, stage.height);
+            gl.projectionMatrix = Math.make2DProjection(stage.width, stage.height);
             gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+            
 
             for (var i = 0; i < callbacks.length; i++) {
                 callbacks[i]();
             }
-            
-            //draw();
         }
-        
-
-
     };
 });

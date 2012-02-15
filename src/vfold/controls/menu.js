@@ -9,7 +9,7 @@
 
 var Menu, MenuButton, MenuButtons;
 
-define(
+define(['vfold/display/container'],
 
 function() {
 

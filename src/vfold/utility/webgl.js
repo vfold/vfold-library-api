@@ -202,7 +202,7 @@ define(function() {
         gl.useProgram(program);
 
         // look up where the vertex data needs to go.
-        var positionLocation = gl.getAttribLocation(program, "a_position");
+        gl.positionLocation = gl.getAttribLocation(program, "a_position");
         // lookup uniforms
         gl.resolutionLocation = gl.getUniformLocation(program, "u_resolution");
         
@@ -211,17 +211,7 @@ define(function() {
         gl.rotationLocation = gl.getUniformLocation(program, "u_rotation");
 
 
-        /*****************************************************************
-         * Create a buffer
-         *****************************************************************/
-
-        var buffer = gl.createBuffer();
-        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
-        gl.enableVertexAttribArray(positionLocation);
-        gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
-
-        gl.clearColor(0.0, 0.0, 0.0, 1.0);
-        gl.enable(gl.DEPTH_TEST);
+        
 
         return canvas;
     }

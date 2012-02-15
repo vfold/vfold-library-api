@@ -10,56 +10,62 @@
 var Child;
 
 define(
+
 function() {
 
     var idCount = 0;
+    var angleInRadians = 0;
+    var scale = [1, 1];
+    var translationMatrix;
+            var rotationMatrix;
+        var scaleMatrix;
 
     function Class() {
         // Increment count and covert to string
         this.id = (idCount++) + '';
         this.x = this.y = 0;
-        
+
         this.buffer = gl.createBuffer();
     }
 
-    var translation = [100, 150];
-    var angleInRadians = 0;
-    var scale = [1, 1];
+    Class.prototype = {
+        get x() {
+            return this.x;
+        },
 
-    function updatePosition(index) {
-        return function(event, ui) {
-            translation[index] = ui.value;
-            drawScene();
+        set x(value) {
+            this.x = value;
+            updatePosition();
         }
+    };
+
+
+    function updatePosition() {
+        translationMatrix = Math.makeTranslation(this.x,this.y);
     }
 
     function updateAngle(event, ui) {
         var angleInDegrees = 360 - ui.value;
         angleInRadians = angleInDegrees * Math.PI / 180;
-        drawScene();
+        Math.makeRotation(angleInRadians);
     }
 
-    function updateScale(index) {
-        return function(event, ui) {
-            scale[index] = ui.value;
-            drawScene();
-        }
+    function updateScale() {
+        Math.makeScale(this.width,this.height);
+    }
+    
+    function draw(){
+       
+       // Multiply the matrices.
+        var matrix = Math.matrixMultiply(scaleMatrix, rotationMatrix);
+        matrix = Math.matrixMultiply(matrix, translationMatrix);
+        matrix = Math.matrixMultiply(matrix, gl.projectionMatrix);
+        // Set the matrix.
+        gl.uniformMatrix3fv(Math.matrixLocation, false, matrix);
     }
 
     function drawScene() {
-        // Clear the canvas.
-        gl.clear(gl.COLOR_BUFFER_BIT);
-        // Compute the matrices
-        var projectionMatrix = Math.make2DProjection(canvas.width, canvas.height);
-        var translationMatrix = Math.makeTranslation(translation[0], translation[1]);
-        var rotationMatrix = Math.makeRotation(angleInRadians);
-        var scaleMatrix = Math.makeScale(scale[0], scale[1]);
-        // Multiply the matrices.
-        var matrix = Math.matrixMultiply(scaleMatrix, rotationMatrix);
-        matrix = Math.matrixMultiply(matrix, translationMatrix);
-        matrix = Math.matrixMultiply(matrix, projectionMatrix);
-        // Set the matrix.
-        gl.uniformMatrix3fv(Math.matrixLocation, false, matrix);
+
         // Draw the geometry.
         gl.drawArrays(gl.TRIANGLES, 0, 18);
     }

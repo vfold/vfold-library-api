@@ -9,7 +9,8 @@
 
 var Widgets;
 
-define(
+define(['vfold/display/container'],
+
     function (){
    
    Class.prototype = new Container();

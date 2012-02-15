@@ -9,7 +9,7 @@
  
 var Desktop;
 
-define(
+define(['vfold/display/container'],
     function (){
     Class.prototype = new Container();
     Class.prototype.constructor = Class;

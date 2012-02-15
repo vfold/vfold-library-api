@@ -14,17 +14,20 @@ define(["./child"],
 function() {
 
 
-    var p=Class.prototype=new Child();
+    var p = Class.prototype = new Child();
 
     function Class() {
-        
-    }   
+
+    }
 
     p.beginFill = function(red, green, blue, alpha) {
-        
-        // Set a random color.
-        gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
 
+        gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+        gl.enableVertexAttribArray(gl.positionLocation);
+        gl.vertexAttribPointer(gl.positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+        // Set a random color.
+        gl.uniform4f(gl.colorLocation, red, green, blue, alpha);
     }
 
     // Fills the buffer with the values that define a rectangle.
@@ -34,8 +37,8 @@ function() {
         var x2 = x + width;
         var y1 = y;
         var y2 = y + height;
-       
-       gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
+
+        gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
             x1, y1,
             x2, y1,
             x1, y2,
@@ -46,9 +49,9 @@ function() {
         // Draw the rectangle.
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }
-    
-    p.clear = function(){
-            p.gl.clear(p.gl.COLOR_BUFFER_BIT);
+
+    p.clear = function() {
+        p.gl.clear(p.gl.COLOR_BUFFER_BIT);
     }
 
     Shape = Class;
