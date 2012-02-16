@@ -958,7 +958,6 @@ define(function() {
     };
 
     mat3.multiply = function(a, b) {
-      
         var a00 = a[0 * 3 + 0];
         var a01 = a[0 * 3 + 1];
         var a02 = a[0 * 3 + 2];

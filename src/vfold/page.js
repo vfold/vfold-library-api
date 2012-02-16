@@ -10,6 +10,7 @@
 var page = {};
 
 define(
+
 function() {
 
     var c = page;
@@ -17,9 +18,9 @@ function() {
     c.init = function() {
 
         require([
-            
+
             "vfold/display/shape"], function() {
-            
+
             window.onresize();
             var shape = new Shape();
             shape.beginFill(1, .2, 0, 1);
@@ -27,6 +28,7 @@ function() {
             //shape.x=100;
             //shape.endFill();
             //Stage.add(shape);
+            
             
         });
     };

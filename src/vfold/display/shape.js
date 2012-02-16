@@ -22,11 +22,11 @@ function() {
 
     p.beginFill = function(red, green, blue, alpha) {
 
-        gl.bindBuffer(gl.ARRAY_BUFFER, gl.createBuffer());
+        var buffer = gl.createBuffer();
+        gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
         gl.enableVertexAttribArray(gl.positionLocation);
         gl.vertexAttribPointer(gl.positionLocation, 2, gl.FLOAT, false, 0, 0);
 
-        // Set a random color.
         gl.uniform4f(gl.colorLocation, red, green, blue, alpha);
     }
 
@@ -45,9 +45,9 @@ function() {
             x1, y2,
             x2, y1,
             x2, y2]), gl.STATIC_DRAW);
-        
-        this.draw();
-        
+
+        this.computeDrawing();
+
         // Draw the rectangle.
         gl.drawArrays(gl.TRIANGLES, 0, 6);
     }

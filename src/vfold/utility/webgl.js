@@ -203,6 +203,7 @@ define(function() {
 
         // look up where the vertex data needs to go.
         gl.positionLocation = gl.getAttribLocation(program, "a_position");
+        // lookup uniforms
         gl.colorLocation = gl.getUniformLocation(program, "u_color");
         gl.matrixLocation = gl.getUniformLocation(program, "u_matrix");
 

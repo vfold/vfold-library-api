@@ -20,7 +20,7 @@ function() {
         /*****************************************************************
          * On Stage resize callback
          *****************************************************************/
-
+    
         stage = gl.init();
 
         var callbacks = [];
@@ -32,20 +32,18 @@ function() {
 
         window.onresize = function() {
             
-            
-            
             // set the resolution
             
             stage.width = window.innerWidth;
             stage.height = window.innerHeight;
             gl.viewport(0, 0, stage.width, stage.height);
-            gl.projectionMatrix = gl.make2DProjection(stage.width, stage.height);
-            gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            stage.projectionMatrix = gl.make2DProjection(stage.width, stage.height);
             
-
             for (var i = 0; i < callbacks.length; i++) {
                 callbacks[i]();
             }
+            
         }
     };
 });
