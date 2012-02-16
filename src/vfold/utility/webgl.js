@@ -104,35 +104,29 @@ define(function() {
             return shader;
         };
         /**
-         * Creates a program, attaches shaders, binds attrib locations, links the
-         * program and calls useProgram.
-         * @param {!Array.<!WebGLShader>} shaders The shaders to attach
-         * @param {!Array.<string>} opt_attribs The attribs names.
-         * @param {!Array.<number>} opt_locations The locations for the attribs.
+         * Provides requestAnimationFrame in a cross browser way.
          */
+        window.requestAnimFrame = (function() {
+            return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+            function( /* function FrameRequestCallback */
+            callback, /* DOMElement Element */
+            element) {
+                return window.setTimeout(callback, 1000 / 60);
+            };
+        })();
+        /**
+         * Provides cancelRequestAnimationFrame in a cross browser way.
+         */
+        window.cancelRequestAnimFrame = (function() {
+            return window.cancelCancelRequestAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelRequestAnimationFrame || window.oCancelRequestAnimationFrame || window.msCancelRequestAnimationFrame || window.clearTimeout;
+        })();
 
-        function createProgram(gl, shaders, opt_attribs, opt_locations) {
-            var program = gl.createProgram();
-            for (var ii = 0; ii < shaders.length; ++ii) {
-                gl.attachShader(program, shaders[ii]);
-            }
-            if (opt_attribs) {
-                for (var ii = 0; ii < opt_attribs.length; ++ii) {
-                    gl.bindAttribLocation(
-                    program, opt_locations ? opt_locations[ii] : ii, opt_attribs[ii]);
-                }
-            }
-            gl.linkProgram(program);
-            // Check the link status
-            var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
-            if (!linked) {
-                // something went wrong with the link
-                error("Error in program linking:" + gl.getProgramInfoLog(program));
-                gl.deleteProgram(program);
-                return null;
-            }
-            return program;
-        };
+        /*****************************************************************
+         * Check the WebGL context support
+         *****************************************************************/
+
+        gl = setupWebGL(canvas = document.getElementById("canvas"));
+
         /**
          * Loads a shader from a script tag.
          * @param {!WebGLContext} gl The WebGLContext to use.
@@ -143,7 +137,8 @@ define(function() {
          * @return {!WebGLShader} The created shader.
          */
 
-        function createShaderFromScript(
+        gl.createShaderFromScript -
+        function(
         gl, scriptId, opt_shaderType, opt_errorCallback) {
             var shaderSource = "";
             var shaderType;
@@ -169,43 +164,35 @@ define(function() {
         };
 
         /**
-         * Provides requestAnimationFrame in a cross browser way.
+         * Creates a program, attaches shaders, binds attrib locations, links the
+         * program and calls useProgram.
+         * @param {!Array.<!WebGLShader>} shaders The shaders to attach
+         * @param {!Array.<string>} opt_attribs The attribs names.
+         * @param {!Array.<number>} opt_locations The locations for the attribs.
          */
-        window.requestAnimFrame = (function() {
-            return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
-            function( /* function FrameRequestCallback */
-            callback, /* DOMElement Element */
-            element) {
-                return window.setTimeout(callback, 1000 / 60);
-            };
-        })();
-        /**
-         * Provides cancelRequestAnimationFrame in a cross browser way.
-         */
-        window.cancelRequestAnimFrame = (function() {
-            return window.cancelCancelRequestAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelRequestAnimationFrame || window.oCancelRequestAnimationFrame || window.msCancelRequestAnimationFrame || window.clearTimeout;
-        })();
 
-        /*****************************************************************
-         * Check the WebGL context support
-         *****************************************************************/
-
-        gl = setupWebGL(canvas = document.getElementById("canvas"));
-
-        /*****************************************************************
-         * Setup a GLSL program
-         *****************************************************************/
-
-        var vertexShader = createShaderFromScript(gl, "vertex-shader");
-        var fragmentShader = createShaderFromScript(gl, "fragment-shader");
-        var program = createProgram(gl, [vertexShader, fragmentShader]);
-        gl.useProgram(program);
-
-        // look up where the vertex data needs to go.
-        gl.positionLocation = gl.getAttribLocation(program, "a_position");
-        // lookup uniforms
-        gl.colorLocation = gl.getUniformLocation(program, "u_color");
-        gl.matrixLocation = gl.getUniformLocation(program, "u_matrix");
+        gl.createProgram = function(shaders, opt_attribs, opt_locations) {
+            var program = gl.createProgram();
+            for (var ii = 0; ii < shaders.length; ++ii) {
+                gl.attachShader(program, shaders[ii]);
+            }
+            if (opt_attribs) {
+                for (var ii = 0; ii < opt_attribs.length; ++ii) {
+                    gl.bindAttribLocation(
+                    program, opt_locations ? opt_locations[ii] : ii, opt_attribs[ii]);
+                }
+            }
+            gl.linkProgram(program);
+            // Check the link status
+            var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
+            if (!linked) {
+                // something went wrong with the link
+                error("Error in program linking:" + gl.getProgramInfoLog(program));
+                gl.deleteProgram(program);
+                return null;
+            }
+            return program;
+        };
 
         gl.make2DProjection = function(width, height) {
             // Note: This matrix flips the Y axis so 0 is at the top.

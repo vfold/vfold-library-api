@@ -32,6 +32,8 @@ require([
 
     "vfold/utility/pooling",
     "vfold/utility/webgl",
+    
+    "vfold/display/shader",
 
     "lib/event",
     "lib/matrix",
