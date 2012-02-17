@@ -24,6 +24,12 @@ const VFoldEvent = {
     FOLDER_SELECT: "FolderSelect"
 };
 
+   require.config({
+                paths : {
+                    text : './lib/text' //alias to plugin
+                }
+            });;
+
 require([
     "vfold/core",
     "vfold/vfold",

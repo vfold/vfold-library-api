@@ -18,49 +18,63 @@ function() {
         var vertexShaders = {},
             fragmentShaders = {};
 
-        shader.baseURL = 'src/vfold/shader/';
+        shader.baseURL = 'vfold/shader/';
 
-        loadShader('vertex-2d');
-        loadShader('fragment-2d');
-        loadShader('fragment-bezier');
+        loadShaders([
+            'vertex-2d',
+            'fragment-2d',
+            'fragment-bezier'
+                ]);
 
-        /*****************************************************************
-         * TODO: move this generic function to another class
-         *****************************************************************/
+        function loadShaders(filenames) {
+            var loadCount = 0;
+            for (var i = 0; i < filenames.length; i++) {
+                loadShader(filenames[i], function() {
+                    loadCount++;
+                    if (loadCount == filenames.length) {
+                        makeShaders();
+                    }
+                })
+            }
+        }
 
-        function loadShader(filename) {
+        function loadShader(filename, callback) {
 
             var arr = filename.split("-");
             var script = document.createElement('script');
             script.id = filename;
-            script.src = shader.baseURL + filename + ".js";
 
+            var shaders;
 
             switch (arr[0]) {
             case "vertex":
                 script.type = "x-shader/x-vertex";
+                shaders = vertexShaders;
                 break;
             case "fragment":
-                script.type = "x-shader/x-vertex";
+                script.type = "x-shader/x-fragment";
+                shaders = fragmentShaders;
                 break;
             default:
                 return;
                 break;
             }
 
-            document.getElementsByTagName('head')[0].appendChild(script);
-            fragmentShaders[arr[1]] = gl.createShaderFromScript(filename);
+            require(["text!"+shader.baseURL+filename+".html"], function(text) {
+                script.text = text;
+                document.getElementsByTagName('head')[0].appendChild(script);
+                callback();
+            });
         }
+        
+        function makeShaders(){
 
         /*****************************************************************
          * Setup a GLSL program for Matrix Positioning and Default Pixel 
          * Color assignment
          *****************************************************************/
 
-        var vertexShader = gl.createShaderFromScript("vertex-default");
-        var fragmentShader = gl.createShaderFromScript("fragment-default");
-
-        var program = gl.createProgram([vertexShader, fragmentShader]);
+        var program = gl.createProgram([vertexShaders['2d'], fragmentShaders['2d']]);
 
         // look up where the vertex data needs to go.
         program.positionLocation = gl.getAttribLocation(program, "a_position");
@@ -69,11 +83,6 @@ function() {
         program.matrixLocation = gl.getUniformLocation(program, "u_matrix");
 
         shader.NORMAL = program;
-
-/*
-        var vertexShader = gl.createShaderFromScript("vertex-shader");
-        var fragmentShader = gl.createShaderFromScript("fragment-shader");
-        var program = gl.createProgram([vertexShader, fragmentShader]);
-        */
+        }
     }
 });

@@ -169,8 +169,7 @@ define(function() {
          * @param {!Array.<string>} opt_attribs The attribs names.
          * @param {!Array.<number>} opt_locations The locations for the attribs.
          */
-
-        gl.createProgram = function(shaders, opt_attribs, opt_locations) {
+        gl.initProgram = function(shaders, opt_attribs, opt_locations) {
             var program = gl.createProgram();
             for (var ii = 0; ii < shaders.length; ++ii) {
                 gl.attachShader(program, shaders[ii]);
