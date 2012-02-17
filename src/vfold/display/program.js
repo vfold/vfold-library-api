@@ -7,22 +7,28 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var material = {};
+var program = {};
 
 define(
 
 function() {
 
-    material.init = function(callback) {
+    program.init = function(callback) {
 
         var vertexShaders = {},
             fragmentShaders = {};
 
-        material.baseURL = 'vfold/shader/';
+        program.baseURL = 'vfold/shader/';
+
+        var derivatesExt = "OES_standard_derivatives";
+        var derivatesSupported = (gl.getSupportedExtensions().indexOf(derivatesExt) >= 0);
+        if (derivatesSupported) {
+            gl.getExtension(derivatesExt);
+        }
 
         loadShaders([
-            'vertex-2d',
-            'fragment-2d',
+            'vertex-matrix',
+            'fragment-color',
             'fragment-bezier'
                 ]);
 
@@ -60,42 +66,28 @@ function() {
                 break;
             }
 
-            require(["text!" + material.baseURL + filename + ".html"], function(text) {
+            require(["text!" + program.baseURL + filename + ".html"], function(text) {
                 script.text = text;
                 document.getElementsByTagName('head')[0].appendChild(script);
+                shaders[arr[1]] = gl.createShaderFromScript(filename);
                 callback();
             });
         }
 
         function makeMaterials() {
-
             /*****************************************************************
              * Setup a GLSL program for Matrix Positioning and Default Pixel 
              * Color assignment
              *****************************************************************/
+            var prog = create([vertexShaders.matrix, fragmentShaders.color]);
 
-            var program = create([vertexShaders['2d'], fragmentShaders['2d']]);
+            prog.positionLocation = gl.getAttribLocation(prog, "a_position");
+            prog.colorLocation = gl.getUniformLocation(prog, "u_color");
+            prog.matrixLocation = gl.getUniformLocation(prog, "u_matrix");
 
-            program.positionLocation = gl.getAttribLocation(program, "a_position");
-            program.colorLocation = gl.getUniformLocation(program, "u_color");
-            program.matrixLocation = gl.getUniformLocation(program, "u_matrix");
-
-            material.NORMAL = program;
+            program.NORMAL = prog;
 
             callback();
-        }
-
-        function use(program) {
-           
-           gl.linkProgram(program);
-            // Check the link status
-            var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
-            if (!linked) {
-                // something went wrong with the link
-                error("Error in program linking:" + gl.getProgramInfoLog(program));
-                gl.deleteProgram(program);
-                return null;
-            }
         }
 
         /**
@@ -115,6 +107,15 @@ function() {
                     gl.bindAttribLocation(
                     program, opt_locations ? opt_locations[i] : i, opt_attribs[i]);
                 }
+            }
+            gl.linkProgram(program);
+            // Check the link status
+            var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
+            if (!linked) {
+                // something went wrong with the link
+                error("Error in program linking:" + gl.getProgramInfoLog(program));
+                gl.deleteProgram(program);
+                return null;
             }
             return program;
         };

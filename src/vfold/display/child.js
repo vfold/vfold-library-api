@@ -29,6 +29,7 @@ function() {
             /*Scale*/
             scaleX = 1,
             scaleY = 1,
+
             /* Deformation Matrices*/
             translationMatrix, angleMatrix, scaleMatrix;
 
@@ -40,15 +41,14 @@ function() {
         updateTranslation();
 
         this.buffer = gl.createBuffer();
-
-        this.computeDrawing = function() {
-
-            // Multiply the matrices.
+        
+        this.compute=function(){
+                        // Multiply the matrices.
             var matrix = mat3.multiply(scaleMatrix, angleMatrix);
             matrix = mat3.multiply(matrix, translationMatrix);
             matrix = mat3.multiply(matrix, stage.projectionMatrix);
             // Set the matrix.
-            gl.uniformMatrix3fv(gl.matrixLocation, false, matrix);
+            gl.uniformMatrix3fv(program.NORMAL.matrixLocation, false, matrix);
         }
 
         function updateAngle() {
@@ -64,16 +64,16 @@ function() {
         function updateTranslation() {
             translationMatrix = gl.makeTranslation(x, y);
         }
-        
-            Object.defineProperty(p,"x",{
-        get: function() {
-            return x;
-        },
-        set: function(value) {
-            x = value;
-            updateTranslation();
-        }
-    });
+
+        Object.defineProperty(p, "x", {
+            get: function() {
+                return x;
+            },
+            set: function(value) {
+                x = value;
+                updateTranslation();
+            }
+        });
     }
 
 

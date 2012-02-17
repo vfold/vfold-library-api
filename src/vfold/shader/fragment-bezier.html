@@ -11,16 +11,19 @@
  * Bezier Curve Shader
  *****************************************************************/
 
-#extension GL_OES_standard_derivatives: enable#ifdef GL_ES
-precision highp float;#endif
+#extension GL_OES_standard_derivatives : enable
+
+#ifdef GL_ES
+precision highp float;
+#endif
 
 varying vec2 vBezierCoord;
 
-void main() {
-    vec2 px = dFdx(vBezierCoord);
-    vec2 py = dFdy(vBezierCoord);
-    float fx = 2.0 * vBezierCoord.x * px.x - px.y;
-    float fy = 2.0 * vBezierCoord.y * py.x - py.y;
-    float sd = (vBezierCoord.x * vBezierCoord.x - vBezierCoord.y) / sqrt(fx * fx + fy * fy);
-    gl_FragColor = vec4(0.0, 0.0, 1.0, clamp(0.5 - sd, 0.0, 1.0));
+void main(void) {
+vec2 px = dFdx(vBezierCoord);
+vec2 py = dFdy(vBezierCoord);
+float fx = 2.0 * vBezierCoord.x * px.x - px.y;
+float fy = 2.0 * vBezierCoord.y * py.x - py.y;
+float sd = (vBezierCoord.x * vBezierCoord.x - vBezierCoord.y) / sqrt(fx * fx + fy * fy);
+gl_FragColor = vec4(0.0, 0.0, 1.0, clamp(0.5 - sd, 0.0, 1.0));
 }

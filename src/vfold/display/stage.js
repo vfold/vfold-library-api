@@ -15,12 +15,12 @@ function() {
 
     var blnInit = false;
 
-    stage.init = function() {
+    stage.init = function(callback) {
 
 
         stage = gl.init();
 
-        material.init(function() {
+        program.init(function() {
 
 
             var callbacks = [];
@@ -35,7 +35,6 @@ function() {
              *****************************************************************/
 
             window.onresize = function() {
-
                 // set the resolution
                 stage.width = window.innerWidth;
                 stage.height = window.innerHeight;
@@ -48,6 +47,7 @@ function() {
                 }
 
             }
+            callback();
         });
     };
 });

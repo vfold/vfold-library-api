@@ -39,7 +39,7 @@ require([
     "vfold/utility/pooling",
     "vfold/utility/webgl",
     
-    "vfold/display/material",
+    "vfold/display/program",
 
     "lib/event",
     "lib/matrix",
