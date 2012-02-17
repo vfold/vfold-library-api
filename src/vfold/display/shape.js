@@ -52,25 +52,14 @@ function() {
             p.computeDrawing();
             gl.drawArrays(gl.TRIANGLES, 0, 6);
         }
-
-        p.clear = function() {
-            p.gl.clear(p.gl.COLOR_BUFFER_BIT);
-        }
-
         p.lineStyle = function(thickness, color, alpha) {
-
         }
-
         p.moveTo = function(x, y) {
             path = [x, y];
         }
         p.lineTo = function(x, y) {
             path.push(x, y);
         }
-
     }
-
-
-
     Shape = Class;
 });

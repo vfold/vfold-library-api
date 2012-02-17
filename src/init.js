@@ -39,7 +39,7 @@ require([
     "vfold/utility/pooling",
     "vfold/utility/webgl",
     
-    "vfold/shader/shader",
+    "vfold/display/material",
 
     "lib/event",
     "lib/matrix",
@@ -55,9 +55,10 @@ function() {
     opt.facebookAppID = "";
     opt.rootPassword = "w957cbnooo5796";
 
-    stage.init();
-    shader.init();
-    page.init();
+    stage.init(function(){
+        page.init();
+    });
+    
 });
 
 /**

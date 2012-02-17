@@ -162,36 +162,6 @@ define(function() {
             gl, shaderSource, opt_shaderType ? opt_shaderType : shaderType, opt_errorCallback);
         };
 
-        /**
-         * Creates a program, attaches shaders, binds attrib locations, links the
-         * program and calls useProgram.
-         * @param {!Array.<!WebGLShader>} shaders The shaders to attach
-         * @param {!Array.<string>} opt_attribs The attribs names.
-         * @param {!Array.<number>} opt_locations The locations for the attribs.
-         */
-        gl.initProgram = function(shaders, opt_attribs, opt_locations) {
-            var program = gl.createProgram();
-            for (var ii = 0; ii < shaders.length; ++ii) {
-                gl.attachShader(program, shaders[ii]);
-            }
-            if (opt_attribs) {
-                for (var ii = 0; ii < opt_attribs.length; ++ii) {
-                    gl.bindAttribLocation(
-                    program, opt_locations ? opt_locations[ii] : ii, opt_attribs[ii]);
-                }
-            }
-            gl.linkProgram(program);
-            // Check the link status
-            var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
-            if (!linked) {
-                // something went wrong with the link
-                error("Error in program linking:" + gl.getProgramInfoLog(program));
-                gl.deleteProgram(program);
-                return null;
-            }
-            return program;
-        };
-
         gl.make2DProjection = function(width, height) {
             // Note: This matrix flips the Y axis so 0 is at the top.
             return [
