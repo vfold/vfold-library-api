@@ -139,7 +139,7 @@ define(function() {
 
         gl.createShaderFromScript -
         function(
-        gl, scriptId, opt_shaderType, opt_errorCallback) {
+        scriptId, opt_shaderType, opt_errorCallback) {
             var shaderSource = "";
             var shaderType;
             var shaderScript = document.getElementById(scriptId);

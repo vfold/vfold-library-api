@@ -17,44 +17,6 @@
 scripts/init.js after require.js loads.--> 
 
 <script data-main="src/init" src="src/lib/require.js"></script>
-    
-    <!-- vertex shader -->
-<script id="vertex-shader" type="x-shader/x-vertex">
-attribute vec2 a_position;
-uniform mat3 u_matrix;
-void main() {
-// Multiply the position by the matrix.
-gl_Position = vec4((u_matrix * vec3(a_position, 1)).xy, 0, 1);
-} 
-
-</script>
-<!-- fragment shader -->
-<script id="fragment-shader" type="x-shader/x-fragment">
-
-precision mediump float;
-uniform vec4 u_color;
-
-#extension GL_OES_standard_derivatives : enable
-
-#ifdef GL_ES
-precision highp float;
-#endif
-
-varying vec2 vBezierCoord;
-
-void main() {
-    
-    vec2 px = dFdx(vBezierCoord);
-vec2 py = dFdy(vBezierCoord);
-float fx = 2.0 * vBezierCoord.x * px.x - px.y;
-float fy = 2.0 * vBezierCoord.y * py.x - py.y;
-float sd = (vBezierCoord.x * vBezierCoord.x - vBezierCoord.y) / sqrt(fx * fx + fy * fy);
-gl_FragColor = vec4(0.0, 0.0, 1.0, clamp(0.5 - sd, 0.0, 1.0));
-
-gl_FragColor = u_color;
-
-}
-</script> 
 
 </head>
 <body marginwidth="0"; marginheight="0"; leftmargin="0"; topmargin="0"; style="overflow: hidden">
