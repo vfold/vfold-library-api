@@ -33,7 +33,7 @@ require([
     "vfold/utility/pooling",
     "vfold/utility/webgl",
     
-    "vfold/display/shader",
+    "vfold/shader/shader",
 
     "lib/event",
     "lib/matrix",
@@ -50,6 +50,7 @@ function() {
     opt.rootPassword = "w957cbnooo5796";
 
     stage.init();
+    shader.init();
     page.init();
 });
 

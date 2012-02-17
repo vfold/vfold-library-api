@@ -137,14 +137,13 @@ define(function() {
          * @return {!WebGLShader} The created shader.
          */
 
-        gl.createShaderFromScript -
-        function(
+        gl.createShaderFromScript=function(
         scriptId, opt_shaderType, opt_errorCallback) {
             var shaderSource = "";
             var shaderType;
             var shaderScript = document.getElementById(scriptId);
             if (!shaderScript) {
-                throw ("*** Error: unknown script element" + scriptId);
+                throw ("*** Error: unknown script element: '" + scriptId +"'");
             }
             shaderSource = shaderScript.text;
             if (!opt_shaderType) {
