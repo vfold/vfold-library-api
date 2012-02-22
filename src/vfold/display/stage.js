@@ -40,12 +40,18 @@ function() {
                 stage.height = window.innerHeight;
                 gl.viewport(0, 0, stage.width, stage.height);
                 gl.clear(gl.COLOR_BUFFER_BIT);
+                render();
                 stage.projectionMatrix = gl.make2DProjection(stage.width, stage.height);
 
                 for (var i = 0; i < callbacks.length; i++) {
                     callbacks[i]();
                 }
-
+                
+                gl.flush();
+                gl.finish();
+            }
+            function render(){
+                
             }
             callback();
         });

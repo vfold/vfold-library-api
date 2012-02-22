@@ -36,7 +36,7 @@ function() {
         // Increment count and covert to string
         this.id = (idCount++) + '';
 
-        updateAngle();
+        updateAngle();        
         updateScale();
         updateTranslation();
 

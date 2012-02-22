@@ -18,17 +18,16 @@ function() {
     function Class() {
 
         var path,
-        
-                    /* Color*/
-            r = 1,
-            g = 1,
-            b = 1,
-            a = 1;
 
+        /* Color*/
+        r = 1,
+        g = 1,
+        b = 1,
+        a = 1;
 
         p.beginFill = function(red, green, blue, alpha) {
-            
-                            r = red;
+
+            r = red;
             g = green;
             b = blue;;
             a = alpha;
@@ -40,21 +39,25 @@ function() {
             var
             x2 = x1 + width,
                 y2 = y1 + height;
-                
-                path = new Float32Array([
+
+            path = new Float32Array([
                 x1, y1,
                 x2, y1,
                 x1, y2,
                 x1, y2,
                 x2, y1,
                 x2, y2]);
-            
+
             draw();
+        }
+        
+        p.bezierTo = function(){
+            
         }
 
         function draw() {
-            
-                        var pr = program.NORMAL;
+
+            var pr = program.NORMAL;
 
             gl.useProgram(pr);
             gl.bindBuffer(gl.ARRAY_BUFFER, p.buffer);
@@ -63,15 +66,14 @@ function() {
             gl.vertexAttribPointer(pr.positionLocation, 2, gl.FLOAT, false, 0, 0);
 
             gl.uniform4f(pr.colorLocation, r, g, b, a);
-            gl.bufferData(gl.ARRAY_BUFFER,path, gl.STATIC_DRAW);
-            
+            gl.bufferData(gl.ARRAY_BUFFER, path, gl.STATIC_DRAW);
+
             p.compute();
 
             gl.drawArrays(gl.TRIANGLES, 0, 6);
-            
+
         }
-        p.lineStyle = function(thickness, color, alpha) {
-        }
+        p.lineStyle = function(thickness, color, alpha) {}
         p.moveTo = function(x, y) {
             path = [x, y];
         }
