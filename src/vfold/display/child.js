@@ -7,19 +7,13 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var Child;
-
-define(
-
-function() {
-
-    var idCount = 0,
+    function Shape() {
+        
+            var idCount = 0,
         angleInRadians = 0,
 
 
         p = Class.prototype;
-
-    function Class() {
 
         /* Position */
         var x = 0,
@@ -75,8 +69,3 @@ function() {
             }
         });
     }
-
-
-
-    Child = Class;
-});

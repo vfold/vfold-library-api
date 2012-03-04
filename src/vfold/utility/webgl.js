@@ -4,13 +4,11 @@
 var gl = {},
     canvas;
 
-define(function() {
-
     gl.init = function() {
 
         /**
          * Creates the HTLM for a failure message
-         * @param {string} canvasContainerId id of container of th
+         * @param {string} canvasContainerId id of container of the
          * canvas.
          * @return {string} The html.
          */
@@ -183,4 +181,3 @@ define(function() {
         }
         return canvas;
     }
-}());

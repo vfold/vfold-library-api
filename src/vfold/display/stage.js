@@ -7,25 +7,21 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var stage = {};
-
-define(
-
-function() {
+function Stage() {
 
     var blnInit = false;
 
-    stage.init = function(callback) {
+    Stage.init = function(callback) {
 
 
-        stage = gl.init();
+        Stage = gl.init();
 
         program.init(function() {
 
 
             var callbacks = [];
 
-            stage.addResizeCallback = function(func) {
+            Stage.addResizeCallback = function(func) {
 
                 callbacks.push(func);
             }
@@ -36,12 +32,12 @@ function() {
 
             window.onresize = function() {
                 // set the resolution
-                stage.width = window.innerWidth;
-                stage.height = window.innerHeight;
-                gl.viewport(0, 0, stage.width, stage.height);
+                Stage.width = window.innerWidth;
+                Stage.height = window.innerHeight;
+                gl.viewport(0, 0, Stage.width, Stage.height);
                 gl.clear(gl.COLOR_BUFFER_BIT);
                 render();
-                stage.projectionMatrix = gl.make2DProjection(stage.width, stage.height);
+                Stage.projectionMatrix = gl.make2DProjection(Stage.width, Stage.height);
 
                 for (var i = 0; i < callbacks.length; i++) {
                     callbacks[i]();
@@ -56,4 +52,4 @@ function() {
             callback();
         });
     };
-});
+};

@@ -36,24 +36,23 @@ function init() {
     stage.init(function(){
         page.init();
     });
-    
 }
 
 init();
 
-/**
+/*********************************************
  * Wrapped logging function.
  * @param {string} msg The message to log.
- */
+ *********************************************/
 var log = function(msg) {
         if (window.console && window.console.log) {
             window.console.log(msg);
         }
     };
-/**
+/**********************************************
  * Wrapped logging function.
  * @param {string} msg The message to log.
- */
+ **********************************************/
 var error = function(msg) {
         if (window.console) {
             if (window.console.error) {

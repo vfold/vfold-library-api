@@ -7,28 +7,18 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var page = {};
+function Page() {
 
-define(
+    Page.init = function() {
 
-function() {
+        window.onresize();
 
-    var c = page;
+        var shape = new Shape();
 
-    c.init = function() {
-
-        require([
-
-            "vfold/display/shape"], function() {
-                window.onresize();
-           
-           var shape = new Shape();
-            
-            shape.beginFill(1, .2, 0, 1);
-            shape.x=126;
-            shape.drawRect(0, 0, 300, 100);
-            //shape.endFill();
-            //Stage.add(shape);
-        });
-    };
-});
+        shape.beginFill(1, .2, 0, 1);
+        shape.x = 126;
+        shape.drawRect(0, 0, 300, 100);
+        //shape.endFill();
+        //Stage.add(shape);
+    }
+}
