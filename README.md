@@ -22,6 +22,10 @@ Features:
 
     VFOLD's default workspace for viewing and managing your entire platform. There is work yet to come on this area. Still in early development stage.
 
+Compile:
+-------
+
+Simply run the compiler.js on nodejs using the uglify-js module. The compiler is located at the project's root folder and requires two arguments. One for the source folder and the other for the output path.
 
 Libraries used:
 ------------

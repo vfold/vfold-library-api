@@ -24,30 +24,8 @@ const VFoldEvent = {
     FOLDER_SELECT: "FolderSelect"
 };
 
-   require.config({
-                paths : {
-                    text : './lib/text' //alias to plugin
-                }
-            });;
 
-require([
-    "vfold/core",
-    "vfold/vfold",
-    "vfold/page",
-    "vfold/options",
-
-    "vfold/utility/pooling",
-    "vfold/utility/webgl",
-    
-    "vfold/display/program",
-
-    "lib/event",
-    "lib/matrix",
-
-    "vfold/display/stage"
-    ],
-
-function() {
+function init() {
 
     var opt = new Options();
 
@@ -59,7 +37,9 @@ function() {
         page.init();
     });
     
-});
+}
+
+init();
 
 /**
  * Wrapped logging function.
