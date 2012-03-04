@@ -7,19 +7,7 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var Widgets;
-
-define(['vfold/display/container'],
-
-    function (){
+inherit(Widget,Container);
+    function Widget(){
    
-   Class.prototype = new Container();
-    Class.prototype.constructor = Class;
-
-    function Class() {
-
     }
-
-    Widgets = Class;
-    }
-);

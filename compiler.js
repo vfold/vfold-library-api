@@ -6,10 +6,11 @@ var pathUglify = "./node_modules/uglify-js/uglify-js",
     jsp = require(pathUglify).parser,
     pro = require(pathUglify).uglify,
     files, stats, pathTemp, countFile = 0,
-    /*********************************
-     * Abstract Syntax Tree
-     **********************************/
-    ast,
+    /********************************************
+     * javascript Code
+     * Original Merged -> Abstract Syntax Tree
+     ********************************************/
+    code = "",
     /*********************************
      * read all files from src folder
      * specified in given arguments
@@ -19,10 +20,10 @@ var pathUglify = "./node_modules/uglify-js/uglify-js",
      * Output path for compiled data
      **********************************/
     pathOutput = process.ARGV[3],
-    /*****************************
-     * Merged Uncompressed code 
-     *****************************/
-    orig_code = "";
+    /*********************************
+     * Enable debug mode
+     **********************************/
+    debug = process.ARGV[4] == "debug" ? true : false;
 
 /****************************************
  * Loop through the source folder and 
@@ -43,7 +44,10 @@ function readDir(path) {
             }
             else if (stats.isFile() && (file.indexOf(".js") != -1)) {
                 countFile++;
-                orig_code += fs.readFileSync(pathTemp);
+                code += fs.readFileSync(pathTemp);
+                if (debug) {
+                    code += "\n ---------------------------------------------------------- \n " + pathTemp + "\n ---------------------------------------------------------- \n";
+                }
             }
         }
         catch (e) {
@@ -52,24 +56,22 @@ function readDir(path) {
     });
 }
 
-/********************************************
- * 1. Parse code and get the initial AST
- * 2. Get a new AST with mangled names
- * 3. Get an AST with compression optimizations
- ********************************************/
+if (!debug) {
 
-ast = pro.ast_squeeze(
-pro.ast_mangle(
-jsp.parse(orig_code.toString())));
+    /********************************************
+     * 1. Parse code and get the initial AST
+     * 2. Get a new AST with mangled names
+     * 3. Get an AST with compression optimizations
+     ********************************************/
+
+    code = pro.ast_squeeze(
+    pro.ast_mangle(
+    jsp.parse(code)));
+}
 
 /********************************************
  * Output path for compiled build
  ********************************************/
 
-fs.writeFileSync(pathOutput, pro.gen_code(ast));
-console.log(
-    "----------------------------------- \n"+
-    "Compiled "+countFile+" files \n" +
-    "Output size: "+parseInt(fs.lstatSync(pathOutput).size/1024)+"KB \n"+
-    "-----------------------------------"
-);
+fs.writeFileSync(pathOutput, pro.gen_code(code));
+console.log("----------------------------------- \n" + "Compiled " + countFile + " files \n" + "Output size: " + parseInt(fs.lstatSync(pathOutput).size / 1024) + "KB \n" + "-----------------------------------");

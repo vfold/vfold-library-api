@@ -7,12 +7,7 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var Core;
 
-define(function() {
+function Core() {
 
-    function Class() {
-
-    }
-    Core = Class;
-});
+}

@@ -63,3 +63,8 @@ var error = function(msg) {
             }
         }
     };
+    
+    function inherit(Child,Parent){
+    Child.prototype = new Parent();
+    Child.prototype.constructor = Child;
+    }

@@ -7,11 +7,7 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var VFold;
-
-define(
-
-function() {
+function VFold() {
 
     
     var p = Class.prototype,c=p.constructor;
@@ -359,5 +355,4 @@ else{
     c.decrypt = function(encrypted, password, bitKey) {
         return UtilityCryptography.decrypt(encrypted, password, bitKey ? bitKey : 256);
     }
-    VFold = Class;
-});
+}

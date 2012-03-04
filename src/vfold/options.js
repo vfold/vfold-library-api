@@ -9,20 +9,13 @@
 
 var Options;
 
-define(
-
-function() {
+function Options(rootPassword, aesKey, facebookAppID) {
 
     /********************************************************************
      *  Security options for the vfold platform
      ********************************************************************/
 
-    function Class(rootPassword, aesKey, facebookAppID) {
-
         this.rootPassword = rootPassword;
         this.aesKey = aesKey;
         this.facebookAppID = facebookAppID;
     }
-
-    Options=Class;
-});

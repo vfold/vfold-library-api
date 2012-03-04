@@ -7,11 +7,7 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var Panel;
-
-define(['vfold/display/container'],
-
-function() {
+function Panel() {
     
     var p = new Container();
     p.constructor = Class;
@@ -323,5 +319,4 @@ function() {
         }
 
     }
-    Panel = Class;
-});
+}

@@ -7,22 +7,12 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var Workspace, WorkspaceComponent, WorkspaceLayer;
-
-define(
-
-function() {
-
-    createWorkspace();
-    createWorkspaceLayer();
-    createWorkspaceComponent();
-
     /********************************************
      * The workspace contains the main layers:
      * Folders, Widgets, Desktop, Panel
      ********************************************/
 
-    function createWorkspace() {
+    function Workspace() {
 
         var p = Class.prorotype;
 
@@ -125,7 +115,7 @@ function() {
      * Folders, Desktop, Panel, Widgets
      ********************************************************/
 
-    function createWorkspaceLayer() {
+    function WorkspaceLayer() {
 
         var p = new Kinetic.Layer("WorkspaceLayer");
         p.constructor = Class;
@@ -143,7 +133,7 @@ function() {
      * are loaded and instantiated appropriately 
      ********************************************************/
 
-    function createWorkspaceComponent() {
+    function WorkspaceComponent() {
 
         const instances = [];
         var initOnce = false;
@@ -249,5 +239,3 @@ function() {
             WorkspaceComponent = Class;
         }
     }
-
-});

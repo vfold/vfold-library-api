@@ -7,11 +7,7 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var Pooling;
-
-define(
-
-function() {
+function Pooling() {
    
    /*****************************************
      *  Objects in the Pool (Active/Inactive)
@@ -75,4 +71,4 @@ function() {
 
     };
     Pooling=Class;
-});
+}

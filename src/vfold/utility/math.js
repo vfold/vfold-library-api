@@ -7,17 +7,7 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var Math = {};
-
-define(
-
-function() {
-
-    var c = Math;
-
     // Returns a random integer from 0 to range - 1.
-    c.randomInt = function(range) {
+    Math.randomInt = function(range) {
         return Math.floor(Math.random() * range);
     };
-
-});
