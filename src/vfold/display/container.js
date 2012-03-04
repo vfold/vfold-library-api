@@ -7,11 +7,7 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var Container;
-
-define(
-
-function() {
+function Container() {
 
     var p = Class.prototype;
 
@@ -75,5 +71,4 @@ function() {
             this.children[n].index = n;
         }
     }
-    Container = Class;
-});
+}

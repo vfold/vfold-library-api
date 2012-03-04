@@ -7,18 +7,9 @@
  * the Original Work                                                 *
  *********************************************************************/
  
-define(
-    function (){
-        function Folders(){
+        function Folder(){
 
         }
-        Folders.prototype={
-
-            test:function test(){
-                alert("sss");
-            }
+        Folder.prototype={
 
         };
-        return Folders;
-    }
-);

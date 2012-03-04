@@ -7,17 +7,8 @@
  * the Original Work                                                 *
  *********************************************************************/
  
-var Desktop;
-
-define(['vfold/display/container'],
-    function (){
+    function Desktop(){
     Class.prototype = new Container();
     Class.prototype.constructor = Class;
 
-    function Class() {
-
-    }
-
-    Desktop = Class;
-    }
-);
+}

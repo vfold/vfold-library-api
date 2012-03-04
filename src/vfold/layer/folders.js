@@ -7,11 +7,8 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var Folders;
 
-define(['vfold/display/container'],
-
-function() {
+function Folders() {
 
     var p = new Container(),
 
@@ -28,12 +25,7 @@ function() {
          *********************************/
         fldTabs;
 
-    function Class() {
-
         this.dispatcher = new EventDispatcher();
-    }
-
-
 
     function onTabClose() {
         removeFolder(fldTabs.currentData);
@@ -113,6 +105,4 @@ function() {
     function getCurrentContainer() {
         return wrkContainers[Core.currentWorkspaceIndex]
     }
-Folders = Class;
 }
-);

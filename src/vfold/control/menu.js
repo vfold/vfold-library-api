@@ -7,22 +7,12 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var Menu, MenuButton, MenuButtons;
-
-define(['vfold/display/container'],
-
-function() {
-
-    createMenuButton();
-    createMenuButtons();
-    createMenu();
-
     /********************************************
      * Drop down list of menu Buttons that can 
      * have manu additional attributes
      ********************************************/
 
-    function createMenu() {
+    function Menu() {
         // Menu Parent
         var p = new MenuButtons(VFold.color, intGAP);
 
@@ -90,7 +80,7 @@ function() {
      * have manu additional attributes
      ********************************************/
 
-    function createMenuButtons() {
+    function MenuButtons() {
 
         var p = new Container();
 
@@ -208,10 +198,10 @@ function() {
                 if (buttonData) bC.addButtons(buttonData.children);
             }
             p.getButtonContainer = function() {
-                return bC
+                return bC;
             }
             p.getButton = function() {
-                return bL
+                return bL;
             }
 
             p.setWidth = function(value) {
@@ -224,7 +214,6 @@ function() {
                 return bL.height;
             }
         }
-            MenuButtons = Class;
     }
 
     /********************************************
@@ -232,14 +221,9 @@ function() {
      * menu tree hierarchy
      ********************************************/
 
-    function createMenuButton() {
+    function MenuButton() {
 
         var p = new Container();
 
 
-        function Class() {
-
-        }
-        MenuButton = Class;
     }
-});

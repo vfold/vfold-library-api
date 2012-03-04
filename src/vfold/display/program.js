@@ -7,18 +7,14 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var program = {};
+function Program() {
 
-define(
-
-function() {
-
-    program.init = function(callback) {
+    Program.init = function(callback) {
 
         var vertexShaders = {},
             fragmentShaders = {};
 
-        program.baseURL = 'vfold/shader/';
+        Program.baseURL = 'vfold/shader/';
 
         var derivatesExt = "OES_standard_derivatives";
         var derivatesSupported = (gl.getSupportedExtensions().indexOf(derivatesExt) >= 0);
@@ -120,4 +116,4 @@ function() {
             return program;
         };
     }
-});
+}
