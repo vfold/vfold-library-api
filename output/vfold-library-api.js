@@ -1,1 +1,4333 @@
-function EventDispatcher(){this._listeners={}}function init(){var a=new Options;a.aesKey="796x9qh27xcrb69q27xcrb61274xcr6b",a.facebookAppID="",a.rootPassword="w957cbnooo5796",stage.init(function(){page.init()})}function inherit(a,b){a.prototype=new b,a.prototype.constructor=a}function VFold(){function c(){this.color=2302755}function l(){g=new EventDispatcher,k=new Pooling(NetConn)}function m(a,b){var c=NetConn(k.getObject());return k.instantiated&&(c.onClose=function(a){k.returnToPool(a)}),c.onSuccess=a,c.onError=b,c}var a=c.prototype,b=a.constructor;b.PANEL_HEIGHT=50,b.desktops,b.panels,b.folders,b.widgets,b.WORKSPACE_CHANGE="workspaceChange",b.WORKSPACE_ADD="workspaceAdd";var d;const e={},f=[];var g,h,i;b.USER,b.HEADER;var j,k;b.init=function(a,b){h=a.aesKey,i=a.facebookAppID,j=encrypt(a.rootPassword,128),HEADER=new VOHeader,HEADER.session=new VOSession,rootCall("Session.init",function(a){var c=a,d=SharedObject.getLocal("vfold_session","/");HEADER.session.id=d.data.id=c.id,HEADER.session.code=d.data.code=c.code,d.flush(),b()},[HEADER.session,j]),Facebook.init(i,function(a,b){onFacebookLogin(a,b)})},b.startGUI=function(a){panels=new PanelHandler,folders=new FolderHandler,desktops=new DesktopHandler,widgets=new WidgetHandler;for(var b in a){var c=new Workspace;c.title=b.title;for(var d in b.components){c.setComponent(new WorkspaceComponent(d));if(d.type==VOComponent.FOLDER){var e=d.menu_path.split("."),h=c.menu,i;for(var j=0;j<e.length;j++)i=h.children[e[j]],i||(i=new MenuOptions,i.title=e[j]),j==e.length-1&&(i.launch=d.class_path),h.children[e[j]]=i,h=i}}f.push(c),g.dispatchEvent(new Event(WORKSPACE_ADD))}var k=VFOLD.stage.loaderInfo.parameters;k.confirm&&rootCall("User.confirm",function(a){a&&notify("Your account has been confirmed!\nNow you can sign-in")},k.confirm),UtilityJavascript.initMouseWheel(VFOLD.stage),UtilityJavascript.changeDocumentTitle(VFOLD.projectTitle+"-"+f[0].title),widgets.init(),folders.init(),panels.init(),panels.addTool(new UserTool),stage.addChild(desktops),stage.addChild(widgets),stage.addChild(folders),stage.addChild(panels),useWorkspace(0),notify("Powered by vfold")},b.notif=function(){var a=" ";for(var b in rest)a+=String(b)+" ";widgets.notifier.notify(a)},b.useWorkspace=function(a){d=a,dispatcher.dispatchEvent(new Event(WORKSPACE_CHANGE))},b.getDesktopHandler=function(){return desktops},b.getPanelHandler=function(){return panels},b.getFolderHandler=function(){return folders},b.getWidgetHandler=function(){return widgets},b.getDispatcher=function(){return g},b.getCurrentWorkspace=function(){return f[d]},b.getDefaultWorkspace=function(){return f[0]},b.getCurrentWorkspaceIndex=function(){return d},b.getCurrentUser=function(){return USER},b.getLibraries=function(){return e},b.appCall=function(a,b,c,d){m(b,d).amfCall(a,c,!1)},b.rootCall=function(a,b,c,d){m(b,d).amfCall(a,c,!0)},b.getExternalClass=function(a,b,c){var d=e[b];return d?d.hasDefinition(c)?d.getDefinition(c):null:null},b.checkRootPassword=function(a){return h==decrypt(j,a,128)},b.signInFacebook=function(){Facebook.login(onFacebookLogin,{perms:"user_about_me, user_birthday, email, publish_stream, offline_access"})},b.onFacebookLogin=function(a,b){var c},b.signInUser=function(a,b,c){var d;rootCall("User.getOneBy",function(a){trace(a.role_value),a.role_value==UserRole.GUEST?(c(!1),l.notify("User has not yet been confirmed..Check your email")):rootCall("User.get",function(a){h==decrypt(a.password,b)?(USER=a,l.dispatcher.dispatchEvent(new Event(VFOLD.USER_CHANGE)),c(!0),d="Welcome back "+USER.first_name+"!"):(c(!1),d="Wrong password, try again"),l.notify(d)},a.id)},[{email:a},["role_value","id"]],function(a){a==ErrorUser.NOT_FOUND&&l.notify("Wrong email,try again")})},b.encrypt=function(a,b){return UtilityCryptography.encrypt(h,a,b?b:256)},b.decrypt=function(a,b,c){return UtilityCryptography.decrypt(a,b,c?c:256)}}function Desktop(){Class.prototype=new Container,Class.prototype.constructor=Class}function Panel(){function j(){b=new l,c=new Menu,m=new PanelToolbar,i=VFold.PANEL_HEIGHT-h}function k(){function g(){b.alpha=.8,addChild(b),addChild(d),addChild(c),mouseEnabled=mouseChildren=!1,c.y=PanelHandler.CONTENT_HEIGHT,d.y=VFOLD.PANEL_HEIGHT}var a=g.prototype;a=new Kinetic.Group,a.constructor=g;var b=new Kinetic.Shape("panelBackground"),c=new Kinetic.Shape("panelLoader"),d=new Kinetic.Shape("shadow");const e=GradientType.LINEAR;var f=new Matrix;return a.draw=function(){var a;a=b.getContext(),a.clear(),a.beginFill(VFOLD.color,.7),a.drawRect(0,0,VFOLD.stage.stageWidth,PanelHandler.CONTENT_HEIGHT),a.endFill(),a=d.getContext(),a.clear(),f.createGradientBox(VFOLD.stage.stageWidth,20,Math.PI/2),a.beginGradientFill(e,[0,0],[.7,0],[0,255],f),a.drawRect(0,0,VFOLD.stage.stageWidth,20),a.endFill(),a=c.getContext(),a.clear(),a.beginFill(UtilityColor.brightness(VFOLD.color,.7)),a.drawRect(0,0,VFOLD.stage.stageWidth,PanelHandler.LOADER_BAR_HEIGHT),a.endFill()},g}function l(){function g(){var a=UtilityColor.hexToRGB(VFOLD.color);TweenMax.to(d,0,{colorTransform:{redOffset:a.red,greenOffset:a.green,blueOffset:a.blue}}),addChild(d),f=PanelHandler.CONTENT_HEIGHT,x=5,alpha=.8,addEventListener(MouseEvent.MOUSE_OVER,j),addEventListener(MouseEvent.MOUSE_OUT,k),addEventListener(MouseEvent.MOUSE_DOWN,h),TweenMax.to(this,0,{glowFilter:{color:16777215,blurX:30,blurY:7,alpha:1,strength:1.3}}),c=TweenMax.to(this,.15,{paused:!0,glowFilter:{blurX:7,blurY:7,alpha:1}})}function h(){b?(b=!1,Core.panelHandler.menu.fadeOut(),k(),VFOLD.stage.removeEventListener(MouseEvent.MOUSE_DOWN,i),addEventListener(MouseEvent.MOUSE_DOWN,h)):(j(),Core.panelHandler.menu.fadeIn(),b=!0,VFOLD.stage.addEventListener(MouseEvent.MOUSE_DOWN,i),removeEventListener(MouseEvent.MOUSE_DOWN,h))}function i(){e.target!=this&&h()}function j(){b||c.play()}function k(){b||c.reverse()}var a=new Kinetic.Group;a.constructor=g;var b=!1,c,d=VFold.call("System.getImage","menu"),f;a.changeLogo=function(a){a&&(d.bitmapData=a.bitmapData),y=(height-d.height)/2},a.getWidth=function(){return x*2+this.width},a.getHeight=function(){return f}}function m(){function j(){y=g,e=(i-g)/2-g,addEventListener(Tool.TOOL_CHANGE,k),h=new WorkspaceSwitcher,addTool(h),addChild(b),addChild(c),VFOLD.onStageResize=onStageResize}function k(a){var d=Tool(a.target),e;switch(d.align){case Tool.ALIGN_LEFT:for(e=0;e<b.numChildren;e++)e!=0?b.getChildAt(e).x=b.getChildAt(e-1).x+b.getChildAt(e-1).width+f:b.getChildAt(e).x=f;break;case Tool.ALIGN_RIGHT:for(e=0;e<c.numChildren;e++)e!=0?c.getChildAt(e).x=-c.getChildAt(e-1).x-c.getChildAt(e-1).width-f:c.getChildAt(e).x=-c.getChildAt(e).width}}var a=j.prototype;a=new Kinetic.Group,a.constructor=j;var b=new Kinetic.Group,c=new Kinetic.Group,d,e;const f=2;var h;a.onStageResize=function(){d=VFOLD.stage.stageWidth-x-g-f,c.x=d,dispatchEvent(new Event(DropBox.ADJUST_OFFSET))},a.addTool=function(a){var d;switch(a.align){case Tool.ALIGN_LEFT:d=b.numChildren,b.addChild(a),d!=0?a.x=b.getChildAt(d-1).x+b.getChildAt(d-1).width+f:a.x=f;break;case Tool.ALIGN_RIGHT:d=c.numChildren,c.addChild(a),d!=0?a.x=-c.getChildAt(d-1).x-a.width-f:a.x=-a.width}},a.getWidth=function(){return d},a.getHeight=function(){return e}}var a=new Container;a.constructor=j;var b,c,d,f,g=3,h=3,i;a.init=function(){const e=new k;f=Core.folderHandler.folderBar,c.x=c.gap,c.y=VFOLD.PANEL_HEIGHT+c.gap,c.onMenuButtonDown=function(a){Core.folderHandler.addFolder(a.options.launch)},a.add(e),a.add(b),a.add(f),a.add(d),a.add(c),mouseEnabled=!1,VFOLD.onStageResize=function(){e.draw()}},a.addTool=function(a){d.addTool(a)},a.onWorkspaceChange=function(){var a=Core.defaultWorkspace.menu.icon,e=Core.currentWorkspace.menu.icon;c.addButtons(Core.currentWorkspace.menu.children),b.changeLogo(e?e:a),d.x=f.x=b.width,d.onStageResize()},a.getMenu=function(){return c},a.getToolbar=function(){return d}}function Widget(){}function Folders(){function f(){removeFolder(d.currentData)}function g(){h(d.currentData)}function h(a){wSpace.numChildren>0&&(Folder(wSpace.getChildAt(wSpace.numChildren-1)).active=!1),a.active=!0,d.selectTab(a),c=a,wSpace.addChildAt(a,wSpace.numChildren),dispatchEvent(new Event(FOLDER_SELECT))}function i(){b.push(new Kinetic.Container)}function j(){return b[Core.currentWorkspaceIndex]}var a=new Container,b=[],c,d;this.dispatcher=new EventDispatcher,a.constructor=Class,a.init=function(){this.add(new Kinetic.Layer),this.dispatcher.addListener(VFoldEvents.FOLDER_SELECT,function(){a.selectFolder(Folder(e.target))}),d=new Tabs(Panel.CONTENT_HEIGHT/2-3,VFold.color,.7,g,f),d.y=PanelHandler.CONTENT_HEIGHT-d.height,addChild(d),VFold.addResizeCallback(function(){d.adjust(stage.width-x)})},a.addFolder=function(a){WorkspaceComponent.instantiate(a,function(a){var b=a;d.addTab(b.name,b),dispatchEvent(new Event(FOLDER_CREATE)),h(b)})},a.removeFolder=function(a){c=a,wSpace.removeChild(a),dispatchEvent(new Event(FOLDER_CLOSING)),wSpace.numChildren>0&&(Folder(wSpace.getChildAt(wSpace.numChildren-1)).active=!0)},a.closeFolder=function(a){d.removeTabByData(a),removeFolder(a)},a.selectFolder=h,a.getFolderBar=function(){return d},a.getActiveFolder=function(){return c},a.onWorkspaceChange=function(){this.remove(0),this.add(b[Core.currentWorkspaceIndex])}}function Folder(){}function Page(){Page.init=function(){window.onresize();var a=new Shape;a.beginFill(1,.2,0,1),a.x=126,a.drawRect(0,0,300,100)}}function Options(a,b,c){this.rootPassword=a,this.aesKey=b,this.facebookAppID=c}function Workspace(){function f(){}var a=f.prorotype,b=[],c=[],d=[],e=[];a.title="Untitled",a.menu=new MenuOptions,a.getFolders=function(){return b},a.getTools=function(){return c},a.getWidgets=function(){return d},a.getDesktops=function(){return e},a.getComponent=function(a){var f=b[a],g=e[a],h=d[a],i=c[a];return f?f:g?g:h?h:i?i:null},a.setComponent=function(a){var f=WorkspaceComponent.type;switch(a.type){case f.DESKTOP:a.initOnce=!0,e[a.class_path]=a;break;case f.FOLDER:var g=menu,h=a.menu_path.split(".");for(var i;i<h.length;i++){var j=h[i],k=g.children[j];k||(k=new MenuOptions,k.title=j,i==h.length-1&&(k.launch=a.class_path),g.setChild(k)),g=k}b[a.class_path]=a;break;case f.WIDGET:d[a.class_path]=a;break;case f.TOOL:a.initOnce=!0,c[a.class_path]=a;break;default:alert("Unrecognized type")}},Workspace=f}function WorkspaceLayer(){function b(){this.dispatcher=new EventDispatcher}var a=new Kinetic.Layer("WorkspaceLayer");a.constructor=b,WorkspaceLayer=b}function WorkspaceComponent(){function c(a){}const a=[];var b=!1;c.instantiate=function(a,b){function h(){if(d.hasDefinition(e.class_path))if(e.initOnce&&e.instances.length>0)b(e.instances[0]);else{var a=d.getDefinition(e.class_path),c=new a;c.name=e.title,b(c)}else if(f)if(f.dependencies.length>0)for(var g in f.dependencies)Core.libraries[g]?j():Core.appCall("Library.getByName",function(a){i(a.data,j)},[g]);else i(f.data,k);else e.libraryTitle?Core.appCall("Library.get",function(a){f=a,h()},[e.libraryTitle]):alert("Library ID not specified")}function i(a,b){var c=new Loader;c.contentLoaderInfo.addEventListener(Event.COMPLETE,function(){b()}),c.loadBytes(a,new LoaderContext(!1,d))}function j(){g++,g==f.dependencies.length&&(g=0,i(f.data,k))}function k(){f=null,h()}var d=new ApplicationDomain(VFOLD.appDomain),e=Core.currentWorkspace.getComponent(a);if(!e){alert("Component not found!");return}var f,g=0;h(),WorkspaceComponent=c}}function Pooling(){function e(a){c=a}var a=[],b=[],c,d;e.prototype={getObject:function(){var e;return a.length>0?(e=a.pop(),d=!1):(e=new c,d=!0),b.push(e),e},returnToPool:function(c){b.splice(b.indexOf(c),1),a.push(c)},returnAll:function(){while(b.length>0){var c=b[0];b.splice(0,1),a.push(c)}},getObjects:function(){return b},isLastInstantiated:function(){return d},numActiveObjects:function(){return b.length}},Pooling=e}function Shape(){function b(){function g(){var g=program.NORMAL;gl.useProgram(g),gl.bindBuffer(gl.ARRAY_BUFFER,a.buffer),gl.enableVertexAttribArray(g.positionLocation),gl.vertexAttribPointer(g.positionLocation,2,gl.FLOAT,!1,0,0),gl.uniform4f(g.colorLocation,c,d,e,f),gl.bufferData(gl.ARRAY_BUFFER,b,gl.STATIC_DRAW),a.compute(),gl.drawArrays(gl.TRIANGLES,0,6)}var b,c=1,d=1,e=1,f=1;a.beginFill=function(a,b,g,h){c=a,d=b,e=g,f=h},a.drawRect=function(a,c,d,e){var f=a+d,h=c+e;b=new Float32Array([a,c,f,c,a,h,a,h,f,c,f,h]),g()},a.bezierTo=function(){},a.lineStyle=function(a,b,c){},a.moveTo=function(a,c){b=[a,c]},a.lineTo=function(a,c){b.push(a,c)}}var a=b.prototype=new Child}function Stage(){var a=!1;Stage.init=function(a){Stage=gl.init(),program.init(function(){function c(){}var b=[];Stage.addResizeCallback=function(a){b.push(a)},window.onresize=function(){Stage.width=window.innerWidth,Stage.height=window.innerHeight,gl.viewport(0,0,Stage.width,Stage.height),gl.clear(gl.COLOR_BUFFER_BIT),c(),Stage.projectionMatrix=gl.make2DProjection(Stage.width,Stage.height);for(var a=0;a<b.length;a++)b[a]();gl.flush(),gl.finish()},a()})}}function Container(){function b(){this.children=[],this.childrenIDs=[]}function c(){for(var a=0;a<this.children.length;a++)this.children[a].index=a}var a=b.prototype;a.addChild=function(a){this.childrenIDs[a.id]=a,a.index=this.children.length,a.parent=this,this.children.push(a)},a.removeChild=function(a){this.childrenIDs[a.id]=undefined,this.children.splice(a.index,1),c(),a=undefined},a.addChildAt=function(a,b){this.childrenIDs[a.id]=a,a.index=b,a.parent=this,this.children.splice(b,0,a),c()},a.removeChildAt=function(a){var b=this.children[a];this.childrenIDs[b.id]=undefined,this.children.splice(a,1),c(),b=undefined}}function Shape(){function l(){var a=360-f;b=a*Math.PI/180,j=gl.makeRotation(b)}function m(){k=gl.makeScale(g,h)}function n(){i=gl.makeTranslation(d,e)}var a=0,b=0,c=Class.prototype,d=0,e=0,f=0,g=1,h=1,i,j,k;this.id=a++ +"",l(),m(),n(),this.buffer=gl.createBuffer(),this.compute=function(){var a=mat3.multiply(k,j);a=mat3.multiply(a,i),a=mat3.multiply(a,stage.projectionMatrix),gl.uniformMatrix3fv(program.NORMAL.matrixLocation,!1,a)},Object.defineProperty(c,"x",{get:function(){return d},set:function(a){d=a,n()}})}function Program(){Program.init=function(a){function f(a){var b=0;for(var c=0;c<a.length;c++)g(a[c],function(){b++,b==a.length&&h()})}function g(a,d){var e=a.split("-"),f=document.createElement("script");f.id=a;var g;switch(e[0]){case"vertex":f.type="x-shader/x-vertex",g=b;break;case"fragment":f.type="x-shader/x-fragment",g=c;break;default:return}require(["text!"+program.baseURL+a+".html"],function(b){f.text=b,document.getElementsByTagName("head")[0].appendChild(f),g[e[1]]=gl.createShaderFromScript(a),d()})}function h(){var d=i([b.matrix,c.color]);d.positionLocation=gl.getAttribLocation(d,"a_position"),d.colorLocation=gl.getUniformLocation(d,"u_color"),d.matrixLocation=gl.getUniformLocation(d,"u_matrix"),program.NORMAL=d,a()}function i(a,b,c){var d=gl.createProgram();for(var e=0;e<a.length;e++)gl.attachShader(d,a[e]);if(b)for(var e=0;e<b.length;e++)gl.bindAttribLocation(d,c?c[e]:e,b[e]);gl.linkProgram(d);var f=gl.getProgramParameter(d,gl.LINK_STATUS);return f?d:(error("Error in program linking:"+gl.getProgramInfoLog(d)),gl.deleteProgram(d),null)}var b={},c={};Program.baseURL="vfold/shader/";var d="OES_standard_derivatives",e=gl.getSupportedExtensions().indexOf(d)>=0;e&&gl.getExtension(d),f(["vertex-matrix","fragment-color","fragment-bezier"])}}function Core(){}function Menu(){function d(){var a,b;addEventListener(MouseEvent.MOUSE_OVER,function(c){MenuButton&&(b&&b!=c.target.parent.parent&&b.fadeOut(),a=c.target,b=c.target.parent.buttonContainer,a.onMouseOver(),b.fadeIn(),b.previousIndex=a.index)}),addEventListener(MouseEvent.MOUSE_OUT,function(b){b.target&&(a=b.target,a.onMouseOut())}),addEventListener(MouseEvent.MOUSE_DOWN,function(b){MenuButton&&(a=b.target,a.onMouseDown(),c&&c(a))})}var a=new MenuButtons(VFold.color,b),b=7,c;a.getGap=function(){return b},a.setMenuButtonCallback=function(a){c=a},Menu=d}function MenuButtons(){function b(a,b){d=a,e=b}function k(){function e(a,e,f){d=e,b=new MenuButtons(a,d),c=new MenuButton(a,f,f.children.length>0),addChild(b),addChild(c),f&&b.addButtons(f.children)}var a=k.prototype,b,c,d;a.getButtonContainer=function(){return b},a.getButton=function(){return c},a.setWidth=function(a){c.width=a,b.x=a+d},a.getHeight=function(){return c.height}}var a=new Container,c=[],d,e,f,g=[],h=[],i=.35,j;a.addButtons=function(a){var b=0,j=c.length,l=0;for(var m in a)c[b]=new k(d,e,m),c[b].button.index=b,c[b].button.alpha=0,b!=0&&(c[b].y+=b*(c[b-1].height+e)),b!=j?l=Math.max(l,c[b].button.width):l=c[b].button.width,h.push(c[b].button),addChild(c[b]),b++;b=j,j>1&&l>c[j-1].button.width&&(b=0);for(b;b<c.length;b++)c[b].width=l;f.clear(),g=TweenMax.allFromTo(h,i,{alpha:0,y:"50"},{alpha:1,y:"-50"},i/h.length),f.insertMultiple(g)},a.fadeIn=function(){f.play(),mouseChildren=!0},a.fadeOut=function(){f.reverse(),mouseChildren=!1,c.length>0&&c[j].buttonContainer.fadeOut()},a.setPreviousIndex=function(a){j=a}}function MenuButton(){var a=new Container}EventDispatcher.prototype={addListener:function(a,b){typeof this._listeners[a]=="undefined"&&(this._listeners[a]=[]),this._listeners[a].push(b)},dispatch:function(a){typeof a=="string"&&(a={type:a}),a.target||(a.target=this);if(!a.type)throw new Error("Event object missing 'type' property.");if(this._listeners[a.type]instanceof Array){var b=this._listeners[a.type];for(var c=0,d=b.length;c<d;c++)b[c].call(this,a)}},removeListener:function(a,b){if(this._listeners[a]instanceof Array){var c=_listeners[a];for(var d=0,e=c.length;d<e;d++)if(c[d]===b){c.splice(d,1);break}}}},define(function(){var a=typeof exports!="undefined"?global:window;a.glMatrixArrayType=a.MatrixArray=null,a.vec3={},a.mat3={},a.mat4={},a.quat4={},a.setMatrixArrayType=function(a){return glMatrixArrayType=MatrixArray=a},a.determineMatrixArrayType=function(){return setMatrixArrayType(typeof Float32Array!="undefined"?Float32Array:Array)},determineMatrixArrayType(),vec3.create=function(a){var b=new MatrixArray(3);return a?(b[0]=a[0],b[1]=a[1],b[2]=a[2]):b[0]=b[1]=b[2]=0,b},vec3.set=function(a,b){return b[0]=a[0],b[1]=a[1],b[2]=a[2],b},vec3.add=function(a,b,c){return!c||a===c?(a[0]+=b[0],a[1]+=b[1],a[2]+=b[2],a):(c[0]=a[0]+b[0],c[1]=a[1]+b[1],c[2]=a[2]+b[2],c)},vec3.subtract=function(a,b,c){return!c||a===c?(a[0]-=b[0],a[1]-=b[1],a[2]-=b[2],a):(c[0]=a[0]-b[0],c[1]=a[1]-b[1],c[2]=a[2]-b[2],c)},vec3.multiply=function(a,b,c){return!c||a===c?(a[0]*=b[0],a[1]*=b[1],a[2]*=b[2],a):(c[0]=a[0]*b[0],c[1]=a[1]*b[1],c[2]=a[2]*b[2],c)},vec3.negate=function(a,b){return b||(b=a),b[0]=-a[0],b[1]=-a[1],b[2]=-a[2],b},vec3.scale=function(a,b,c){return!c||a===c?(a[0]*=b,a[1]*=b,a[2]*=b,a):(c[0]=a[0]*b,c[1]=a[1]*b,c[2]=a[2]*b,c)},vec3.normalize=function(a,b){b||(b=a);var c=a[0],d=a[1],e=a[2],f=Math.sqrt(c*c+d*d+e*e);return f?f===1?(b[0]=c,b[1]=d,b[2]=e,b):(f=1/f,b[0]=c*f,b[1]=d*f,b[2]=e*f,b):(b[0]=0,b[1]=0,b[2]=0,b)},vec3.cross=function(a,b,c){c||(c=a);var d=a[0],e=a[1],f=a[2],g=b[0],h=b[1],i=b[2];return c[0]=e*i-f*h,c[1]=f*g-d*i,c[2]=d*h-e*g,c},vec3.length=function(a){var b=a[0],c=a[1],d=a[2];return Math.sqrt(b*b+c*c+d*d)},vec3.dot=function(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]},vec3.direction=function(a,b,c){c||(c=a);var d=a[0]-b[0],e=a[1]-b[1],f=a[2]-b[2],g=Math.sqrt(d*d+e*e+f*f);return g?(g=1/g,c[0]=d*g,c[1]=e*g,c[2]=f*g,c):(c[0]=0,c[1]=0,c[2]=0,c)},vec3.lerp=function(a,b,c,d){return d||(d=a),d[0]=a[0]+c*(b[0]-a[0]),d[1]=a[1]+c*(b[1]-a[1]),d[2]=a[2]+c*(b[2]-a[2]),d},vec3.dist=function(a,b){var c=b[0]-a[0],d=b[1]-a[1],e=b[2]-a[2];return Math.sqrt(c*c+d*d+e*e)},vec3.unproject=function(a,b,c,d,e){e||(e=a);var f=mat4.create(),g=new MatrixArray(4);return g[0]=(a[0]-d[0])*2/d[2]-1,g[1]=(a[1]-d[1])*2/d[3]-1,g[2]=2*a[2]-1,g[3]=1,mat4.multiply(c,b,f),mat4.inverse(f)?(mat4.multiplyVec4(f,g),g[3]===0?null:(e[0]=g[0]/g[3],e[1]=g[1]/g[3],e[2]=g[2]/g[3],e)):null},vec3.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+"]"},mat3.create=function(a){var b=new MatrixArray(9);return a&&(b[0]=a[0],b[1]=a[1],b[2]=a[2],b[3]=a[3],b[4]=a[4],b[5]=a[5],b[6]=a[6],b[7]=a[7],b[8]=a[8]),b},mat3.set=function(a,b){return b[0]=a[0],b[1]=a[1],b[2]=a[2],b[3]=a[3],b[4]=a[4],b[5]=a[5],b[6]=a[6],b[7]=a[7],b[8]=a[8],b},mat3.identity=function(a){return a||(a=mat3.create()),a[0]=1,a[1]=0,a[2]=0,a[3]=0,a[4]=1,a[5]=0,a[6]=0,a[7]=0,a[8]=1,a},mat3.transpose=function(a,b){if(!b||a===b){var c=a[1],d=a[2],e=a[5];return a[1]=a[3],a[2]=a[6],a[3]=c,a[5]=a[7],a[6]=d,a[7]=e,a}return b[0]=a[0],b[1]=a[3],b[2]=a[6],b[3]=a[1],b[4]=a[4],b[5]=a[7],b[6]=a[2],b[7]=a[5],b[8]=a[8],b},mat3.toMat4=function(a,b){return b||(b=mat4.create()),b[15]=1,b[14]=0,b[13]=0,b[12]=0,b[11]=0,b[10]=a[8],b[9]=a[7],b[8]=a[6],b[7]=0,b[6]=a[5],b[5]=a[4],b[4]=a[3],b[3]=0,b[2]=a[2],b[1]=a[1],b[0]=a[0],b},mat3.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+", "+a[4]+", "+a[5]+", "+a[6]+", "+a[7]+", "+a[8]+"]"},mat4.create=function(a){var b=new MatrixArray(16);return a&&(b[0]=a[0],b[1]=a[1],b[2]=a[2],b[3]=a[3],b[4]=a[4],b[5]=a[5],b[6]=a[6],b[7]=a[7],b[8]=a[8],b[9]=a[9],b[10]=a[10],b[11]=a[11],b[12]=a[12],b[13]=a[13],b[14]=a[14],b[15]=a[15]),b},mat4.set=function(a,b){return b[0]=a[0],b[1]=a[1],b[2]=a[2],b[3]=a[3],b[4]=a[4],b[5]=a[5],b[6]=a[6],b[7]=a[7],b[8]=a[8],b[9]=a[9],b[10]=a[10],b[11]=a[11],b[12]=a[12],b[13]=a[13],b[14]=a[14],b[15]=a[15],b},mat4.identity=function(a){return a||(a=mat4.create()),a[0]=1,a[1]=0,a[2]=0,a[3]=0,a[4]=0,a[5]=1,a[6]=0,a[7]=0,a[8]=0,a[9]=0,a[10]=1,a[11]=0,a[12]=0,a[13]=0,a[14]=0,a[15]=1,a},mat4.transpose=function(a,b){if(!b||a===b){var c=a[1],d=a[2],e=a[3],f=a[6],g=a[7],h=a[11];return a[1]=a[4],a[2]=a[8],a[3]=a[12],a[4]=c,a[6]=a[9],a[7]=a[13],a[8]=d,a[9]=f,a[11]=a[14],a[12]=e,a[13]=g,a[14]=h,a}return b[0]=a[0],b[1]=a[4],b[2]=a[8],b[3]=a[12],b[4]=a[1],b[5]=a[5],b[6]=a[9],b[7]=a[13],b[8]=a[2],b[9]=a[6],b[10]=a[10],b[11]=a[14],b[12]=a[3],b[13]=a[7],b[14]=a[11],b[15]=a[15],b},mat4.determinant=function(a){var b=a[0],c=a[1],d=a[2],e=a[3],f=a[4],g=a[5],h=a[6],i=a[7],j=a[8],k=a[9],l=a[10],m=a[11],n=a[12],o=a[13],p=a[14],q=a[15];return n*k*h*e-j*o*h*e-n*g*l*e+f*o*l*e+j*g*p*e-f*k*p*e-n*k*d*i+j*o*d*i+n*c*l*i-b*o*l*i-j*c*p*i+b*k*p*i+n*g*d*m-f*o*d*m-n*c*h*m+b*o*h*m+f*c*p*m-b*g*p*m-j*g*d*q+f*k*d*q+j*c*h*q-b*k*h*q-f*c*l*q+b*g*l*q},mat4.inverse=function(a,b){b||(b=a);var c=a[0],d=a[1],e=a[2],f=a[3],g=a[4],h=a[5],i=a[6],j=a[7],k=a[8],l=a[9],m=a[10],n=a[11],o=a[12],p=a[13],q=a[14],r=a[15],s=c*h-d*g,t=c*i-e*g,u=c*j-f*g,v=d*i-e*h,w=d*j-f*h,x=e*j-f*i,y=k*p-l*o,z=k*q-m*o,A=k*r-n*o,B=l*q-m*p,C=l*r-n*p,D=m*r-n*q,E=s*D-t*C+u*B+v*A-w*z+x*y,F;return E?(F=1/E,b[0]=(h*D-i*C+j*B)*F,b[1]=(-d*D+e*C-f*B)*F,b[2]=(p*x-q*w+r*v)*F,b[3]=(-l*x+m*w-n*v)*F,b[4]=(-g*D+i*A-j*z)*F,b[5]=(c*D-e*A+f*z)*F,b[6]=(-o*x+q*u-r*t)*F,b[7]=(k*x-m*u+n*t)*F,b[8]=(g*C-h*A+j*y)*F,b[9]=(-c*C+d*A-f*y)*F,b[10]=(o*w-p*u+r*s)*F,b[11]=(-k*w+l*u-n*s)*F,b[12]=(-g*B+h*z-i*y)*F,b[13]=(c*B-d*z+e*y)*F,b[14]=(-o*v+p*t-q*s)*F,b[15]=(k*v-l*t+m*s)*F,b):null},mat4.toRotationMat=function(a,b){return b||(b=mat4.create()),b[0]=a[0],b[1]=a[1],b[2]=a[2],b[3]=a[3],b[4]=a[4],b[5]=a[5],b[6]=a[6],b[7]=a[7],b[8]=a[8],b[9]=a[9],b[10]=a[10],b[11]=a[11],b[12]=0,b[13]=0,b[14]=0,b[15]=1,b},mat4.toMat3=function(a,b){return b||(b=mat3.create()),b[0]=a[0],b[1]=a[1],b[2]=a[2],b[3]=a[4],b[4]=a[5],b[5]=a[6],b[6]=a[8],b[7]=a[9],b[8]=a[10],b},mat4.toInverseMat3=function(a,b){var c=a[0],d=a[1],e=a[2],f=a[4],g=a[5],h=a[6],i=a[8],j=a[9],k=a[10],l=k*g-h*j,m=-k*f+h*i,n=j*f-g*i,o=c*l+d*m+e*n,p;return o?(p=1/o,b||(b=mat3.create()),b[0]=l*p,b[1]=(-k*d+e*j)*p,b[2]=(h*d-e*g)*p,b[3]=m*p,b[4]=(k*c-e*i)*p,b[5]=(-h*c+e*f)*p,b[6]=n*p,b[7]=(-j*c+d*i)*p,b[8]=(g*c-d*f)*p,b):null},mat3.multiply=function(a,b){var c=a[0],d=a[1],e=a[2],f=a[3],g=a[4],h=a[5],i=a[6],j=a[7],k=a[8],l=b[0],m=b[1],n=b[2],o=b[3],p=b[4],q=b[5],r=b[6],s=b[7],t=b[8];return[c*l+d*o+e*r,c*m+d*p+e*s,c*n+d*q+e*t,f*l+g*o+h*r,f*m+g*p+h*s,f*n+g*q+h*t,i*l+j*o+k*r,i*m+j*p+k*s,i*n+j*q+k*t]},mat4.multiply=function(a,b,c){c||(c=a);var d=a[0],e=a[1],f=a[2],g=a[3],h=a[4],i=a[5],j=a[6],k=a[7],l=a[8],m=a[9],n=a[10],o=a[11],p=a[12],q=a[13],r=a[14],s=a[15],t=b[0],u=b[1],v=b[2],w=b[3],x=b[4],y=b[5],z=b[6],A=b[7],B=b[8],C=b[9],D=b[10],E=b[11],F=b[12],G=b[13],H=b[14],I=b[15];return c[0]=t*d+u*h+v*l+w*p,c[1]=t*e+u*i+v*m+w*q,c[2]=t*f+u*j+v*n+w*r,c[3]=t*g+u*k+v*o+w*s,c[4]=x*d+y*h+z*l+A*p,c[5]=x*e+y*i+z*m+A*q,c[6]=x*f+y*j+z*n+A*r,c[7]=x*g+y*k+z*o+A*s,c[8]=B*d+C*h+D*l+E*p,c[9]=B*e+C*i+D*m+E*q,c[10]=B*f+C*j+D*n+E*r,c[11]=B*g+C*k+D*o+E*s,c[12]=F*d+G*h+H*l+I*p,c[13]=F*e+G*i+H*m+I*q,c[14]=F*f+G*j+H*n+I*r,c[15]=F*g+G*k+H*o+I*s,c},mat4.multiplyVec3=function(a,b,c){c||(c=b);var d=b[0],e=b[1],f=b[2];return c[0]=a[0]*d+a[4]*e+a[8]*f+a[12],c[1]=a[1]*d+a[5]*e+a[9]*f+a[13],c[2]=a[2]*d+a[6]*e+a[10]*f+a[14],c},mat4.multiplyVec4=function(a,b,c){c||(c=b);var d=b[0],e=b[1],f=b[2],g=b[3];return c[0]=a[0]*d+a[4]*e+a[8]*f+a[12]*g,c[1]=a[1]*d+a[5]*e+a[9]*f+a[13]*g,c[2]=a[2]*d+a[6]*e+a[10]*f+a[14]*g,c[3]=a[3]*d+a[7]*e+a[11]*f+a[15]*g,c},mat4.translate=function(a,b,c){var d=b[0],e=b[1],f=b[2],g,h,i,j,k,l,m,n,o,p,q,r;return!c||a===c?(a[12]=a[0]*d+a[4]*e+a[8]*f+a[12],a[13]=a[1]*d+a[5]*e+a[9]*f+a[13],a[14]=a[2]*d+a[6]*e+a[10]*f+a[14],a[15]=a[3]*d+a[7]*e+a[11]*f+a[15],a):(g=a[0],h=a[1],i=a[2],j=a[3],k=a[4],l=a[5],m=a[6],n=a[7],o=a[8],p=a[9],q=a[10],r=a[11],c[0]=g,c[1]=h,c[2]=i,c[3]=j,c[4]=k,c[5]=l,c[6]=m,c[7]=n,c[8]=o,c[9]=p,c[10]=q,c[11]=r,c[12]=g*d+k*e+o*f+a[12],c[13]=h*d+l*e+p*f+a[13],c[14]=i*d+m*e+q*f+a[14],c[15]=j*d+n*e+r*f+a[15],c)},mat4.scale=function(a,b,c){var d=b[0],e=b[1],f=b[2];return!c||a===c?(a[0]*=d,a[1]*=d,a[2]*=d,a[3]*=d,a[4]*=e,a[5]*=e,a[6]*=e,a[7]*=e,a[8]*=f,a[9]*=f,a[10]*=f,a[11]*=f,a):(c[0]=a[0]*d,c[1]=a[1]*d,c[2]=a[2]*d,c[3]=a[3]*d,c[4]=a[4]*e,c[5]=a[5]*e,c[6]=a[6]*e,c[7]=a[7]*e,c[8]=a[8]*f,c[9]=a[9]*f,c[10]=a[10]*f,c[11]=a[11]*f,c[12]=a[12],c[13]=a[13],c[14]=a[14],c[15]=a[15],c)},mat4.rotate=function(a,b,c,d){var e=c[0],f=c[1],g=c[2],h=Math.sqrt(e*e+f*f+g*g),i,j,k,l,m,n,o,p,q,r,s,t,u,v,w,x,y,z,A,B,C,D,E,F;return h?(h!==1&&(h=1/h,e*=h,f*=h,g*=h),i=Math.sin(b),j=Math.cos(b),k=1-j,l=a[0],m=a[1],n=a[2],o=a[3],p=a[4],q=a[5],r=a[6],s=a[7],t=a[8],u=a[9],v=a[10],w=a[11],x=e*e*k+j,y=f*e*k+g*i,z=g*e*k-f*i,A=e*f*k-g*i,B=f*f*k+j,C=g*f*k+e*i,D=e*g*k+f*i,E=f*g*k-e*i,F=g*g*k+j,d?a!==d&&(d[12]=a[12],d[13]=a[13],d[14]=a[14],d[15]=a[15]):d=a,d[0]=l*x+p*y+t*z,d[1]=m*x+q*y+u*z,d[2]=n*x+r*y+v*z,d[3]=o*x+s*y+w*z,d[4]=l*A+p*B+t*C,d[5]=m*A+q*B+u*C,d[6]=n*A+r*B+v*C,d[7]=o*A+s*B+w*C,d[8]=l*D+p*E+t*F,d[9]=m*D+q*E+u*F,d[10]=n*D+r*E+v*F,d[11]=o*D+s*E+w*F,d):null},mat4.rotateX=function(a,b,c){var d=Math.sin(b),e=Math.cos(b),f=a[4],g=a[5],h=a[6],i=a[7],j=a[8],k=a[9],l=a[10],m=a[11];return c?a!==c&&(c[0]=a[0],c[1]=a[1],c[2]=a[2],c[3]=a[3],c[12]=a[12],c[13]=a[13],c[14]=a[14],c[15]=a[15]):c=a,c[4]=f*e+j*d,c[5]=g*e+k*d,c[6]=h*e+l*d,c[7]=i*e+m*d,c[8]=f*-d+j*e,c[9]=g*-d+k*e,c[10]=h*-d+l*e,c[11]=i*-d+m*e,c},mat4.rotateY=function(a,b,c){var d=Math.sin(b),e=Math.cos(b),f=a[0],g=a[1],h=a[2],i=a[3],j=a[8],k=a[9],l=a[10],m=a[11];return c?a!==c&&(c[4]=a[4],c[5]=a[5],c[6]=a[6],c[7]=a[7],c[12]=a[12],c[13]=a[13],c[14]=a[14],c[15]=a[15]):c=a,c[0]=f*e+j*-d,c[1]=g*e+k*-d,c[2]=h*e+l*-d,c[3]=i*e+m*-d,c[8]=f*d+j*e,c[9]=g*d+k*e,c[10]=h*d+l*e,c[11]=i*d+m*e,c},mat4.rotateZ=function(a,b,c){var d=Math.sin(b),e=Math.cos(b),f=a[0],g=a[1],h=a[2],i=a[3],j=a[4],k=a[5],l=a[6],m=a[7];return c?a!==c&&(c[8]=a[8],c[9]=a[9],c[10]=a[10],c[11]=a[11],c[12]=a[12],c[13]=a[13],c[14]=a[14],c[15]=a[15]):c=a,c[0]=f*e+j*d,c[1]=g*e+k*d,c[2]=h*e+l*d,c[3]=i*e+m*d,c[4]=f*-d+j*e,c[5]=g*-d+k*e,c[6]=h*-d+l*e,c[7]=i*-d+m*e,c},mat4.frustum=function(a,b,c,d,e,f,g){g||(g=mat4.create());var h=b-a,i=d-c,j=f-e;return g[0]=e*2/h,g[1]=0,g[2]=0,g[3]=0,g[4]=0,g[5]=e*2/i,g[6]=0,g[7]=0,g[8]=(b+a)/h,g[9]=(d+c)/i,g[10]=-(f+e)/j,g[11]=-1,g[12]=0,g[13]=0,g[14]=-(f*e*2)/j,g[15]=0,g},mat4.perspective=function(a,b,c,d,e){var f=c*Math.tan(a*Math.PI/360),g=f*b;return mat4.frustum(-g,g,-f,f,c,d,e)},mat4.ortho=function(a,b,c,d,e,f,g){g||(g=mat4.create());var h=b-a,i=d-c,j=f-e;return g[0]=2/h,g[1]=0,g[2]=0,g[3]=0,g[4]=0,g[5]=2/i,g[6]=0,g[7]=0,g[8]=0,g[9]=0,g[10]=-2/j,g[11]=0,g[12]=-(a+b)/h,g[13]=-(d+c)/i,g[14]=-(f+e)/j,g[15]=1,g},mat4.lookAt=function(a,b,c,d){d||(d=mat4.create());var e,f,g,h,i,j,k,l,m,n,o=a[0],p=a[1],q=a[2],r=c[0],s=c[1],t=c[2],u=b[0],v=b[1],w=b[2];return o===u&&p===v&&q===w?mat4.identity(d):(k=o-u,l=p-v,m=q-w,n=1/Math.sqrt(k*k+l*l+m*m),k*=n,l*=n,m*=n,e=s*m-t*l,f=t*k-r*m,g=r*l-s*k,n=Math.sqrt(e*e+f*f+g*g),n?(n=1/n,e*=n,f*=n,g*=n):(e=0,f=0,g=0),h=l*g-m*f,i=m*e-k*g,j=k*f-l*e,n=Math.sqrt(h*h+i*i+j*j),n?(n=1/n,h*=n,i*=n,j*=n):(h=0,i=0,j=0),d[0]=e,d[1]=h,d[2]=k,d[3]=0,d[4]=f,d[5]=i,d[6]=l,d[7]=0,d[8]=g,d[9]=j,d[10]=m,d[11]=0,d[12]=-(e*o+f*p+g*q),d[13]=-(h*o+i*p+j*q),d[14]=-(k*o+l*p+m*q),d[15]=1,d)},mat4.fromRotationTranslation=function(a,b,c){c||(c=mat4.create());var d=a[0],e=a[1],f=a[2],g=a[3],h=d+d,i=e+e,j=f+f,k=d*h,l=d*i,m=d*j,n=e*i,o=e*j,p=f*j,q=g*h,r=g*i,s=g*j;return c[0]=1-(n+p),c[1]=l+s,c[2]=m-r,c[3]=0,c[4]=l-s,c[5]=1-(k+p),c[6]=o+q,c[7]=0,c[8]=m+r,c[9]=o-q,c[10]=1-(k+n),c[11]=0,c[12]=b[0],c[13]=b[1],c[14]=b[2],c[15]=1,c},mat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+", "+a[4]+", "+a[5]+", "+a[6]+", "+a[7]+", "+a[8]+", "+a[9]+", "+a[10]+", "+a[11]+", "+a[12]+", "+a[13]+", "+a[14]+", "+a[15]+"]"},quat4.create=function(a){var b=new MatrixArray(4);return a&&(b[0]=a[0],b[1]=a[1],b[2]=a[2],b[3]=a[3]),b},quat4.set=function(a,b){return b[0]=a[0],b[1]=a[1],b[2]=a[2],b[3]=a[3],b},quat4.calculateW=function(a,b){var c=a[0],d=a[1],e=a[2];return!b||a===b?(a[3]=-Math.sqrt(Math.abs(1-c*c-d*d-e*e)),a):(b[0]=c,b[1]=d,b[2]=e,b[3]=-Math.sqrt(Math.abs(1-c*c-d*d-e*e)),b)},quat4.dot=function(a,b){return a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3]},quat4.inverse=function(a,b){var c=a[0],d=a[1],e=a[2],f=a[3],g=c*c+d*d+e*e+f*f,h=g?1/g:0;return!b||a===b?(a[0]*=-h,a[1]*=-h,a[2]*=-h,a[3]*=h,a):(b[0]=-a[0]*h,b[1]=-a[1]*h,b[2]=-a[2]*h,b[3]=a[3]*h,b)},quat4.conjugate=function(a,b){return!b||a===b?(a[0]*=-1,a[1]*=-1,a[2]*=-1,a):(b[0]=-a[0],b[1]=-a[1],b[2]=-a[2],b[3]=a[3],b)},quat4.length=function(a){var b=a[0],c=a[1],d=a[2],e=a[3];return Math.sqrt(b*b+c*c+d*d+e*e)},quat4.normalize=function(a,b){b||(b=a);var c=a[0],d=a[1],e=a[2],f=a[3],g=Math.sqrt(c*c+d*d+e*e+f*f);return g===0?(b[0]=0,b[1]=0,b[2]=0,b[3]=0,b):(g=1/g,b[0]=c*g,b[1]=d*g,b[2]=e*g,b[3]=f*g,b)},quat4.multiply=function(a,b,c){c||(c=a);var d=a[0],e=a[1],f=a[2],g=a[3],h=b[0],i=b[1],j=b[2],k=b[3];return c[0]=d*k+g*h+e*j-f*i,c[1]=e*k+g*i+f*h-d*j,c[2]=f*k+g*j+d*i-e*h,c[3]=g*k-d*h-e*i-f*j,c},quat4.multiplyVec3=function(a,b,c){c||(c=b);var d=b[0],e=b[1],f=b[2],g=a[0],h=a[1],i=a[2],j=a[3],k=j*d+h*f-i*e,l=j*e+i*d-g*f,m=j*f+g*e-h*d,n=-g*d-h*e-i*f;return c[0]=k*j+n*-g+l*-i-m*-h,c[1]=l*j+n*-h+m*-g-k*-i,c[2]=m*j+n*-i+k*-h-l*-g,c},quat4.toMat3=function(a,b){b||(b=mat3.create());var c=a[0],d=a[1],e=a[2],f=a[3],g=c+c,h=d+d,i=e+e,j=c*g,k=c*h,l=c*i,m=d*h,n=d*i,o=e*i,p=f*g,q=f*h,r=f*i;return b[0]=1-(m+o),b[1]=k+r,b[2]=l-q,b[3]=k-r,b[4]=1-(j+o),b[5]=n+p,b[6]=l+q,b[7]=n-p,b[8]=1-(j+m),b},quat4.toMat4=function(a,b){b||(b=mat4.create());var c=a[0],d=a[1],e=a[2],f=a[3],g=c+c,h=d+d,i=e+e,j=c*g,k=c*h,l=c*i,m=d*h,n=d*i,o=e*i,p=f*g,q=f*h,r=f*i;return b[0]=1-(m+o),b[1]=k+r,b[2]=l-q,b[3]=0,b[4]=k-r,b[5]=1-(j+o),b[6]=n+p,b[7]=0,b[8]=l+q,b[9]=n-p,b[10]=1-(j+m),b[11]=0,b[12]=0,b[13]=0,b[14]=0,b[15]=1,b},quat4.slerp=function(a,b,c,d){d||(d=a);var e=a[0]*b[0]+a[1]*b[1]+a[2]*b[2]+a[3]*b[3],f,g,h,i;return Math.abs(e)>=1?(d!==a&&(d[0]=a[0],d[1]=a[1],d[2]=a[2],d[3]=a[3]),d):(f=Math.acos(e),g=Math.sqrt(1-e*e),Math.abs(g)<.001?(d[0]=a[0]*.5+b[0]*.5,d[1]=a[1]*.5+b[1]*.5,d[2]=a[2]*.5+b[2]*.5,d[3]=a[3]*.5+b[3]*.5,d):(h=Math.sin((1-c)*f)/g,i=Math.sin(c*f)/g,d[0]=a[0]*h+b[0]*i,d[1]=a[1]*h+b[1]*i,d[2]=a[2]*h+b[2]*i,d[3]=a[3]*h+b[3]*i,d))},quat4.str=function(a){return"["+a[0]+", "+a[1]+", "+a[2]+", "+a[3]+"]"}});var stage;const VFoldEvent={WORKSPACE_CHANGE:"workspaceChange",WORKSPACE_ADD:"workspaceAdd",FOLDER_CREATE:"FolderAdd",FOLDER_CLOSING:"FolderClose",FOLDER_SELECT:"FolderSelect"};init();var log=function(a){window.console&&window.console.log&&window.console.log(a)},error=function(a){window.console&&(window.console.error?window.console.error(a):window.console.log&&window.console.log(a))};inherit(Widget,Container),Folder.prototype={};var Options,gl={},canvas;gl.init=function(){function d(d,f){function g(b){var c=d.parentNode;c&&(c.innerHTML=a(b))}if(!window.WebGLRenderingContext)return g(b),null;var h=e(d,f);return h||g(c),h}function e(a,b){var c=["webgl","experimental-webgl"],d=null;for(var e=0;e<c.length;++e){try{d=a.getContext(c[e],b)}catch(f){}if(d)break}return d}function f(a,b,c,d){var e=d||error,f=a.createShader(c);a.shaderSource(f,b),a.compileShader(f);var g=a.getShaderParameter(f,a.COMPILE_STATUS);return g?f:(error("*** Error compiling shader '"+f+"':"+a.getShaderInfoLog(f)),a.deleteShader(f),null)}var a=function(a){return'<table style="background-color: #8CE; width: 100%; height: 100%;"><tr><td align="center"><div style="display: table-cell; vertical-align: middle;"><div style="">'+a+"</div>"+"</div>"+"</td></tr></table>"},b='This page requires a browser that supports WebGL.<br/><a href="http://get.webgl.org">Click here to upgrade your browser.</a>',c='It doesn\'t appear your computer can support WebGL.<br/><a href="http://get.webgl.org/troubleshooting/">Click here for more information.</a>';return window.requestAnimFrame=function(){return window.requestAnimationFrame||window.webkitRequestAnimationFrame||window.mozRequestAnimationFrame||window.oRequestAnimationFrame||window.msRequestAnimationFrame||function(a,b){return window.setTimeout(a,1e3/60)}}(),window.cancelRequestAnimFrame=function(){return window.cancelCancelRequestAnimationFrame||window.webkitCancelRequestAnimationFrame||window.mozCancelRequestAnimationFrame||window.oCancelRequestAnimationFrame||window.msCancelRequestAnimationFrame||window.clearTimeout}(),gl=d(canvas=document.getElementById("canvas")),gl.createShaderFromScript=function(a,b,c){var d="",e,g=document.getElementById(a);if(!g)throw"*** Error: unknown script element: '"+a+"'";d=g.text;if(!b)if(g.type=="x-shader/x-vertex")e=gl.VERTEX_SHADER;else if(g.type=="x-shader/x-fragment")e=gl.FRAGMENT_SHADER;else if(e!=gl.VERTEX_SHADER&&e!=gl.FRAGMENT_SHADER)throw"*** Error: unknown shader type";return f(gl,d,b?b:e,c)},gl.make2DProjection=function(a,b){return[2/a,0,0,0,-2/b,0,-1,1,1]},gl.makeTranslation=function(a,b){return[1,0,0,0,1,0,a,b,1]},gl.makeRotation=function(a){var b=Math.cos(a),c=Math.sin(a);return[b,-c,0,c,b,0,0,0,1]},gl.makeScale=function(a,b){return[a,0,0,0,b,0,0,0,1]},canvas},Math.randomInt=function(a){return Math.floor(Math.random()*a)}
+
+ /***************************************************** 
+  * File path: ./src/common/event.js 
+  *****************************************************/ 
+//Copyright (c) 2010 Nicholas C. Zakas. All rights reserved.
+//MIT License
+
+function EventDispatcher(){
+    this._listeners = {};
+}
+
+EventDispatcher.prototype = {
+
+    addListener:function(type, listener){
+        if (typeof this._listeners[type] == "undefined"){
+            this._listeners[type] = [];
+        }
+
+        this._listeners[type].push(listener);
+    },
+
+    dispatch:function(event){
+        if (typeof event == "string"){
+            event = { type: event };
+        }
+        if (!event.target){
+            event.target = this;
+        }
+
+        if (!event.type){
+            throw new Error("Event object missing 'type' property.");
+        }
+
+        if (this._listeners[event.type] instanceof Array){
+            var listeners = this._listeners[event.type];
+            for (var i=0, len=listeners.length; i < len; i++){
+                listeners[i].call(this, event);
+            }
+        }
+    },
+
+    removeListener:function(type, listener){
+        if (this._listeners[type] instanceof Array){
+            var listeners = _listeners[type];
+            for (var i=0, len=listeners.length; i < len; i++){
+                if (listeners[i] === listener){
+                    listeners.splice(i, 1);
+                    break;
+                }
+            }
+        }
+    }
+};
+ /***************************************************** 
+  * File path: ./src/common/matrix.js 
+  *****************************************************/ 
+/**
+ * @fileoverview gl-matrix - High performance matrix and vector operations for WebGL
+ * @author Brandon Jones
+ * @version 1.2.3
+ */
+
+/*
+ * Copyright (c) 2011 Brandon Jones
+ *
+ * This software is provided 'as-is', without any express or implied
+ * warranty. In no event will the authors be held liable for any damages
+ * arising from the use of this software.
+ *
+ * Permission is granted to anyone to use this software for any purpose,
+ * including commercial applications, and to alter it and redistribute it
+ * freely, subject to the following restrictions:
+ *
+ *    1. The origin of this software must not be misrepresented; you must not
+ *    claim that you wrote the original software. If you use this software
+ *    in a product, an acknowledgment in the product documentation would be
+ *    appreciated but is not required.
+ *
+ *    2. Altered source versions must be plainly marked as such, and must not
+ *    be misrepresented as being the original software.
+ *
+ *    3. This notice may not be removed or altered from any source
+ *    distribution.
+ */
+    // Type declarations
+    // account for CommonJS environments
+    var _global = (typeof(exports) != 'undefined') ? global : window;
+    _global.glMatrixArrayType = _global.MatrixArray = null;
+
+    /**
+     * @class 3 Dimensional Vector
+     * @name vec3
+     */
+    _global.vec3 = {};
+
+    /**
+     * @class 3x3 Matrix
+     * @name mat3
+     */
+    _global.mat3 = {};
+
+    /**
+     * @class 4x4 Matrix
+     * @name mat4
+     */
+    _global.mat4 = {};
+
+    /**
+     * @class Quaternion
+     * @name quat4
+     */
+    _global.quat4 = {};
+
+    // explicitly sets and returns the type of array to use within glMatrix
+    _global.setMatrixArrayType = function(type) {
+        return glMatrixArrayType = MatrixArray = type;
+    };
+
+    // auto-detects and returns the best type of array to use within glMatrix, falling
+    // back to Array if typed arrays are unsupported
+    _global.determineMatrixArrayType = function() {
+        return setMatrixArrayType((typeof Float32Array !== 'undefined') ? Float32Array : Array);
+    };
+
+    determineMatrixArrayType();
+
+/*
+ * vec3
+ */
+
+    /**
+     * Creates a new instance of a vec3 using the default array type
+     * Any javascript array-like objects containing at least 3 numeric elements can serve as a vec3
+     *
+     * @param {vec3} [vec] vec3 containing values to initialize with
+     *
+     * @returns {vec3} New vec3
+     */
+    vec3.create = function(vec) {
+        var dest = new MatrixArray(3);
+
+        if (vec) {
+            dest[0] = vec[0];
+            dest[1] = vec[1];
+            dest[2] = vec[2];
+        }
+        else {
+            dest[0] = dest[1] = dest[2] = 0;
+        }
+
+        return dest;
+    };
+
+    /**
+     * Copies the values of one vec3 to another
+     *
+     * @param {vec3} vec vec3 containing values to copy
+     * @param {vec3} dest vec3 receiving copied values
+     *
+     * @returns {vec3} dest
+     */
+    vec3.set = function(vec, dest) {
+        dest[0] = vec[0];
+        dest[1] = vec[1];
+        dest[2] = vec[2];
+
+        return dest;
+    };
+
+    /**
+     * Performs a vector addition
+     *
+     * @param {vec3} vec First operand
+     * @param {vec3} vec2 Second operand
+     * @param {vec3} [dest] vec3 receiving operation result. If not specified result is written to vec
+     *
+     * @returns {vec3} dest if specified, vec otherwise
+     */
+    vec3.add = function(vec, vec2, dest) {
+        if (!dest || vec === dest) {
+            vec[0] += vec2[0];
+            vec[1] += vec2[1];
+            vec[2] += vec2[2];
+            return vec;
+        }
+
+        dest[0] = vec[0] + vec2[0];
+        dest[1] = vec[1] + vec2[1];
+        dest[2] = vec[2] + vec2[2];
+        return dest;
+    };
+
+    /**
+     * Performs a vector subtraction
+     *
+     * @param {vec3} vec First operand
+     * @param {vec3} vec2 Second operand
+     * @param {vec3} [dest] vec3 receiving operation result. If not specified result is written to vec
+     *
+     * @returns {vec3} dest if specified, vec otherwise
+     */
+    vec3.subtract = function(vec, vec2, dest) {
+        if (!dest || vec === dest) {
+            vec[0] -= vec2[0];
+            vec[1] -= vec2[1];
+            vec[2] -= vec2[2];
+            return vec;
+        }
+
+        dest[0] = vec[0] - vec2[0];
+        dest[1] = vec[1] - vec2[1];
+        dest[2] = vec[2] - vec2[2];
+        return dest;
+    };
+
+    /**
+     * Performs a vector multiplication
+     *
+     * @param {vec3} vec First operand
+     * @param {vec3} vec2 Second operand
+     * @param {vec3} [dest] vec3 receiving operation result. If not specified result is written to vec
+     *
+     * @returns {vec3} dest if specified, vec otherwise
+     */
+    vec3.multiply = function(vec, vec2, dest) {
+        if (!dest || vec === dest) {
+            vec[0] *= vec2[0];
+            vec[1] *= vec2[1];
+            vec[2] *= vec2[2];
+            return vec;
+        }
+
+        dest[0] = vec[0] * vec2[0];
+        dest[1] = vec[1] * vec2[1];
+        dest[2] = vec[2] * vec2[2];
+        return dest;
+    };
+
+    /**
+     * Negates the components of a vec3
+     *
+     * @param {vec3} vec vec3 to negate
+     * @param {vec3} [dest] vec3 receiving operation result. If not specified result is written to vec
+     *
+     * @returns {vec3} dest if specified, vec otherwise
+     */
+    vec3.negate = function(vec, dest) {
+        if (!dest) {
+            dest = vec;
+        }
+
+        dest[0] = -vec[0];
+        dest[1] = -vec[1];
+        dest[2] = -vec[2];
+        return dest;
+    };
+
+    /**
+     * Multiplies the components of a vec3 by a scalar value
+     *
+     * @param {vec3} vec vec3 to scale
+     * @param {number} val Value to scale by
+     * @param {vec3} [dest] vec3 receiving operation result. If not specified result is written to vec
+     *
+     * @returns {vec3} dest if specified, vec otherwise
+     */
+    vec3.scale = function(vec, val, dest) {
+        if (!dest || vec === dest) {
+            vec[0] *= val;
+            vec[1] *= val;
+            vec[2] *= val;
+            return vec;
+        }
+
+        dest[0] = vec[0] * val;
+        dest[1] = vec[1] * val;
+        dest[2] = vec[2] * val;
+        return dest;
+    };
+
+    /**
+     * Generates a unit vector of the same direction as the provided vec3
+     * If vector length is 0, returns [0, 0, 0]
+     *
+     * @param {vec3} vec vec3 to normalize
+     * @param {vec3} [dest] vec3 receiving operation result. If not specified result is written to vec
+     *
+     * @returns {vec3} dest if specified, vec otherwise
+     */
+    vec3.normalize = function(vec, dest) {
+        if (!dest) {
+            dest = vec;
+        }
+
+        var x = vec[0],
+            y = vec[1],
+            z = vec[2],
+            len = Math.sqrt(x * x + y * y + z * z);
+
+        if (!len) {
+            dest[0] = 0;
+            dest[1] = 0;
+            dest[2] = 0;
+            return dest;
+        }
+        else if (len === 1) {
+            dest[0] = x;
+            dest[1] = y;
+            dest[2] = z;
+            return dest;
+        }
+
+        len = 1 / len;
+        dest[0] = x * len;
+        dest[1] = y * len;
+        dest[2] = z * len;
+        return dest;
+    };
+
+    /**
+     * Generates the cross product of two vec3s
+     *
+     * @param {vec3} vec First operand
+     * @param {vec3} vec2 Second operand
+     * @param {vec3} [dest] vec3 receiving operation result. If not specified result is written to vec
+     *
+     * @returns {vec3} dest if specified, vec otherwise
+     */
+    vec3.cross = function(vec, vec2, dest) {
+        if (!dest) {
+            dest = vec;
+        }
+
+        var x = vec[0],
+            y = vec[1],
+            z = vec[2],
+            x2 = vec2[0],
+            y2 = vec2[1],
+            z2 = vec2[2];
+
+        dest[0] = y * z2 - z * y2;
+        dest[1] = z * x2 - x * z2;
+        dest[2] = x * y2 - y * x2;
+        return dest;
+    };
+
+    /**
+     * Caclulates the length of a vec3
+     *
+     * @param {vec3} vec vec3 to calculate length of
+     *
+     * @returns {number} Length of vec
+     */
+    vec3.length = function(vec) {
+        var x = vec[0],
+            y = vec[1],
+            z = vec[2];
+        return Math.sqrt(x * x + y * y + z * z);
+    };
+
+    /**
+     * Caclulates the dot product of two vec3s
+     *
+     * @param {vec3} vec First operand
+     * @param {vec3} vec2 Second operand
+     *
+     * @returns {number} Dot product of vec and vec2
+     */
+    vec3.dot = function(vec, vec2) {
+        return vec[0] * vec2[0] + vec[1] * vec2[1] + vec[2] * vec2[2];
+    };
+
+    /**
+     * Generates a unit vector pointing from one vector to another
+     *
+     * @param {vec3} vec Origin vec3
+     * @param {vec3} vec2 vec3 to point to
+     * @param {vec3} [dest] vec3 receiving operation result. If not specified result is written to vec
+     *
+     * @returns {vec3} dest if specified, vec otherwise
+     */
+    vec3.direction = function(vec, vec2, dest) {
+        if (!dest) {
+            dest = vec;
+        }
+
+        var x = vec[0] - vec2[0],
+            y = vec[1] - vec2[1],
+            z = vec[2] - vec2[2],
+            len = Math.sqrt(x * x + y * y + z * z);
+
+        if (!len) {
+            dest[0] = 0;
+            dest[1] = 0;
+            dest[2] = 0;
+            return dest;
+        }
+
+        len = 1 / len;
+        dest[0] = x * len;
+        dest[1] = y * len;
+        dest[2] = z * len;
+        return dest;
+    };
+
+    /**
+     * Performs a linear interpolation between two vec3
+     *
+     * @param {vec3} vec First vector
+     * @param {vec3} vec2 Second vector
+     * @param {number} lerp Interpolation amount between the two inputs
+     * @param {vec3} [dest] vec3 receiving operation result. If not specified result is written to vec
+     *
+     * @returns {vec3} dest if specified, vec otherwise
+     */
+    vec3.lerp = function(vec, vec2, lerp, dest) {
+        if (!dest) {
+            dest = vec;
+        }
+
+        dest[0] = vec[0] + lerp * (vec2[0] - vec[0]);
+        dest[1] = vec[1] + lerp * (vec2[1] - vec[1]);
+        dest[2] = vec[2] + lerp * (vec2[2] - vec[2]);
+
+        return dest;
+    };
+
+    /**
+     * Calculates the euclidian distance between two vec3
+     *
+     * Params:
+     * @param {vec3} vec First vector
+     * @param {vec3} vec2 Second vector
+     *
+     * @returns {number} Distance between vec and vec2
+     */
+    vec3.dist = function(vec, vec2) {
+        var x = vec2[0] - vec[0],
+            y = vec2[1] - vec[1],
+            z = vec2[2] - vec[2];
+
+        return Math.sqrt(x * x + y * y + z * z);
+    };
+
+    /**
+     * Projects the specified vec3 from screen space into object space
+     * Based on the <a href="http://webcvs.freedesktop.org/mesa/Mesa/src/glu/mesa/project.c?revision=1.4&view=markup">Mesa gluUnProject implementation</a>
+     *
+     * @param {vec3} vec Screen-space vector to project
+     * @param {mat4} view View matrix
+     * @param {mat4} proj Projection matrix
+     * @param {vec4} viewport Viewport as given to gl.viewport [x, y, width, height]
+     * @param {vec3} [dest] vec3 receiving unprojected result. If not specified result is written to vec
+     *
+     * @returns {vec3} dest if specified, vec otherwise
+     */
+    vec3.unproject = function(vec, view, proj, viewport, dest) {
+        if (!dest) {
+            dest = vec;
+        }
+
+        var m = mat4.create();
+        var v = new MatrixArray(4);
+
+        v[0] = (vec[0] - viewport[0]) * 2.0 / viewport[2] - 1.0;
+        v[1] = (vec[1] - viewport[1]) * 2.0 / viewport[3] - 1.0;
+        v[2] = 2.0 * vec[2] - 1.0;
+        v[3] = 1.0;
+
+        mat4.multiply(proj, view, m);
+        if (!mat4.inverse(m)) {
+            return null;
+        }
+
+        mat4.multiplyVec4(m, v);
+        if (v[3] === 0.0) {
+            return null;
+        }
+
+        dest[0] = v[0] / v[3];
+        dest[1] = v[1] / v[3];
+        dest[2] = v[2] / v[3];
+
+        return dest;
+    };
+
+    /**
+     * Returns a string representation of a vector
+     *
+     * @param {vec3} vec Vector to represent as a string
+     *
+     * @returns {string} String representation of vec
+     */
+    vec3.str = function(vec) {
+        return '[' + vec[0] + ', ' + vec[1] + ', ' + vec[2] + ']';
+    };
+
+/*
+ * mat3
+ */
+
+    /**
+     * Creates a new instance of a mat3 using the default array type
+     * Any javascript array-like object containing at least 9 numeric elements can serve as a mat3
+     *
+     * @param {mat3} [mat] mat3 containing values to initialize with
+     *
+     * @returns {mat3} New mat3
+     */
+    mat3.create = function(mat) {
+        var dest = new MatrixArray(9);
+
+        if (mat) {
+            dest[0] = mat[0];
+            dest[1] = mat[1];
+            dest[2] = mat[2];
+            dest[3] = mat[3];
+            dest[4] = mat[4];
+            dest[5] = mat[5];
+            dest[6] = mat[6];
+            dest[7] = mat[7];
+            dest[8] = mat[8];
+        }
+
+        return dest;
+    };
+
+    /**
+     * Copies the values of one mat3 to another
+     *
+     * @param {mat3} mat mat3 containing values to copy
+     * @param {mat3} dest mat3 receiving copied values
+     *
+     * @returns {mat3} dest
+     */
+    mat3.set = function(mat, dest) {
+        dest[0] = mat[0];
+        dest[1] = mat[1];
+        dest[2] = mat[2];
+        dest[3] = mat[3];
+        dest[4] = mat[4];
+        dest[5] = mat[5];
+        dest[6] = mat[6];
+        dest[7] = mat[7];
+        dest[8] = mat[8];
+        return dest;
+    };
+
+    /**
+     * Sets a mat3 to an identity matrix
+     *
+     * @param {mat3} dest mat3 to set
+     *
+     * @returns dest if specified, otherwise a new mat3
+     */
+    mat3.identity = function(dest) {
+        if (!dest) {
+            dest = mat3.create();
+        }
+        dest[0] = 1;
+        dest[1] = 0;
+        dest[2] = 0;
+        dest[3] = 0;
+        dest[4] = 1;
+        dest[5] = 0;
+        dest[6] = 0;
+        dest[7] = 0;
+        dest[8] = 1;
+        return dest;
+    };
+
+    /**
+     * Transposes a mat3 (flips the values over the diagonal)
+     *
+     * Params:
+     * @param {mat3} mat mat3 to transpose
+     * @param {mat3} [dest] mat3 receiving transposed values. If not specified result is written to mat
+     *
+     * @returns {mat3} dest is specified, mat otherwise
+     */
+    mat3.transpose = function(mat, dest) {
+        // If we are transposing ourselves we can skip a few steps but have to cache some values
+        if (!dest || mat === dest) {
+            var a01 = mat[1],
+                a02 = mat[2],
+                a12 = mat[5];
+
+            mat[1] = mat[3];
+            mat[2] = mat[6];
+            mat[3] = a01;
+            mat[5] = mat[7];
+            mat[6] = a02;
+            mat[7] = a12;
+            return mat;
+        }
+
+        dest[0] = mat[0];
+        dest[1] = mat[3];
+        dest[2] = mat[6];
+        dest[3] = mat[1];
+        dest[4] = mat[4];
+        dest[5] = mat[7];
+        dest[6] = mat[2];
+        dest[7] = mat[5];
+        dest[8] = mat[8];
+        return dest;
+    };
+
+    /**
+     * Copies the elements of a mat3 into the upper 3x3 elements of a mat4
+     *
+     * @param {mat3} mat mat3 containing values to copy
+     * @param {mat4} [dest] mat4 receiving copied values
+     *
+     * @returns {mat4} dest if specified, a new mat4 otherwise
+     */
+    mat3.toMat4 = function(mat, dest) {
+        if (!dest) {
+            dest = mat4.create();
+        }
+
+        dest[15] = 1;
+        dest[14] = 0;
+        dest[13] = 0;
+        dest[12] = 0;
+
+        dest[11] = 0;
+        dest[10] = mat[8];
+        dest[9] = mat[7];
+        dest[8] = mat[6];
+
+        dest[7] = 0;
+        dest[6] = mat[5];
+        dest[5] = mat[4];
+        dest[4] = mat[3];
+
+        dest[3] = 0;
+        dest[2] = mat[2];
+        dest[1] = mat[1];
+        dest[0] = mat[0];
+
+        return dest;
+    };
+
+    /**
+     * Returns a string representation of a mat3
+     *
+     * @param {mat3} mat mat3 to represent as a string
+     *
+     * @param {string} String representation of mat
+     */
+    mat3.str = function(mat) {
+        return '[' + mat[0] + ', ' + mat[1] + ', ' + mat[2] + ', ' + mat[3] + ', ' + mat[4] + ', ' + mat[5] + ', ' + mat[6] + ', ' + mat[7] + ', ' + mat[8] + ']';
+    };
+
+/*
+ * mat4
+ */
+
+    /**
+     * Creates a new instance of a mat4 using the default array type
+     * Any javascript array-like object containing at least 16 numeric elements can serve as a mat4
+     *
+     * @param {mat4} [mat] mat4 containing values to initialize with
+     *
+     * @returns {mat4} New mat4
+     */
+    mat4.create = function(mat) {
+        var dest = new MatrixArray(16);
+
+        if (mat) {
+            dest[0] = mat[0];
+            dest[1] = mat[1];
+            dest[2] = mat[2];
+            dest[3] = mat[3];
+            dest[4] = mat[4];
+            dest[5] = mat[5];
+            dest[6] = mat[6];
+            dest[7] = mat[7];
+            dest[8] = mat[8];
+            dest[9] = mat[9];
+            dest[10] = mat[10];
+            dest[11] = mat[11];
+            dest[12] = mat[12];
+            dest[13] = mat[13];
+            dest[14] = mat[14];
+            dest[15] = mat[15];
+        }
+
+        return dest;
+    };
+
+    /**
+     * Copies the values of one mat4 to another
+     *
+     * @param {mat4} mat mat4 containing values to copy
+     * @param {mat4} dest mat4 receiving copied values
+     *
+     * @returns {mat4} dest
+     */
+    mat4.set = function(mat, dest) {
+        dest[0] = mat[0];
+        dest[1] = mat[1];
+        dest[2] = mat[2];
+        dest[3] = mat[3];
+        dest[4] = mat[4];
+        dest[5] = mat[5];
+        dest[6] = mat[6];
+        dest[7] = mat[7];
+        dest[8] = mat[8];
+        dest[9] = mat[9];
+        dest[10] = mat[10];
+        dest[11] = mat[11];
+        dest[12] = mat[12];
+        dest[13] = mat[13];
+        dest[14] = mat[14];
+        dest[15] = mat[15];
+        return dest;
+    };
+
+    /**
+     * Sets a mat4 to an identity matrix
+     *
+     * @param {mat4} dest mat4 to set
+     *
+     * @returns {mat4} dest
+     */
+    mat4.identity = function(dest) {
+        if (!dest) {
+            dest = mat4.create();
+        }
+        dest[0] = 1;
+        dest[1] = 0;
+        dest[2] = 0;
+        dest[3] = 0;
+        dest[4] = 0;
+        dest[5] = 1;
+        dest[6] = 0;
+        dest[7] = 0;
+        dest[8] = 0;
+        dest[9] = 0;
+        dest[10] = 1;
+        dest[11] = 0;
+        dest[12] = 0;
+        dest[13] = 0;
+        dest[14] = 0;
+        dest[15] = 1;
+        return dest;
+    };
+
+    /**
+     * Transposes a mat4 (flips the values over the diagonal)
+     *
+     * @param {mat4} mat mat4 to transpose
+     * @param {mat4} [dest] mat4 receiving transposed values. If not specified result is written to mat
+     *
+     * @param {mat4} dest is specified, mat otherwise
+     */
+    mat4.transpose = function(mat, dest) {
+        // If we are transposing ourselves we can skip a few steps but have to cache some values
+        if (!dest || mat === dest) {
+            var a01 = mat[1],
+                a02 = mat[2],
+                a03 = mat[3],
+                a12 = mat[6],
+                a13 = mat[7],
+                a23 = mat[11];
+
+            mat[1] = mat[4];
+            mat[2] = mat[8];
+            mat[3] = mat[12];
+            mat[4] = a01;
+            mat[6] = mat[9];
+            mat[7] = mat[13];
+            mat[8] = a02;
+            mat[9] = a12;
+            mat[11] = mat[14];
+            mat[12] = a03;
+            mat[13] = a13;
+            mat[14] = a23;
+            return mat;
+        }
+
+        dest[0] = mat[0];
+        dest[1] = mat[4];
+        dest[2] = mat[8];
+        dest[3] = mat[12];
+        dest[4] = mat[1];
+        dest[5] = mat[5];
+        dest[6] = mat[9];
+        dest[7] = mat[13];
+        dest[8] = mat[2];
+        dest[9] = mat[6];
+        dest[10] = mat[10];
+        dest[11] = mat[14];
+        dest[12] = mat[3];
+        dest[13] = mat[7];
+        dest[14] = mat[11];
+        dest[15] = mat[15];
+        return dest;
+    };
+
+    /**
+     * Calculates the determinant of a mat4
+     *
+     * @param {mat4} mat mat4 to calculate determinant of
+     *
+     * @returns {number} determinant of mat
+     */
+    mat4.determinant = function(mat) {
+        // Cache the matrix values (makes for huge speed increases!)
+        var a00 = mat[0],
+            a01 = mat[1],
+            a02 = mat[2],
+            a03 = mat[3],
+            a10 = mat[4],
+            a11 = mat[5],
+            a12 = mat[6],
+            a13 = mat[7],
+            a20 = mat[8],
+            a21 = mat[9],
+            a22 = mat[10],
+            a23 = mat[11],
+            a30 = mat[12],
+            a31 = mat[13],
+            a32 = mat[14],
+            a33 = mat[15];
+
+        return (a30 * a21 * a12 * a03 - a20 * a31 * a12 * a03 - a30 * a11 * a22 * a03 + a10 * a31 * a22 * a03 + a20 * a11 * a32 * a03 - a10 * a21 * a32 * a03 - a30 * a21 * a02 * a13 + a20 * a31 * a02 * a13 + a30 * a01 * a22 * a13 - a00 * a31 * a22 * a13 - a20 * a01 * a32 * a13 + a00 * a21 * a32 * a13 + a30 * a11 * a02 * a23 - a10 * a31 * a02 * a23 - a30 * a01 * a12 * a23 + a00 * a31 * a12 * a23 + a10 * a01 * a32 * a23 - a00 * a11 * a32 * a23 - a20 * a11 * a02 * a33 + a10 * a21 * a02 * a33 + a20 * a01 * a12 * a33 - a00 * a21 * a12 * a33 - a10 * a01 * a22 * a33 + a00 * a11 * a22 * a33);
+    };
+
+    /**
+     * Calculates the inverse matrix of a mat4
+     *
+     * @param {mat4} mat mat4 to calculate inverse of
+     * @param {mat4} [dest] mat4 receiving inverse matrix. If not specified result is written to mat
+     *
+     * @param {mat4} dest is specified, mat otherwise, null if matrix cannot be inverted
+     */
+    mat4.inverse = function(mat, dest) {
+        if (!dest) {
+            dest = mat;
+        }
+
+        // Cache the matrix values (makes for huge speed increases!)
+        var a00 = mat[0],
+            a01 = mat[1],
+            a02 = mat[2],
+            a03 = mat[3],
+            a10 = mat[4],
+            a11 = mat[5],
+            a12 = mat[6],
+            a13 = mat[7],
+            a20 = mat[8],
+            a21 = mat[9],
+            a22 = mat[10],
+            a23 = mat[11],
+            a30 = mat[12],
+            a31 = mat[13],
+            a32 = mat[14],
+            a33 = mat[15],
+
+            b00 = a00 * a11 - a01 * a10,
+            b01 = a00 * a12 - a02 * a10,
+            b02 = a00 * a13 - a03 * a10,
+            b03 = a01 * a12 - a02 * a11,
+            b04 = a01 * a13 - a03 * a11,
+            b05 = a02 * a13 - a03 * a12,
+            b06 = a20 * a31 - a21 * a30,
+            b07 = a20 * a32 - a22 * a30,
+            b08 = a20 * a33 - a23 * a30,
+            b09 = a21 * a32 - a22 * a31,
+            b10 = a21 * a33 - a23 * a31,
+            b11 = a22 * a33 - a23 * a32,
+
+            d = (b00 * b11 - b01 * b10 + b02 * b09 + b03 * b08 - b04 * b07 + b05 * b06),
+            invDet;
+
+        // Calculate the determinant
+        if (!d) {
+            return null;
+        }
+        invDet = 1 / d;
+
+        dest[0] = (a11 * b11 - a12 * b10 + a13 * b09) * invDet;
+        dest[1] = (-a01 * b11 + a02 * b10 - a03 * b09) * invDet;
+        dest[2] = (a31 * b05 - a32 * b04 + a33 * b03) * invDet;
+        dest[3] = (-a21 * b05 + a22 * b04 - a23 * b03) * invDet;
+        dest[4] = (-a10 * b11 + a12 * b08 - a13 * b07) * invDet;
+        dest[5] = (a00 * b11 - a02 * b08 + a03 * b07) * invDet;
+        dest[6] = (-a30 * b05 + a32 * b02 - a33 * b01) * invDet;
+        dest[7] = (a20 * b05 - a22 * b02 + a23 * b01) * invDet;
+        dest[8] = (a10 * b10 - a11 * b08 + a13 * b06) * invDet;
+        dest[9] = (-a00 * b10 + a01 * b08 - a03 * b06) * invDet;
+        dest[10] = (a30 * b04 - a31 * b02 + a33 * b00) * invDet;
+        dest[11] = (-a20 * b04 + a21 * b02 - a23 * b00) * invDet;
+        dest[12] = (-a10 * b09 + a11 * b07 - a12 * b06) * invDet;
+        dest[13] = (a00 * b09 - a01 * b07 + a02 * b06) * invDet;
+        dest[14] = (-a30 * b03 + a31 * b01 - a32 * b00) * invDet;
+        dest[15] = (a20 * b03 - a21 * b01 + a22 * b00) * invDet;
+
+        return dest;
+    };
+
+    /**
+     * Copies the upper 3x3 elements of a mat4 into another mat4
+     *
+     * @param {mat4} mat mat4 containing values to copy
+     * @param {mat4} [dest] mat4 receiving copied values
+     *
+     * @returns {mat4} dest is specified, a new mat4 otherwise
+     */
+    mat4.toRotationMat = function(mat, dest) {
+        if (!dest) {
+            dest = mat4.create();
+        }
+
+        dest[0] = mat[0];
+        dest[1] = mat[1];
+        dest[2] = mat[2];
+        dest[3] = mat[3];
+        dest[4] = mat[4];
+        dest[5] = mat[5];
+        dest[6] = mat[6];
+        dest[7] = mat[7];
+        dest[8] = mat[8];
+        dest[9] = mat[9];
+        dest[10] = mat[10];
+        dest[11] = mat[11];
+        dest[12] = 0;
+        dest[13] = 0;
+        dest[14] = 0;
+        dest[15] = 1;
+
+        return dest;
+    };
+
+    /**
+     * Copies the upper 3x3 elements of a mat4 into a mat3
+     *
+     * @param {mat4} mat mat4 containing values to copy
+     * @param {mat3} [dest] mat3 receiving copied values
+     *
+     * @returns {mat3} dest is specified, a new mat3 otherwise
+     */
+    mat4.toMat3 = function(mat, dest) {
+        if (!dest) {
+            dest = mat3.create();
+        }
+
+        dest[0] = mat[0];
+        dest[1] = mat[1];
+        dest[2] = mat[2];
+        dest[3] = mat[4];
+        dest[4] = mat[5];
+        dest[5] = mat[6];
+        dest[6] = mat[8];
+        dest[7] = mat[9];
+        dest[8] = mat[10];
+
+        return dest;
+    };
+
+    /**
+     * Calculates the inverse of the upper 3x3 elements of a mat4 and copies the result into a mat3
+     * The resulting matrix is useful for calculating transformed normals
+     *
+     * Params:
+     * @param {mat4} mat mat4 containing values to invert and copy
+     * @param {mat3} [dest] mat3 receiving values
+     *
+     * @returns {mat3} dest is specified, a new mat3 otherwise, null if the matrix cannot be inverted
+     */
+    mat4.toInverseMat3 = function(mat, dest) {
+        // Cache the matrix values (makes for huge speed increases!)
+        var a00 = mat[0],
+            a01 = mat[1],
+            a02 = mat[2],
+            a10 = mat[4],
+            a11 = mat[5],
+            a12 = mat[6],
+            a20 = mat[8],
+            a21 = mat[9],
+            a22 = mat[10],
+
+            b01 = a22 * a11 - a12 * a21,
+            b11 = -a22 * a10 + a12 * a20,
+            b21 = a21 * a10 - a11 * a20,
+
+            d = a00 * b01 + a01 * b11 + a02 * b21,
+            id;
+
+        if (!d) {
+            return null;
+        }
+        id = 1 / d;
+
+        if (!dest) {
+            dest = mat3.create();
+        }
+
+        dest[0] = b01 * id;
+        dest[1] = (-a22 * a01 + a02 * a21) * id;
+        dest[2] = (a12 * a01 - a02 * a11) * id;
+        dest[3] = b11 * id;
+        dest[4] = (a22 * a00 - a02 * a20) * id;
+        dest[5] = (-a12 * a00 + a02 * a10) * id;
+        dest[6] = b21 * id;
+        dest[7] = (-a21 * a00 + a01 * a20) * id;
+        dest[8] = (a11 * a00 - a01 * a10) * id;
+
+        return dest;
+    };
+
+    mat3.multiply = function(a, b) {
+        var a00 = a[0 * 3 + 0];
+        var a01 = a[0 * 3 + 1];
+        var a02 = a[0 * 3 + 2];
+        var a10 = a[1 * 3 + 0];
+        var a11 = a[1 * 3 + 1];
+        var a12 = a[1 * 3 + 2];
+        var a20 = a[2 * 3 + 0];
+        var a21 = a[2 * 3 + 1];
+        var a22 = a[2 * 3 + 2];
+        var b00 = b[0 * 3 + 0];
+        var b01 = b[0 * 3 + 1];
+        var b02 = b[0 * 3 + 2];
+        var b10 = b[1 * 3 + 0];
+        var b11 = b[1 * 3 + 1];
+        var b12 = b[1 * 3 + 2];
+        var b20 = b[2 * 3 + 0];
+        var b21 = b[2 * 3 + 1];
+        var b22 = b[2 * 3 + 2];
+        return [a00 * b00 + a01 * b10 + a02 * b20, a00 * b01 + a01 * b11 + a02 * b21, a00 * b02 + a01 * b12 + a02 * b22, a10 * b00 + a11 * b10 + a12 * b20, a10 * b01 + a11 * b11 + a12 * b21, a10 * b02 + a11 * b12 + a12 * b22, a20 * b00 + a21 * b10 + a22 * b20, a20 * b01 + a21 * b11 + a22 * b21, a20 * b02 + a21 * b12 + a22 * b22];
+    }
+
+    /**
+     * Performs a matrix multiplication
+     *
+     * @param {mat4} mat First operand
+     * @param {mat4} mat2 Second operand
+     * @param {mat4} [dest] mat4 receiving operation result. If not specified result is written to mat
+     *
+     * @returns {mat4} dest if specified, mat otherwise
+     */
+    mat4.multiply = function(mat, mat2, dest) {
+        if (!dest) {
+            dest = mat;
+        }
+
+        // Cache the matrix values (makes for huge speed increases!)
+        var a00 = mat[0],
+            a01 = mat[1],
+            a02 = mat[2],
+            a03 = mat[3],
+            a10 = mat[4],
+            a11 = mat[5],
+            a12 = mat[6],
+            a13 = mat[7],
+            a20 = mat[8],
+            a21 = mat[9],
+            a22 = mat[10],
+            a23 = mat[11],
+            a30 = mat[12],
+            a31 = mat[13],
+            a32 = mat[14],
+            a33 = mat[15],
+
+            b00 = mat2[0],
+            b01 = mat2[1],
+            b02 = mat2[2],
+            b03 = mat2[3],
+            b10 = mat2[4],
+            b11 = mat2[5],
+            b12 = mat2[6],
+            b13 = mat2[7],
+            b20 = mat2[8],
+            b21 = mat2[9],
+            b22 = mat2[10],
+            b23 = mat2[11],
+            b30 = mat2[12],
+            b31 = mat2[13],
+            b32 = mat2[14],
+            b33 = mat2[15];
+
+        dest[0] = b00 * a00 + b01 * a10 + b02 * a20 + b03 * a30;
+        dest[1] = b00 * a01 + b01 * a11 + b02 * a21 + b03 * a31;
+        dest[2] = b00 * a02 + b01 * a12 + b02 * a22 + b03 * a32;
+        dest[3] = b00 * a03 + b01 * a13 + b02 * a23 + b03 * a33;
+        dest[4] = b10 * a00 + b11 * a10 + b12 * a20 + b13 * a30;
+        dest[5] = b10 * a01 + b11 * a11 + b12 * a21 + b13 * a31;
+        dest[6] = b10 * a02 + b11 * a12 + b12 * a22 + b13 * a32;
+        dest[7] = b10 * a03 + b11 * a13 + b12 * a23 + b13 * a33;
+        dest[8] = b20 * a00 + b21 * a10 + b22 * a20 + b23 * a30;
+        dest[9] = b20 * a01 + b21 * a11 + b22 * a21 + b23 * a31;
+        dest[10] = b20 * a02 + b21 * a12 + b22 * a22 + b23 * a32;
+        dest[11] = b20 * a03 + b21 * a13 + b22 * a23 + b23 * a33;
+        dest[12] = b30 * a00 + b31 * a10 + b32 * a20 + b33 * a30;
+        dest[13] = b30 * a01 + b31 * a11 + b32 * a21 + b33 * a31;
+        dest[14] = b30 * a02 + b31 * a12 + b32 * a22 + b33 * a32;
+        dest[15] = b30 * a03 + b31 * a13 + b32 * a23 + b33 * a33;
+
+        return dest;
+    };
+
+    /**
+     * Transforms a vec3 with the given matrix
+     * 4th vector component is implicitly '1'
+     *
+     * @param {mat4} mat mat4 to transform the vector with
+     * @param {vec3} vec vec3 to transform
+     * @param {vec3} [dest] vec3 receiving operation result. If not specified result is written to vec
+     *
+     * @returns {vec3} dest if specified, vec otherwise
+     */
+    mat4.multiplyVec3 = function(mat, vec, dest) {
+        if (!dest) {
+            dest = vec;
+        }
+
+        var x = vec[0],
+            y = vec[1],
+            z = vec[2];
+
+        dest[0] = mat[0] * x + mat[4] * y + mat[8] * z + mat[12];
+        dest[1] = mat[1] * x + mat[5] * y + mat[9] * z + mat[13];
+        dest[2] = mat[2] * x + mat[6] * y + mat[10] * z + mat[14];
+
+        return dest;
+    };
+
+    /**
+     * Transforms a vec4 with the given matrix
+     *
+     * @param {mat4} mat mat4 to transform the vector with
+     * @param {vec4} vec vec4 to transform
+     * @param {vec4} [dest] vec4 receiving operation result. If not specified result is written to vec
+     *
+     * @returns {vec4} dest if specified, vec otherwise
+     */
+    mat4.multiplyVec4 = function(mat, vec, dest) {
+        if (!dest) {
+            dest = vec;
+        }
+
+        var x = vec[0],
+            y = vec[1],
+            z = vec[2],
+            w = vec[3];
+
+        dest[0] = mat[0] * x + mat[4] * y + mat[8] * z + mat[12] * w;
+        dest[1] = mat[1] * x + mat[5] * y + mat[9] * z + mat[13] * w;
+        dest[2] = mat[2] * x + mat[6] * y + mat[10] * z + mat[14] * w;
+        dest[3] = mat[3] * x + mat[7] * y + mat[11] * z + mat[15] * w;
+
+        return dest;
+    };
+
+    /**
+     * Translates a matrix by the given vector
+     *
+     * @param {mat4} mat mat4 to translate
+     * @param {vec3} vec vec3 specifying the translation
+     * @param {mat4} [dest] mat4 receiving operation result. If not specified result is written to mat
+     *
+     * @returns {mat4} dest if specified, mat otherwise
+     */
+    mat4.translate = function(mat, vec, dest) {
+        var x = vec[0],
+            y = vec[1],
+            z = vec[2],
+            a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23;
+
+        if (!dest || mat === dest) {
+            mat[12] = mat[0] * x + mat[4] * y + mat[8] * z + mat[12];
+            mat[13] = mat[1] * x + mat[5] * y + mat[9] * z + mat[13];
+            mat[14] = mat[2] * x + mat[6] * y + mat[10] * z + mat[14];
+            mat[15] = mat[3] * x + mat[7] * y + mat[11] * z + mat[15];
+            return mat;
+        }
+
+        a00 = mat[0];
+        a01 = mat[1];
+        a02 = mat[2];
+        a03 = mat[3];
+        a10 = mat[4];
+        a11 = mat[5];
+        a12 = mat[6];
+        a13 = mat[7];
+        a20 = mat[8];
+        a21 = mat[9];
+        a22 = mat[10];
+        a23 = mat[11];
+
+        dest[0] = a00;
+        dest[1] = a01;
+        dest[2] = a02;
+        dest[3] = a03;
+        dest[4] = a10;
+        dest[5] = a11;
+        dest[6] = a12;
+        dest[7] = a13;
+        dest[8] = a20;
+        dest[9] = a21;
+        dest[10] = a22;
+        dest[11] = a23;
+
+        dest[12] = a00 * x + a10 * y + a20 * z + mat[12];
+        dest[13] = a01 * x + a11 * y + a21 * z + mat[13];
+        dest[14] = a02 * x + a12 * y + a22 * z + mat[14];
+        dest[15] = a03 * x + a13 * y + a23 * z + mat[15];
+        return dest;
+    };
+
+    /**
+     * Scales a matrix by the given vector
+     *
+     * @param {mat4} mat mat4 to scale
+     * @param {vec3} vec vec3 specifying the scale for each axis
+     * @param {mat4} [dest] mat4 receiving operation result. If not specified result is written to mat
+     *
+     * @param {mat4} dest if specified, mat otherwise
+     */
+    mat4.scale = function(mat, vec, dest) {
+        var x = vec[0],
+            y = vec[1],
+            z = vec[2];
+
+        if (!dest || mat === dest) {
+            mat[0] *= x;
+            mat[1] *= x;
+            mat[2] *= x;
+            mat[3] *= x;
+            mat[4] *= y;
+            mat[5] *= y;
+            mat[6] *= y;
+            mat[7] *= y;
+            mat[8] *= z;
+            mat[9] *= z;
+            mat[10] *= z;
+            mat[11] *= z;
+            return mat;
+        }
+
+        dest[0] = mat[0] * x;
+        dest[1] = mat[1] * x;
+        dest[2] = mat[2] * x;
+        dest[3] = mat[3] * x;
+        dest[4] = mat[4] * y;
+        dest[5] = mat[5] * y;
+        dest[6] = mat[6] * y;
+        dest[7] = mat[7] * y;
+        dest[8] = mat[8] * z;
+        dest[9] = mat[9] * z;
+        dest[10] = mat[10] * z;
+        dest[11] = mat[11] * z;
+        dest[12] = mat[12];
+        dest[13] = mat[13];
+        dest[14] = mat[14];
+        dest[15] = mat[15];
+        return dest;
+    };
+
+    /**
+     * Rotates a matrix by the given angle around the specified axis
+     * If rotating around a primary axis (X,Y,Z) one of the specialized rotation functions should be used instead for performance
+     *
+     * @param {mat4} mat mat4 to rotate
+     * @param {number} angle Angle (in radians) to rotate
+     * @param {vec3} axis vec3 representing the axis to rotate around 
+     * @param {mat4} [dest] mat4 receiving operation result. If not specified result is written to mat
+     *
+     * @returns {mat4} dest if specified, mat otherwise
+     */
+    mat4.rotate = function(mat, angle, axis, dest) {
+        var x = axis[0],
+            y = axis[1],
+            z = axis[2],
+            len = Math.sqrt(x * x + y * y + z * z),
+            s, c, t, a00, a01, a02, a03, a10, a11, a12, a13, a20, a21, a22, a23, b00, b01, b02, b10, b11, b12, b20, b21, b22;
+
+        if (!len) {
+            return null;
+        }
+        if (len !== 1) {
+            len = 1 / len;
+            x *= len;
+            y *= len;
+            z *= len;
+        }
+
+        s = Math.sin(angle);
+        c = Math.cos(angle);
+        t = 1 - c;
+
+        a00 = mat[0];
+        a01 = mat[1];
+        a02 = mat[2];
+        a03 = mat[3];
+        a10 = mat[4];
+        a11 = mat[5];
+        a12 = mat[6];
+        a13 = mat[7];
+        a20 = mat[8];
+        a21 = mat[9];
+        a22 = mat[10];
+        a23 = mat[11];
+
+        // Construct the elements of the rotation matrix
+        b00 = x * x * t + c;
+        b01 = y * x * t + z * s;
+        b02 = z * x * t - y * s;
+        b10 = x * y * t - z * s;
+        b11 = y * y * t + c;
+        b12 = z * y * t + x * s;
+        b20 = x * z * t + y * s;
+        b21 = y * z * t - x * s;
+        b22 = z * z * t + c;
+
+        if (!dest) {
+            dest = mat;
+        }
+        else if (mat !== dest) { // If the source and destination differ, copy the unchanged last row
+            dest[12] = mat[12];
+            dest[13] = mat[13];
+            dest[14] = mat[14];
+            dest[15] = mat[15];
+        }
+
+        // Perform rotation-specific matrix multiplication
+        dest[0] = a00 * b00 + a10 * b01 + a20 * b02;
+        dest[1] = a01 * b00 + a11 * b01 + a21 * b02;
+        dest[2] = a02 * b00 + a12 * b01 + a22 * b02;
+        dest[3] = a03 * b00 + a13 * b01 + a23 * b02;
+
+        dest[4] = a00 * b10 + a10 * b11 + a20 * b12;
+        dest[5] = a01 * b10 + a11 * b11 + a21 * b12;
+        dest[6] = a02 * b10 + a12 * b11 + a22 * b12;
+        dest[7] = a03 * b10 + a13 * b11 + a23 * b12;
+
+        dest[8] = a00 * b20 + a10 * b21 + a20 * b22;
+        dest[9] = a01 * b20 + a11 * b21 + a21 * b22;
+        dest[10] = a02 * b20 + a12 * b21 + a22 * b22;
+        dest[11] = a03 * b20 + a13 * b21 + a23 * b22;
+        return dest;
+    };
+
+    /**
+     * Rotates a matrix by the given angle around the X axis
+     *
+     * @param {mat4} mat mat4 to rotate
+     * @param {number} angle Angle (in radians) to rotate
+     * @param {mat4} [dest] mat4 receiving operation result. If not specified result is written to mat
+     *
+     * @returns {mat4} dest if specified, mat otherwise
+     */
+    mat4.rotateX = function(mat, angle, dest) {
+        var s = Math.sin(angle),
+            c = Math.cos(angle),
+            a10 = mat[4],
+            a11 = mat[5],
+            a12 = mat[6],
+            a13 = mat[7],
+            a20 = mat[8],
+            a21 = mat[9],
+            a22 = mat[10],
+            a23 = mat[11];
+
+        if (!dest) {
+            dest = mat;
+        }
+        else if (mat !== dest) { // If the source and destination differ, copy the unchanged rows
+            dest[0] = mat[0];
+            dest[1] = mat[1];
+            dest[2] = mat[2];
+            dest[3] = mat[3];
+
+            dest[12] = mat[12];
+            dest[13] = mat[13];
+            dest[14] = mat[14];
+            dest[15] = mat[15];
+        }
+
+        // Perform axis-specific matrix multiplication
+        dest[4] = a10 * c + a20 * s;
+        dest[5] = a11 * c + a21 * s;
+        dest[6] = a12 * c + a22 * s;
+        dest[7] = a13 * c + a23 * s;
+
+        dest[8] = a10 * -s + a20 * c;
+        dest[9] = a11 * -s + a21 * c;
+        dest[10] = a12 * -s + a22 * c;
+        dest[11] = a13 * -s + a23 * c;
+        return dest;
+    };
+
+    /**
+     * Rotates a matrix by the given angle around the Y axis
+     *
+     * @param {mat4} mat mat4 to rotate
+     * @param {number} angle Angle (in radians) to rotate
+     * @param {mat4} [dest] mat4 receiving operation result. If not specified result is written to mat
+     *
+     * @returns {mat4} dest if specified, mat otherwise
+     */
+    mat4.rotateY = function(mat, angle, dest) {
+        var s = Math.sin(angle),
+            c = Math.cos(angle),
+            a00 = mat[0],
+            a01 = mat[1],
+            a02 = mat[2],
+            a03 = mat[3],
+            a20 = mat[8],
+            a21 = mat[9],
+            a22 = mat[10],
+            a23 = mat[11];
+
+        if (!dest) {
+            dest = mat;
+        }
+        else if (mat !== dest) { // If the source and destination differ, copy the unchanged rows
+            dest[4] = mat[4];
+            dest[5] = mat[5];
+            dest[6] = mat[6];
+            dest[7] = mat[7];
+
+            dest[12] = mat[12];
+            dest[13] = mat[13];
+            dest[14] = mat[14];
+            dest[15] = mat[15];
+        }
+
+        // Perform axis-specific matrix multiplication
+        dest[0] = a00 * c + a20 * -s;
+        dest[1] = a01 * c + a21 * -s;
+        dest[2] = a02 * c + a22 * -s;
+        dest[3] = a03 * c + a23 * -s;
+
+        dest[8] = a00 * s + a20 * c;
+        dest[9] = a01 * s + a21 * c;
+        dest[10] = a02 * s + a22 * c;
+        dest[11] = a03 * s + a23 * c;
+        return dest;
+    };
+
+    /**
+     * Rotates a matrix by the given angle around the Z axis
+     *
+     * @param {mat4} mat mat4 to rotate
+     * @param {number} angle Angle (in radians) to rotate
+     * @param {mat4} [dest] mat4 receiving operation result. If not specified result is written to mat
+     *
+     * @returns {mat4} dest if specified, mat otherwise
+     */
+    mat4.rotateZ = function(mat, angle, dest) {
+        var s = Math.sin(angle),
+            c = Math.cos(angle),
+            a00 = mat[0],
+            a01 = mat[1],
+            a02 = mat[2],
+            a03 = mat[3],
+            a10 = mat[4],
+            a11 = mat[5],
+            a12 = mat[6],
+            a13 = mat[7];
+
+        if (!dest) {
+            dest = mat;
+        }
+        else if (mat !== dest) { // If the source and destination differ, copy the unchanged last row
+            dest[8] = mat[8];
+            dest[9] = mat[9];
+            dest[10] = mat[10];
+            dest[11] = mat[11];
+
+            dest[12] = mat[12];
+            dest[13] = mat[13];
+            dest[14] = mat[14];
+            dest[15] = mat[15];
+        }
+
+        // Perform axis-specific matrix multiplication
+        dest[0] = a00 * c + a10 * s;
+        dest[1] = a01 * c + a11 * s;
+        dest[2] = a02 * c + a12 * s;
+        dest[3] = a03 * c + a13 * s;
+
+        dest[4] = a00 * -s + a10 * c;
+        dest[5] = a01 * -s + a11 * c;
+        dest[6] = a02 * -s + a12 * c;
+        dest[7] = a03 * -s + a13 * c;
+
+        return dest;
+    };
+
+    /**
+     * Generates a frustum matrix with the given bounds
+     *
+     * @param {number} left Left bound of the frustum
+     * @param {number} right Right bound of the frustum
+     * @param {number} bottom Bottom bound of the frustum
+     * @param {number} top Top bound of the frustum
+     * @param {number} near Near bound of the frustum
+     * @param {number} far Far bound of the frustum
+     * @param {mat4} [dest] mat4 frustum matrix will be written into
+     *
+     * @returns {mat4} dest if specified, a new mat4 otherwise
+     */
+    mat4.frustum = function(left, right, bottom, top, near, far, dest) {
+        if (!dest) {
+            dest = mat4.create();
+        }
+        var rl = (right - left),
+            tb = (top - bottom),
+            fn = (far - near);
+        dest[0] = (near * 2) / rl;
+        dest[1] = 0;
+        dest[2] = 0;
+        dest[3] = 0;
+        dest[4] = 0;
+        dest[5] = (near * 2) / tb;
+        dest[6] = 0;
+        dest[7] = 0;
+        dest[8] = (right + left) / rl;
+        dest[9] = (top + bottom) / tb;
+        dest[10] = -(far + near) / fn;
+        dest[11] = -1;
+        dest[12] = 0;
+        dest[13] = 0;
+        dest[14] = -(far * near * 2) / fn;
+        dest[15] = 0;
+        return dest;
+    };
+
+    /**
+     * Generates a perspective projection matrix with the given bounds
+     *
+     * @param {number} fovy Vertical field of view
+     * @param {number} aspect Aspect ratio. typically viewport width/height
+     * @param {number} near Near bound of the frustum
+     * @param {number} far Far bound of the frustum
+     * @param {mat4} [dest] mat4 frustum matrix will be written into
+     *
+     * @returns {mat4} dest if specified, a new mat4 otherwise
+     */
+    mat4.perspective = function(fovy, aspect, near, far, dest) {
+        var top = near * Math.tan(fovy * Math.PI / 360.0),
+            right = top * aspect;
+        return mat4.frustum(-right, right, -top, top, near, far, dest);
+    };
+
+    /**
+     * Generates a orthogonal projection matrix with the given bounds
+     *
+     * @param {number} left Left bound of the frustum
+     * @param {number} right Right bound of the frustum
+     * @param {number} bottom Bottom bound of the frustum
+     * @param {number} top Top bound of the frustum
+     * @param {number} near Near bound of the frustum
+     * @param {number} far Far bound of the frustum
+     * @param {mat4} [dest] mat4 frustum matrix will be written into
+     *
+     * @returns {mat4} dest if specified, a new mat4 otherwise
+     */
+    mat4.ortho = function(left, right, bottom, top, near, far, dest) {
+        if (!dest) {
+            dest = mat4.create();
+        }
+        var rl = (right - left),
+            tb = (top - bottom),
+            fn = (far - near);
+        dest[0] = 2 / rl;
+        dest[1] = 0;
+        dest[2] = 0;
+        dest[3] = 0;
+        dest[4] = 0;
+        dest[5] = 2 / tb;
+        dest[6] = 0;
+        dest[7] = 0;
+        dest[8] = 0;
+        dest[9] = 0;
+        dest[10] = -2 / fn;
+        dest[11] = 0;
+        dest[12] = -(left + right) / rl;
+        dest[13] = -(top + bottom) / tb;
+        dest[14] = -(far + near) / fn;
+        dest[15] = 1;
+        return dest;
+    };
+
+    /**
+     * Generates a look-at matrix with the given eye position, focal point, and up axis
+     *
+     * @param {vec3} eye Position of the viewer
+     * @param {vec3} center Point the viewer is looking at
+     * @param {vec3} up vec3 pointing "up"
+     * @param {mat4} [dest] mat4 frustum matrix will be written into
+     *
+     * @returns {mat4} dest if specified, a new mat4 otherwise
+     */
+    mat4.lookAt = function(eye, center, up, dest) {
+        if (!dest) {
+            dest = mat4.create();
+        }
+
+        var x0, x1, x2, y0, y1, y2, z0, z1, z2, len, eyex = eye[0],
+            eyey = eye[1],
+            eyez = eye[2],
+            upx = up[0],
+            upy = up[1],
+            upz = up[2],
+            centerx = center[0],
+            centery = center[1],
+            centerz = center[2];
+
+        if (eyex === centerx && eyey === centery && eyez === centerz) {
+            return mat4.identity(dest);
+        }
+
+        //vec3.direction(eye, center, z);
+        z0 = eyex - centerx;
+        z1 = eyey - centery;
+        z2 = eyez - centerz;
+
+        // normalize (no check needed for 0 because of early return)
+        len = 1 / Math.sqrt(z0 * z0 + z1 * z1 + z2 * z2);
+        z0 *= len;
+        z1 *= len;
+        z2 *= len;
+
+        //vec3.normalize(vec3.cross(up, z, x));
+        x0 = upy * z2 - upz * z1;
+        x1 = upz * z0 - upx * z2;
+        x2 = upx * z1 - upy * z0;
+        len = Math.sqrt(x0 * x0 + x1 * x1 + x2 * x2);
+        if (!len) {
+            x0 = 0;
+            x1 = 0;
+            x2 = 0;
+        }
+        else {
+            len = 1 / len;
+            x0 *= len;
+            x1 *= len;
+            x2 *= len;
+        }
+
+        //vec3.normalize(vec3.cross(z, x, y));
+        y0 = z1 * x2 - z2 * x1;
+        y1 = z2 * x0 - z0 * x2;
+        y2 = z0 * x1 - z1 * x0;
+
+        len = Math.sqrt(y0 * y0 + y1 * y1 + y2 * y2);
+        if (!len) {
+            y0 = 0;
+            y1 = 0;
+            y2 = 0;
+        }
+        else {
+            len = 1 / len;
+            y0 *= len;
+            y1 *= len;
+            y2 *= len;
+        }
+
+        dest[0] = x0;
+        dest[1] = y0;
+        dest[2] = z0;
+        dest[3] = 0;
+        dest[4] = x1;
+        dest[5] = y1;
+        dest[6] = z1;
+        dest[7] = 0;
+        dest[8] = x2;
+        dest[9] = y2;
+        dest[10] = z2;
+        dest[11] = 0;
+        dest[12] = -(x0 * eyex + x1 * eyey + x2 * eyez);
+        dest[13] = -(y0 * eyex + y1 * eyey + y2 * eyez);
+        dest[14] = -(z0 * eyex + z1 * eyey + z2 * eyez);
+        dest[15] = 1;
+
+        return dest;
+    };
+
+    /**
+     * Creates a matrix from a quaternion rotation and vector translation
+     * This is equivalent to (but much faster than):
+     *
+     *     mat4.identity(dest);
+     *     mat4.translate(dest, vec);
+     *     var quatMat = mat4.create();
+     *     quat4.toMat4(quat, quatMat);
+     *     mat4.multiply(dest, quatMat);
+     *
+     * @param {quat4} quat Rotation quaternion
+     * @param {vec3} vec Translation vector
+     * @param {mat4} [dest] mat4 receiving operation result. If not specified result is written to a new mat4
+     *
+     * @returns {mat4} dest if specified, a new mat4 otherwise
+     */
+    mat4.fromRotationTranslation = function(quat, vec, dest) {
+        if (!dest) {
+            dest = mat4.create();
+        }
+
+        // Quaternion math
+        var x = quat[0],
+            y = quat[1],
+            z = quat[2],
+            w = quat[3],
+            x2 = x + x,
+            y2 = y + y,
+            z2 = z + z,
+
+            xx = x * x2,
+            xy = x * y2,
+            xz = x * z2,
+            yy = y * y2,
+            yz = y * z2,
+            zz = z * z2,
+            wx = w * x2,
+            wy = w * y2,
+            wz = w * z2;
+
+        dest[0] = 1 - (yy + zz);
+        dest[1] = xy + wz;
+        dest[2] = xz - wy;
+        dest[3] = 0;
+        dest[4] = xy - wz;
+        dest[5] = 1 - (xx + zz);
+        dest[6] = yz + wx;
+        dest[7] = 0;
+        dest[8] = xz + wy;
+        dest[9] = yz - wx;
+        dest[10] = 1 - (xx + yy);
+        dest[11] = 0;
+        dest[12] = vec[0];
+        dest[13] = vec[1];
+        dest[14] = vec[2];
+        dest[15] = 1;
+
+        return dest;
+    };
+
+    /**
+     * Returns a string representation of a mat4
+     *
+     * @param {mat4} mat mat4 to represent as a string
+     *
+     * @returns {string} String representation of mat
+     */
+    mat4.str = function(mat) {
+        return '[' + mat[0] + ', ' + mat[1] + ', ' + mat[2] + ', ' + mat[3] + ', ' + mat[4] + ', ' + mat[5] + ', ' + mat[6] + ', ' + mat[7] + ', ' + mat[8] + ', ' + mat[9] + ', ' + mat[10] + ', ' + mat[11] + ', ' + mat[12] + ', ' + mat[13] + ', ' + mat[14] + ', ' + mat[15] + ']';
+    };
+
+/*
+ * quat4
+ */
+
+    /**
+     * Creates a new instance of a quat4 using the default array type
+     * Any javascript array containing at least 4 numeric elements can serve as a quat4
+     *
+     * @param {quat4} [quat] quat4 containing values to initialize with
+     *
+     * @returns {quat4} New quat4
+     */
+    quat4.create = function(quat) {
+        var dest = new MatrixArray(4);
+
+        if (quat) {
+            dest[0] = quat[0];
+            dest[1] = quat[1];
+            dest[2] = quat[2];
+            dest[3] = quat[3];
+        }
+
+        return dest;
+    };
+
+    /**
+     * Copies the values of one quat4 to another
+     *
+     * @param {quat4} quat quat4 containing values to copy
+     * @param {quat4} dest quat4 receiving copied values
+     *
+     * @returns {quat4} dest
+     */
+    quat4.set = function(quat, dest) {
+        dest[0] = quat[0];
+        dest[1] = quat[1];
+        dest[2] = quat[2];
+        dest[3] = quat[3];
+
+        return dest;
+    };
+
+    /**
+     * Calculates the W component of a quat4 from the X, Y, and Z components.
+     * Assumes that quaternion is 1 unit in length. 
+     * Any existing W component will be ignored. 
+     *
+     * @param {quat4} quat quat4 to calculate W component of
+     * @param {quat4} [dest] quat4 receiving calculated values. If not specified result is written to quat
+     *
+     * @returns {quat4} dest if specified, quat otherwise
+     */
+    quat4.calculateW = function(quat, dest) {
+        var x = quat[0],
+            y = quat[1],
+            z = quat[2];
+
+        if (!dest || quat === dest) {
+            quat[3] = -Math.sqrt(Math.abs(1.0 - x * x - y * y - z * z));
+            return quat;
+        }
+        dest[0] = x;
+        dest[1] = y;
+        dest[2] = z;
+        dest[3] = -Math.sqrt(Math.abs(1.0 - x * x - y * y - z * z));
+        return dest;
+    };
+
+    /**
+     * Calculates the dot product of two quaternions
+     *
+     * @param {quat4} quat First operand
+     * @param {quat4} quat2 Second operand
+     *
+     * @return {number} Dot product of quat and quat2
+     */
+    quat4.dot = function(quat, quat2) {
+        return quat[0] * quat2[0] + quat[1] * quat2[1] + quat[2] * quat2[2] + quat[3] * quat2[3];
+    };
+
+    /**
+     * Calculates the inverse of a quat4
+     *
+     * @param {quat4} quat quat4 to calculate inverse of
+     * @param {quat4} [dest] quat4 receiving inverse values. If not specified result is written to quat
+     *
+     * @returns {quat4} dest if specified, quat otherwise
+     */
+    quat4.inverse = function(quat, dest) {
+        var q0 = quat[0],
+            q1 = quat[1],
+            q2 = quat[2],
+            q3 = quat[3],
+            dot = q0 * q0 + q1 * q1 + q2 * q2 + q3 * q3,
+            invDot = dot ? 1.0 / dot : 0;
+
+        // TODO: Would be faster to return [0,0,0,0] immediately if dot == 0
+        if (!dest || quat === dest) {
+            quat[0] *= -invDot;
+            quat[1] *= -invDot;
+            quat[2] *= -invDot;
+            quat[3] *= invDot;
+            return quat;
+        }
+        dest[0] = -quat[0] * invDot;
+        dest[1] = -quat[1] * invDot;
+        dest[2] = -quat[2] * invDot;
+        dest[3] = quat[3] * invDot;
+        return dest;
+    };
+
+
+    /**
+     * Calculates the conjugate of a quat4
+     * If the quaternion is normalized, this function is faster than quat4.inverse and produces the same result.
+     *
+     * @param {quat4} quat quat4 to calculate conjugate of
+     * @param {quat4} [dest] quat4 receiving conjugate values. If not specified result is written to quat
+     *
+     * @returns {quat4} dest if specified, quat otherwise
+     */
+    quat4.conjugate = function(quat, dest) {
+        if (!dest || quat === dest) {
+            quat[0] *= -1;
+            quat[1] *= -1;
+            quat[2] *= -1;
+            return quat;
+        }
+        dest[0] = -quat[0];
+        dest[1] = -quat[1];
+        dest[2] = -quat[2];
+        dest[3] = quat[3];
+        return dest;
+    };
+
+    /**
+     * Calculates the length of a quat4
+     *
+     * Params:
+     * @param {quat4} quat quat4 to calculate length of
+     *
+     * @returns Length of quat
+     */
+    quat4.length = function(quat) {
+        var x = quat[0],
+            y = quat[1],
+            z = quat[2],
+            w = quat[3];
+        return Math.sqrt(x * x + y * y + z * z + w * w);
+    };
+
+    /**
+     * Generates a unit quaternion of the same direction as the provided quat4
+     * If quaternion length is 0, returns [0, 0, 0, 0]
+     *
+     * @param {quat4} quat quat4 to normalize
+     * @param {quat4} [dest] quat4 receiving operation result. If not specified result is written to quat
+     *
+     * @returns {quat4} dest if specified, quat otherwise
+     */
+    quat4.normalize = function(quat, dest) {
+        if (!dest) {
+            dest = quat;
+        }
+
+        var x = quat[0],
+            y = quat[1],
+            z = quat[2],
+            w = quat[3],
+            len = Math.sqrt(x * x + y * y + z * z + w * w);
+        if (len === 0) {
+            dest[0] = 0;
+            dest[1] = 0;
+            dest[2] = 0;
+            dest[3] = 0;
+            return dest;
+        }
+        len = 1 / len;
+        dest[0] = x * len;
+        dest[1] = y * len;
+        dest[2] = z * len;
+        dest[3] = w * len;
+
+        return dest;
+    };
+
+    /**
+     * Performs a quaternion multiplication
+     *
+     * @param {quat4} quat First operand
+     * @param {quat4} quat2 Second operand
+     * @param {quat4} [dest] quat4 receiving operation result. If not specified result is written to quat
+     *
+     * @returns {quat4} dest if specified, quat otherwise
+     */
+    quat4.multiply = function(quat, quat2, dest) {
+        if (!dest) {
+            dest = quat;
+        }
+
+        var qax = quat[0],
+            qay = quat[1],
+            qaz = quat[2],
+            qaw = quat[3],
+            qbx = quat2[0],
+            qby = quat2[1],
+            qbz = quat2[2],
+            qbw = quat2[3];
+
+        dest[0] = qax * qbw + qaw * qbx + qay * qbz - qaz * qby;
+        dest[1] = qay * qbw + qaw * qby + qaz * qbx - qax * qbz;
+        dest[2] = qaz * qbw + qaw * qbz + qax * qby - qay * qbx;
+        dest[3] = qaw * qbw - qax * qbx - qay * qby - qaz * qbz;
+
+        return dest;
+    };
+
+    /**
+     * Transforms a vec3 with the given quaternion
+     *
+     * @param {quat4} quat quat4 to transform the vector with
+     * @param {vec3} vec vec3 to transform
+     * @param {vec3} [dest] vec3 receiving operation result. If not specified result is written to vec
+     *
+     * @returns dest if specified, vec otherwise
+     */
+    quat4.multiplyVec3 = function(quat, vec, dest) {
+        if (!dest) {
+            dest = vec;
+        }
+
+        var x = vec[0],
+            y = vec[1],
+            z = vec[2],
+            qx = quat[0],
+            qy = quat[1],
+            qz = quat[2],
+            qw = quat[3],
+
+            // calculate quat * vec
+            ix = qw * x + qy * z - qz * y,
+            iy = qw * y + qz * x - qx * z,
+            iz = qw * z + qx * y - qy * x,
+            iw = -qx * x - qy * y - qz * z;
+
+        // calculate result * inverse quat
+        dest[0] = ix * qw + iw * -qx + iy * -qz - iz * -qy;
+        dest[1] = iy * qw + iw * -qy + iz * -qx - ix * -qz;
+        dest[2] = iz * qw + iw * -qz + ix * -qy - iy * -qx;
+
+        return dest;
+    };
+
+    /**
+     * Calculates a 3x3 matrix from the given quat4
+     *
+     * @param {quat4} quat quat4 to create matrix from
+     * @param {mat3} [dest] mat3 receiving operation result
+     *
+     * @returns {mat3} dest if specified, a new mat3 otherwise
+     */
+    quat4.toMat3 = function(quat, dest) {
+        if (!dest) {
+            dest = mat3.create();
+        }
+
+        var x = quat[0],
+            y = quat[1],
+            z = quat[2],
+            w = quat[3],
+            x2 = x + x,
+            y2 = y + y,
+            z2 = z + z,
+
+            xx = x * x2,
+            xy = x * y2,
+            xz = x * z2,
+            yy = y * y2,
+            yz = y * z2,
+            zz = z * z2,
+            wx = w * x2,
+            wy = w * y2,
+            wz = w * z2;
+
+        dest[0] = 1 - (yy + zz);
+        dest[1] = xy + wz;
+        dest[2] = xz - wy;
+
+        dest[3] = xy - wz;
+        dest[4] = 1 - (xx + zz);
+        dest[5] = yz + wx;
+
+        dest[6] = xz + wy;
+        dest[7] = yz - wx;
+        dest[8] = 1 - (xx + yy);
+
+        return dest;
+    };
+
+    /**
+     * Calculates a 4x4 matrix from the given quat4
+     *
+     * @param {quat4} quat quat4 to create matrix from
+     * @param {mat4} [dest] mat4 receiving operation result
+     *
+     * @returns {mat4} dest if specified, a new mat4 otherwise
+     */
+    quat4.toMat4 = function(quat, dest) {
+        if (!dest) {
+            dest = mat4.create();
+        }
+
+        var x = quat[0],
+            y = quat[1],
+            z = quat[2],
+            w = quat[3],
+            x2 = x + x,
+            y2 = y + y,
+            z2 = z + z,
+
+            xx = x * x2,
+            xy = x * y2,
+            xz = x * z2,
+            yy = y * y2,
+            yz = y * z2,
+            zz = z * z2,
+            wx = w * x2,
+            wy = w * y2,
+            wz = w * z2;
+
+        dest[0] = 1 - (yy + zz);
+        dest[1] = xy + wz;
+        dest[2] = xz - wy;
+        dest[3] = 0;
+
+        dest[4] = xy - wz;
+        dest[5] = 1 - (xx + zz);
+        dest[6] = yz + wx;
+        dest[7] = 0;
+
+        dest[8] = xz + wy;
+        dest[9] = yz - wx;
+        dest[10] = 1 - (xx + yy);
+        dest[11] = 0;
+
+        dest[12] = 0;
+        dest[13] = 0;
+        dest[14] = 0;
+        dest[15] = 1;
+
+        return dest;
+    };
+
+    /**
+     * Performs a spherical linear interpolation between two quat4
+     *
+     * @param {quat4} quat First quaternion
+     * @param {quat4} quat2 Second quaternion
+     * @param {number} slerp Interpolation amount between the two inputs
+     * @param {quat4} [dest] quat4 receiving operation result. If not specified result is written to quat
+     *
+     * @returns {quat4} dest if specified, quat otherwise
+     */
+    quat4.slerp = function(quat, quat2, slerp, dest) {
+        if (!dest) {
+            dest = quat;
+        }
+
+        var cosHalfTheta = quat[0] * quat2[0] + quat[1] * quat2[1] + quat[2] * quat2[2] + quat[3] * quat2[3],
+            halfTheta, sinHalfTheta, ratioA, ratioB;
+
+        if (Math.abs(cosHalfTheta) >= 1.0) {
+            if (dest !== quat) {
+                dest[0] = quat[0];
+                dest[1] = quat[1];
+                dest[2] = quat[2];
+                dest[3] = quat[3];
+            }
+            return dest;
+        }
+
+        halfTheta = Math.acos(cosHalfTheta);
+        sinHalfTheta = Math.sqrt(1.0 - cosHalfTheta * cosHalfTheta);
+
+        if (Math.abs(sinHalfTheta) < 0.001) {
+            dest[0] = (quat[0] * 0.5 + quat2[0] * 0.5);
+            dest[1] = (quat[1] * 0.5 + quat2[1] * 0.5);
+            dest[2] = (quat[2] * 0.5 + quat2[2] * 0.5);
+            dest[3] = (quat[3] * 0.5 + quat2[3] * 0.5);
+            return dest;
+        }
+
+        ratioA = Math.sin((1 - slerp) * halfTheta) / sinHalfTheta;
+        ratioB = Math.sin(slerp * halfTheta) / sinHalfTheta;
+
+        dest[0] = (quat[0] * ratioA + quat2[0] * ratioB);
+        dest[1] = (quat[1] * ratioA + quat2[1] * ratioB);
+        dest[2] = (quat[2] * ratioA + quat2[2] * ratioB);
+        dest[3] = (quat[3] * ratioA + quat2[3] * ratioB);
+
+        return dest;
+    };
+
+    /**
+     * Returns a string representation of a quaternion
+     *
+     * @param {quat4} quat quat4 to represent as a string
+     *
+     * @returns {string} String representation of quat
+     */
+    quat4.str = function(quat) {
+        return '[' + quat[0] + ', ' + quat[1] + ', ' + quat[2] + ', ' + quat[3] + ']';
+    };
+ /***************************************************** 
+  * File path: ./src/vfold/vfold.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+
+function VFold() {
+
+    
+    var p = Class.prototype,c=p.constructor;
+
+    function Class() {
+
+        this.color = 0x232323;
+    }
+
+    c.PANEL_HEIGHT=50;
+
+    /****************************************************************
+     * Core Components
+     ****************************************************************/
+
+    c.desktops;
+    c.panels;
+    c.folders;
+    c.widgets;
+
+    /****************************************************************
+     * Event Constants
+     ****************************************************************/
+
+    c.WORKSPACE_CHANGE = "workspaceChange";
+    c.WORKSPACE_ADD = "workspaceAdd";
+
+    /****************************************************************
+     * Rest of properties
+     ****************************************************************/
+
+    var intWorkspaceIndex;
+
+    const dctLibraries = {};
+    const vctWorkspaces = [];
+    var eventDispatcher_;
+
+    /*********************************
+     * Core Options
+     *********************************/
+    var AES_KEY;
+    var FACEBOOK_APP_ID;
+    /*********************************
+     * Secure Value Object for User
+     *********************************/
+    c.USER;
+    /*********************************
+     * Gateway Session and if is Root
+     *********************************/
+    c.HEADER;
+    /**********************************
+     * Gateway KEY for acceptable calls
+     **********************************/
+    var ROOT_ENCRYPTED;
+    /*********************************
+     * Net Connection Pool
+     *********************************/
+    var NET_POOL;
+
+    function Core() {
+
+        eventDispatcher_ = new EventDispatcher();
+        NET_POOL = new Pooling(NetConn);
+    }
+
+    c.init = function(options, onReady) {
+
+
+        /***********************************************
+         * Set Core Configuration Options
+         ***********************************************/
+
+        AES_KEY = options.aesKey;
+        FACEBOOK_APP_ID = options.facebookAppID;
+        ROOT_ENCRYPTED = encrypt(options.rootPassword, 128);
+
+        HEADER = new VOHeader();
+        HEADER.session = new VOSession();
+
+        /*********************************************************************
+         * INIT your session via this validation and authentication Function
+         *********************************************************************/
+
+        rootCall("Session.init", function(session) {
+            var
+            sov = session,
+                sobSES = SharedObject.getLocal("vfold_session", "/");
+
+            HEADER.session.id = sobSES.data.id = sov.id;
+            HEADER.session.code = sobSES.data.code = sov.code;
+            sobSES.flush();
+            onReady();
+        }, [HEADER.session, ROOT_ENCRYPTED]);
+
+        Facebook.init(FACEBOOK_APP_ID, function(success, failure) {
+            onFacebookLogin(success, failure);
+        });
+    }
+   
+   c.startGUI = function(workspaces) {
+
+        /*********************************************************
+         * Init the the Secure Class for a session Request and
+         * enable AMF calls to the gateway
+         *********************************************************/
+
+        panels = new PanelHandler();
+        folders = new FolderHandler;
+        desktops = new DesktopHandler();
+        widgets = new WidgetHandler;
+
+        for (var work in workspaces) {
+            var workspace = new Workspace();
+            workspace.title = work.title;
+            for (var comp in work.components) {
+                workspace.setComponent(new WorkspaceComponent(comp));
+                if (comp.type == VOComponent.FOLDER) {
+
+                    var path = comp.menu_path.split(".");
+
+                    var parent = workspace.menu;
+                    var child;
+
+                    for (var i = 0;
+                    i < path.length;
+                    i++) {
+                        child = parent.children[path[i]];
+                        if (!child) {
+                            child = new MenuOptions();
+                            child.title = path[i];
+                        }
+                        if (i == path.length - 1) {
+                            child.launch = comp.class_path;
+                        }
+                        parent.children[path[i]] = child;
+                        parent = child;
+                    }
+                }
+            }
+            vctWorkspaces.push(workspace);
+            eventDispatcher_.dispatchEvent(new Event(WORKSPACE_ADD));
+        }
+
+        /************************************************
+         * Check POST URL Parameters
+         ************************************************/
+
+        var pr = VFOLD.stage.loaderInfo.parameters;
+        if (pr.confirm) {
+            rootCall("User.confirm", function(confirmed) {
+                if (confirmed) {
+                    notify("Your account has been confirmed!\nNow you can sign-in");
+                }
+            }, pr.confirm);
+        }
+
+        /*********************************************************
+         * Call javascript methods
+         *********************************************************/
+
+        UtilityJavascript.initMouseWheel(VFOLD.stage);
+        UtilityJavascript.changeDocumentTitle(VFOLD.projectTitle + "-" + vctWorkspaces[0].title);
+
+        widgets.init();
+        folders.init();
+        panels.init();
+
+        panels.addTool(new UserTool());
+
+        stage.addChild(desktops);
+        stage.addChild(widgets);
+        stage.addChild(folders);
+        stage.addChild(panels);
+
+        useWorkspace(0);
+
+        notify("Powered by vfold");
+    }
+    c.notif = function() {
+
+        var t = " ";
+        for (var s in rest) {
+            t += String(s) + " ";
+        }
+        widgets.notifier.notify(t);
+    }
+    c.useWorkspace = function(index) {
+
+        intWorkspaceIndex = index;
+        dispatcher.dispatchEvent(new Event(WORKSPACE_CHANGE));
+    }
+
+    c.getDesktopHandler = function() {
+        return desktops
+    }
+    c.getPanelHandler = function() {
+        return panels
+    }
+    c.getFolderHandler = function() {
+        return folders
+    }
+    c.getWidgetHandler = function() {
+        return widgets
+    }
+
+    c.getDispatcher = function() {
+        return eventDispatcher_;
+    }
+    c.getCurrentWorkspace = function() {
+        return vctWorkspaces[intWorkspaceIndex];
+    }
+    c.getDefaultWorkspace = function() {
+        return vctWorkspaces[0];
+    }
+    c.getCurrentWorkspaceIndex = function() {
+        return intWorkspaceIndex;
+    }
+    c.getCurrentUser = function() {
+        return USER;
+    }
+
+    c.getLibraries = function() {
+        return dctLibraries;
+    }
+
+    c.appCall = function(command, onSuccess, params, onError) {
+
+        getConnection(onSuccess, onError).amfCall(command, params, false);
+    }
+    c.rootCall = function(command, onSuccess, params, onError) {
+
+        getConnection(onSuccess, onError).amfCall(command, params, true);
+    }
+
+    function getConnection(onSuccess, onError) {
+
+        var conn = NetConn(NET_POOL.getObject());
+
+        if (NET_POOL.instantiated) {
+            conn.onClose = function(conn) {
+                NET_POOL.returnToPool(conn)
+            }
+        }
+
+        conn.onSuccess = onSuccess;
+        conn.onError = onError;
+
+        return conn;
+    }
+
+    c.getExternalClass = function(srcAppDomain, library, classPath) {
+
+        var tgtAppDomain = dctLibraries[library];
+        if (!tgtAppDomain) {
+            return null;
+        }
+        if (!tgtAppDomain.hasDefinition(classPath)) {
+            return null;
+        }
+        return tgtAppDomain.getDefinition(classPath)
+    }
+    c.checkRootPassword = function(password) {
+        return AES_KEY == decrypt(ROOT_ENCRYPTED, password, 128);
+    }
+    c.signInFacebook = function() {
+        Facebook.login(onFacebookLogin, {
+            perms: "user_about_me, user_birthday, email, publish_stream, offline_access"
+        });
+    }
+    c.onFacebookLogin = function(success, fail) {
+        var m;
+/* if(success){
+Facebook.api("/me",
+function(success:Object,failure:Object):void{
+amfCall("Account.getAccountByFID",function(acc:UserPrivate):void{
+if(acc){
+USR=acc;
+Core.dispatcher.dispatchEvent(new Event(Core.USER_CHANGE));
+m="Welcome back "+USR.first_name+"!";
+}
+else{
+acc = new UserPrivate();
+acc.first_name=success.first_name;
+acc.last_name=success.last_name;
+acc.facebook_id=success.id;
+acc.email=success.email;
+acc.gender=success.male;
+acc.birthday=success.birthday;
+m="Registering Facebook account...";
+amfCall("User.add",function():void{
+
+},acc)
+}
+Core.notify(m);
+},success.id)
+});
+}
+else{
+
+} */
+    }
+    c.signInUser = function(email, password, callback) {
+
+        var strNTF;
+        rootCall("User.getOneBy",
+
+        function(response) {
+            trace(response.role_value);
+            if (response.role_value == UserRole.GUEST) {
+                callback(false);
+                Core.notify("User has not yet been confirmed..Check your email");
+            }
+            else {
+                rootCall("User.get", function(user) {
+                    if (AES_KEY == decrypt(user.password, password)) {
+                        USER = user;
+                        Core.dispatcher.dispatchEvent(new Event(VFOLD.USER_CHANGE));
+                        callback(true);
+                        strNTF = "Welcome back " + USER.first_name + "!";
+                    }
+                    else {
+                        callback(false);
+                        strNTF = "Wrong password, try again";
+                    }
+                    Core.notify(strNTF);
+                }, response.id);
+            }
+        }, [{
+            email: email
+        }, ["role_value", "id"]],
+
+        function(errorCode) {
+            if (errorCode == ErrorUser.NOT_FOUND) Core.notify("Wrong email,try again");
+        });
+    }
+    /************************************************
+     * AES Encryption
+     ************************************************/
+    c.encrypt = function(password, bitKey) {
+        return UtilityCryptography.encrypt(AES_KEY, password, bitKey ? bitKey : 256);
+    }
+    /************************************************
+     * AES Decryption
+     ************************************************/
+    c.decrypt = function(encrypted, password, bitKey) {
+        return UtilityCryptography.decrypt(encrypted, password, bitKey ? bitKey : 256);
+    }
+}
+ /***************************************************** 
+  * File path: ./src/vfold/layer/desktop.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+ 
+    function Desktop(){
+    Class.prototype = new Container();
+    Class.prototype.constructor = Class;
+
+}
+ /***************************************************** 
+  * File path: ./src/vfold/layer/panel.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+
+function Panel() {
+    
+    var p = new Container();
+    p.constructor = Class;
+
+    var menuLauncher, menu_, toolbar_;
+
+    var folderBar,
+
+    CONTENT_GAP = 3, LOADER_BAR_HEIGHT = 3, CONTENT_HEIGHT;
+
+    function Class() {
+        
+        menuLauncher = new PanelMenuLauncher()
+        menu_  = new Menu();
+        PanelToolBar = new PanelToolbar();
+        CONTENT_HEIGHT = VFold.PANEL_HEIGHT - LOADER_BAR_HEIGHT
+
+    }
+
+    p.init = function() {
+        const background = new PanelBackground;
+
+        folderBar = Core.folderHandler.folderBar;
+        menu_.x = menu_.gap;
+        menu_.y = VFOLD.PANEL_HEIGHT + menu_.gap;
+        menu_.onMenuButtonDown = function(btn) {
+            Core.folderHandler.addFolder(btn.options.launch);
+        };
+
+        p.add(background);
+        p.add(menuLauncher);
+        p.add(folderBar);
+        p.add(toolbar_);
+        p.add(menu_);
+
+        mouseEnabled = false;
+
+        VFOLD.onStageResize = function() {
+            background.draw();
+        }
+    }
+    p.addTool = function(tool) {
+        toolbar_.addTool(tool)
+    }
+    p.onWorkspaceChange = function() {
+        // Default Logo
+        var
+        bmpDEF = Core.defaultWorkspace.menu.icon,
+            bdtCUR = Core.currentWorkspace.menu.icon;
+
+        menu_.addButtons(Core.currentWorkspace.menu.children);
+        menuLauncher.changeLogo(bdtCUR ? bdtCUR : bmpDEF);
+
+        toolbar_.x = folderBar.x = menuLauncher.width;
+        toolbar_.onStageResize();
+    }
+
+    p.getMenu = function() {
+        return menu_
+    }
+    p.getToolbar = function() {
+        return toolbar_
+    }
+
+
+    function PanelBackground() {
+
+        var p = Class.prototype;
+        p = new Kinetic.Group();
+        p.constructor = Class;
+
+        // Background
+        var bg = new Kinetic.Shape("panelBackground");
+        // Loader Line TODO: Make a Sync/ASync PreLoader
+        var ln = new Kinetic.Shape("panelLoader");
+        // Shadow
+        var sh = new Kinetic.Shape("shadow");
+
+        const gt = GradientType.LINEAR;
+        var m = new Matrix;
+
+        function Class() {
+
+            bg.alpha = .8;
+            addChild(bg);
+            addChild(sh);
+            addChild(ln);
+            mouseEnabled = mouseChildren = false;
+            ln.y = PanelHandler.CONTENT_HEIGHT;
+            sh.y = VFOLD.PANEL_HEIGHT;
+        }
+        p.draw = function() {
+            var g;
+            /*********************************
+             *  Background
+             *********************************/
+            g = bg.getContext();
+            g.clear();
+            g.beginFill(VFOLD.color, .7);
+            g.drawRect(0, 0, VFOLD.stage.stageWidth, PanelHandler.CONTENT_HEIGHT);
+            g.endFill();
+            /*********************************
+             *  Shadow
+             *********************************/
+            g = sh.getContext();
+            g.clear();
+            m.createGradientBox(VFOLD.stage.stageWidth, 20, Math.PI / 2);
+            g.beginGradientFill(gt, [0, 0], [.7, 0], [0, 255], m);
+            g.drawRect(0, 0, VFOLD.stage.stageWidth, 20);
+            g.endFill();
+            /*********************************
+             *  Loader Line
+             *********************************/
+            g = ln.getContext();
+            g.clear();
+            g.beginFill(UtilityColor.brightness(VFOLD.color, .7));
+            g.drawRect(0, 0, VFOLD.stage.stageWidth, PanelHandler.LOADER_BAR_HEIGHT);
+            g.endFill();
+        }
+        return Class;
+    }
+
+    function PanelMenuLauncher() {
+
+        var p = new Kinetic.Group();
+        p.constructor = Class;
+
+        // Clicked Boolean
+        var cB = false;
+        // Tween Max
+        var TM;
+        // Logo Bitmap
+        var bL = VFold.call("System.getImage","menu");
+        // Height
+        var h;
+
+        function Class() {
+
+
+            var c = UtilityColor.hexToRGB(VFOLD.color);
+            TweenMax.to(bL, 0, {
+                colorTransform: {
+                    redOffset: c.red,
+                    greenOffset: c.green,
+                    blueOffset: c.blue
+                }
+            });
+            addChild(bL);
+            h = PanelHandler.CONTENT_HEIGHT;
+            x = 5;
+            alpha = .8;
+
+            addEventListener(MouseEvent.MOUSE_OVER, onBtnOver);
+            addEventListener(MouseEvent.MOUSE_OUT, onBtnOut);
+            addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+
+            TweenMax.to(this, 0, {
+                glowFilter: {
+                    color: 0xFFFFFF,
+                    blurX: 30,
+                    blurY: 7,
+                    alpha: 1,
+                    strength: 1.3
+                }
+            });
+            TM = TweenMax.to(this, .15, {
+                paused: true,
+                glowFilter: {
+                    blurX: 7,
+                    blurY: 7,
+                    alpha: 1
+                }
+            });
+        }
+        p.changeLogo = function(logo) {
+            if (logo) bL.bitmapData = logo.bitmapData;
+            y = (height - bL.height) / 2;
+        }
+
+        function onMouseDown() {
+            if (cB) {
+                cB = false;
+                Core.panelHandler.menu.fadeOut();
+                onBtnOut();
+                VFOLD.stage.removeEventListener(MouseEvent.MOUSE_DOWN, onStageDown);
+                addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+            }
+            else {
+                onBtnOver();
+                Core.panelHandler.menu.fadeIn();
+                cB = true;
+                VFOLD.stage.addEventListener(MouseEvent.MOUSE_DOWN, onStageDown);
+                removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
+            }
+        }
+
+        function onStageDown() {
+            if (e.target != this) {
+                onMouseDown()
+            }
+        }
+
+        function onBtnOver() {
+            if (!cB) TM.play()
+        }
+
+        function onBtnOut() {
+            if (!cB) TM.reverse()
+        }
+
+        p.getWidth = function() {
+            return x * 2 + this.width
+        }
+        p.getHeight = function() {
+            return h
+        }
+
+    }
+
+    function PanelToolBar() {
+
+        var p = Class.prototype;
+        p = new Kinetic.Group();
+        p.constructor = Class;
+
+
+        // Left Container
+        var lc = new Kinetic.Group();
+        // Right Container
+        var rc = new Kinetic.Group();
+        // Width
+        var w;
+        // Height
+        var h;
+        // Tool Gap
+        const g = 2;
+
+        /******************************************
+         * GLOBAL TOOLS *
+         ******************************************/
+
+        // Workspace Switcher Tool
+        var ws;
+
+        function Class() {
+
+            y = CONTENT_GAP;
+            h = (CONTENT_HEIGHT - CONTENT_GAP) / 2 - CONTENT_GAP;
+            addEventListener(Tool.TOOL_CHANGE, onToolChange);
+
+            ws = new WorkspaceSwitcher();
+            addTool(ws);
+            addChild(lc);
+            addChild(rc);
+
+            VFOLD.onStageResize = onStageResize;
+        }
+
+        p.onStageResize = function() {
+            w = VFOLD.stage.stageWidth - x - CONTENT_GAP - g;
+            rc.x = w;
+            dispatchEvent(new Event(DropBox.ADJUST_OFFSET));
+        }
+
+        function onToolChange(e) {
+            var t = Tool(e.target);
+            var i;
+            switch (t.align) {
+            case Tool.ALIGN_LEFT:
+                for (i = 0; i < lc.numChildren; i++) {
+                    if (i != 0) lc.getChildAt(i).x = lc.getChildAt(i - 1).x + lc.getChildAt(i - 1).width + g;
+                    else lc.getChildAt(i).x = g;
+                }
+                break;
+            case Tool.ALIGN_RIGHT:
+                for (i = 0; i < rc.numChildren; i++) {
+                    if (i != 0) rc.getChildAt(i).x = -rc.getChildAt(i - 1).x - rc.getChildAt(i - 1).width - g;
+                    else rc.getChildAt(i).x = -rc.getChildAt(i).width;
+                }
+                break;
+            }
+        }
+
+        p.addTool = function(tool) {
+            var i;
+            switch (tool.align) {
+
+            case Tool.ALIGN_LEFT:
+                i = lc.numChildren;
+                lc.addChild(tool);
+                if (i != 0) tool.x = lc.getChildAt(i - 1).x + lc.getChildAt(i - 1).width + g;
+                else tool.x = g;
+                break;
+            case Tool.ALIGN_RIGHT:
+                i = rc.numChildren;
+                rc.addChild(tool);
+                if (i != 0) tool.x = -rc.getChildAt(i - 1).x - tool.width - g;
+                else tool.x = -tool.width;
+                break;
+            }
+        }
+
+        p.getWidth = function() {
+            return w
+        }
+
+        p.getHeight = function() {
+            return h
+        }
+
+    }
+}
+ /***************************************************** 
+  * File path: ./src/vfold/layer/widgets.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+
+inherit(Widget,Container);
+    function Widget(){
+   
+    }
+ /***************************************************** 
+  * File path: ./src/vfold/layer/folders.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+
+
+function Folders() {
+
+    var p = new Container(),
+
+        /*********************************
+         *  Workspace Containers
+         *********************************/
+        wrkContainers = [],
+        /*********************************
+         *  Active Folder
+         *********************************/
+        actFolder,
+        /*********************************
+         *  Folder Tabs
+         *********************************/
+        fldTabs;
+
+        this.dispatcher = new EventDispatcher();
+
+    function onTabClose() {
+        removeFolder(fldTabs.currentData);
+    }
+
+    function onTabSelect() {
+        selectFolder(fldTabs.currentData);
+    }
+
+    function selectFolder(folder) {
+        if (wSpace.numChildren > 0) Folder(wSpace.getChildAt(wSpace.numChildren - 1)).active = false;
+        folder.active = true;
+        fldTabs.selectTab(folder);
+        actFolder = folder;
+        wSpace.addChildAt(folder, wSpace.numChildren);
+        dispatchEvent(new Event(FOLDER_SELECT));
+    }
+
+    p.constructor = Class;
+
+    p.init = function() {
+
+        // This is a dummy dashboard workspace
+        this.add(new Kinetic.Layer());
+        this.dispatcher.addListener(VFoldEvents.FOLDER_SELECT, function() {
+            p.selectFolder(Folder(e.target));
+        });
+
+        fldTabs = new Tabs(Panel.CONTENT_HEIGHT / 2 - 3, VFold.color, .7, onTabSelect, onTabClose);
+        fldTabs.y = PanelHandler.CONTENT_HEIGHT - fldTabs.height;
+        addChild(fldTabs);
+
+        VFold.addResizeCallback(function() {
+            fldTabs.adjust(stage.width - x);
+        });
+    }
+
+    p.addFolder = function(classPath) {
+        WorkspaceComponent.instantiate(classPath, function(instance) {
+            var f = instance;
+            fldTabs.addTab(f.name, f);
+            dispatchEvent(new Event(FOLDER_CREATE));
+            selectFolder(f);
+        });
+    }
+
+    p.removeFolder = function(folder) {
+        actFolder = folder;
+        wSpace.removeChild(folder);
+        dispatchEvent(new Event(FOLDER_CLOSING));
+        if (wSpace.numChildren > 0) Folder(wSpace.getChildAt(wSpace.numChildren - 1)).active = true;
+    }
+
+    p.closeFolder = function(folder) {
+        fldTabs.removeTabByData(folder);
+        removeFolder(folder);
+    }
+
+    p.selectFolder = selectFolder;
+
+    p.getFolderBar = function() {
+        return fldTabs
+    }
+    p.getActiveFolder = function() {
+        return actFolder
+    }
+
+    p.onWorkspaceChange = function() {
+        this.remove(0);
+        this.add(wrkContainers[Core.currentWorkspaceIndex]);
+    }
+
+    function onWorkspaceAdd() {
+        wrkContainers.push(new Kinetic.Container());
+    }
+
+    function getCurrentContainer() {
+        return wrkContainers[Core.currentWorkspaceIndex]
+    }
+}
+ /***************************************************** 
+  * File path: ./src/vfold/component/folder.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+ 
+        function Folder(){
+
+        }
+        Folder.prototype={
+
+        };
+
+ /***************************************************** 
+  * File path: ./src/vfold/component/tool.js 
+  *****************************************************/ 
+
+ /***************************************************** 
+  * File path: ./src/vfold/component/wallpaper.js 
+  *****************************************************/ 
+
+ /***************************************************** 
+  * File path: ./src/vfold/component/widget.js 
+  *****************************************************/ 
+
+ /***************************************************** 
+  * File path: ./src/vfold/page.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+
+var Page={}
+
+    Page.init = function() {
+
+        window.onresize();
+
+        var shape = new Shape();
+
+        shape.beginFill(1, .2, 0, 1);
+        shape.x = 126;
+        shape.drawRect(0, 0, 300, 100);
+        //shape.endFill();
+        //Stage.add(shape);
+    }
+ /***************************************************** 
+  * File path: ./src/vfold/options.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+
+function Options(rootPassword, aesKey, facebookAppID) {
+
+    /********************************************************************
+     *  Security options for the vfold platform
+     ********************************************************************/
+
+        this.rootPassword = rootPassword;
+        this.aesKey = aesKey;
+        this.facebookAppID = facebookAppID;
+    }
+ /***************************************************** 
+  * File path: ./src/vfold/workspace.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+
+    /********************************************
+     * The workspace contains the main layers:
+     * Folders, Widgets, Desktop, Panel
+     ********************************************/
+
+    function Workspace() {
+
+        var p = Class.prorotype;
+
+        /***************************************
+         * Components
+         ***************************************/
+
+        var dicFolders = [],
+            dicTools = [],
+            dicWidgets = [],
+            dicDesktops = [];
+
+        function Class() {
+
+        }
+
+        p.title = "Untitled";
+
+        p.menu = new MenuOptions;
+
+        p.getFolders = function() {
+            return dicFolders;
+        };
+        p.getTools = function() {
+            return dicTools;
+        };
+        p.getWidgets = function() {
+            return dicWidgets;
+        };
+        p.getDesktops = function() {
+            return dicDesktops;
+        };
+
+        p.getComponent = function(classPath) {
+
+            var
+            f = dicFolders[classPath],
+                d = dicDesktops[classPath],
+                w = dicWidgets[classPath],
+                t = dicTools[classPath];
+
+            return f ? f : d ? d : w ? w : t ? t : null;
+        };
+
+
+        p.setComponent = function(component) {
+
+            var t = WorkspaceComponent.type;
+
+            switch (component.type) {
+
+            case t.DESKTOP:
+                component.initOnce = true;
+                dicDesktops[component.class_path] = component;
+                break;
+
+            case t.FOLDER:
+
+                var parent = menu;
+                var titles = component.menu_path.split(".");
+                for (var i;
+                i < titles.length;
+                i++) {
+                    var title = titles[i];
+                    var child = parent.children[title];
+                    if (!child) {
+                        child = new MenuOptions();
+                        child.title = title;
+                        if (i == titles.length - 1) {
+                            child.launch = component.class_path;
+                        }
+                        parent.setChild(child);
+                    }
+                    parent = child;
+                }
+                dicFolders[component.class_path] = component;
+                break;
+
+            case t.WIDGET:
+
+                dicWidgets[component.class_path] = component;
+                break;
+
+            case t.TOOL:
+                component.initOnce = true;
+                dicTools[component.class_path] = component;
+                break;
+
+            default:
+                alert("Unrecognized type");
+                break;
+
+            }
+        };
+        Workspace = Class;
+    }
+
+    /********************************************************
+     * Workspace Layers:
+     * Folders, Desktop, Panel, Widgets
+     ********************************************************/
+
+    function WorkspaceLayer() {
+
+        var p = new Kinetic.Layer("WorkspaceLayer");
+        p.constructor = Class;
+
+        function Class() {
+
+            this.dispatcher = new EventDispatcher();
+        }
+
+        WorkspaceLayer = Class;
+    }
+
+    /********************************************************
+     * Workspace Component Handler where external libraries
+     * are loaded and instantiated appropriately 
+     ********************************************************/
+
+    function WorkspaceComponent() {
+
+        const instances = [];
+        var initOnce = false;
+
+        function Class(component) {
+
+        }
+
+        Class.instantiate = function(classPath, onInstantiate) {
+
+            var appDomain = new ApplicationDomain(VFOLD.appDomain);
+            var comp = Core.currentWorkspace.getComponent(classPath);
+            if (!comp) {
+                alert("Component not found!");
+                return;
+            }
+            var vobLib;
+            // Dependency Loaded Count
+            var dlc = 0;
+
+            init();
+
+            function init() {
+
+                if (appDomain.hasDefinition(comp.class_path)) {
+
+                    if (comp.initOnce && comp.instances.length > 0) {
+                        onInstantiate(comp.instances[0]);
+                    }
+                    else {
+                        var compClass = appDomain.getDefinition(comp.class_path),
+                            inst = new compClass;
+                        inst.name = comp.title;
+                        onInstantiate(inst);
+                    }
+
+                }
+                else if (vobLib) {
+
+                    if (vobLib.dependencies.length > 0) {
+
+                        for (var dependency in vobLib.dependencies) {
+                            if (Core.libraries[dependency]) onDependencyLoaded();
+
+                            else {
+
+                                /***********************************************************
+                                 * Get Dependency from Database
+                                 ***********************************************************/
+
+                                Core.appCall("Library.getByName", function(library) {
+                                    loadLibrary(library.data, onDependencyLoaded);
+                                }, [dependency]);
+                            }
+                        }
+                    }
+                    else {
+
+                        loadLibrary(vobLib.data, onLibraryLoaded)
+                    }
+                }
+                else if (!comp.libraryTitle) {
+
+                    alert("Library ID not specified");
+                }
+                else {
+                    /***********************************************************
+                     * Get Library from Database
+                     ***********************************************************/
+
+                    Core.appCall("Library.get", function(library) {
+                        vobLib = library;
+                        init();
+                    }, [comp.libraryTitle]);
+                }
+            }
+
+            function loadLibrary(libraryData, onLibraryLoaded) {
+
+                var rsl = new Loader();
+                rsl.contentLoaderInfo.addEventListener(Event.COMPLETE, function() {
+
+                    onLibraryLoaded();
+                });
+                rsl.loadBytes(libraryData, new LoaderContext(false, appDomain));
+            }
+
+            function onDependencyLoaded() {
+
+                dlc++;
+                if (dlc == vobLib.dependencies.length) {
+                    dlc = 0;
+                    loadLibrary(vobLib.data, onLibraryLoaded);
+                }
+            }
+
+            function onLibraryLoaded() {
+
+                vobLib = null;
+                init();
+            }
+
+            WorkspaceComponent = Class;
+        }
+    }
+ /***************************************************** 
+  * File path: ./src/vfold/utility/webgl.js 
+  *****************************************************/ 
+// Licensed under a BSD license. See ../license.html for license
+// These funcitions are meant solely to help unclutter the tutorials.
+// They are not meant as production type functions.
+var gl = {};
+
+    gl.init = function(){
+    
+    var canvas;
+
+        /**
+         * Creates the HTLM for a failure message
+         * @param {string} canvasContainerId id of container of the
+         * canvas.
+         * @return {string} The html.
+         */
+        var makeFailHTML = function(msg) {
+                return '' + '<table style="background-color: #8CE; width: 100%; height: 100%;"><tr>' + '<td align="center">' + '<div style="display: table-cell; vertical-align: middle;">' + '<div style="">' + msg + '</div>' + '</div>' + '</td></tr></table>';
+            };
+        /**
+         * Mesasge for getting a webgl browser
+         * @type {string}
+         */
+        var GET_A_WEBGL_BROWSER = '' + 'This page requires a browser that supports WebGL.<br/>' + '<a href="http://get.webgl.org">Click here to upgrade your browser.</a>';
+        /**
+         * Mesasge for need better hardware
+         * @type {string}
+         */
+        var OTHER_PROBLEM = '' + "It doesn't appear your computer can support WebGL.<br/>" + '<a href="http://get.webgl.org/troubleshooting/">Click here for more information.</a>';
+        /**
+         * Creates a webgl context. If creation fails it will
+         * change the contents of the container of the <canvas>
+         * tag to an error message with the correct links for WebGL.
+         * @param {Element} canvas. The canvas element to create a
+         * context from.
+         * @param {WebGLContextCreationAttirbutes} opt_attribs Any
+         * creation attributes you want to pass in.
+         * @return {WebGLRenderingContext} The created context.
+         */
+
+        function setupWebGL(canvas, opt_attribs) {
+            function showLink(str) {
+                var container = canvas.parentNode;
+                if (container) {
+                    container.innerHTML = makeFailHTML(str);
+                }
+            }
+            if (!window.WebGLRenderingContext) {
+                showLink(GET_A_WEBGL_BROWSER);
+                return null;
+            }
+            var context = create3DContext(canvas, opt_attribs);
+            if (!context) {
+                showLink(OTHER_PROBLEM);
+            }
+            return context;
+        };
+        /**
+         * Creates a webgl context.
+         * @param {!Canvas} canvas The canvas tag to get context
+         * from. If one is not passed in one will be created.
+         * @return {!WebGLContext} The created context.
+         */
+
+        function create3DContext(canvas, opt_attribs) {
+            var names = ["webgl", "experimental-webgl"];
+            var context = null;
+            for (var ii = 0; ii < names.length; ++ii) {
+                try {
+                    context = canvas.getContext(names[ii], opt_attribs);
+                }
+                catch (e) {}
+                if (context) {
+                    break;
+                }
+            }
+            return context;
+        }
+        /**
+         * Loads a shader.
+         * @param {!WebGLContext} gl The WebGLContext to use.
+         * @param {string} shaderSource The shader source.
+         * @param {number} shaderType The type of shader.
+         * @param {function(string): void) opt_errorCallback callback for errors.
+         * @return {!WebGLShader} The created shader.
+         */
+
+        function loadShader(gl, shaderSource, shaderType, opt_errorCallback) {
+            var errFn = opt_errorCallback || error;
+            // Create the shader object
+            var shader = gl.createShader(shaderType);
+            // Load the shader source
+            gl.shaderSource(shader, shaderSource);
+            // Compile the shader
+            gl.compileShader(shader);
+            // Check the compile status
+            var compiled = gl.getShaderParameter(shader, gl.COMPILE_STATUS);
+            if (!compiled) {
+                // Something went wrong during compilation; get the error
+                error("*** Error compiling shader '" + shader + "':" + gl.getShaderInfoLog(shader));
+                gl.deleteShader(shader);
+                return null;
+            }
+            return shader;
+        };
+        /**
+         * Provides requestAnimationFrame in a cross browser way.
+         */
+        window.requestAnimFrame = (function() {
+            return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+            function( /* function FrameRequestCallback */
+            callback, /* DOMElement Element */
+            element) {
+                return window.setTimeout(callback, 1000 / 60);
+            };
+        })();
+        /**
+         * Provides cancelRequestAnimationFrame in a cross browser way.
+         */
+        window.cancelRequestAnimFrame = (function() {
+            return window.cancelCancelRequestAnimationFrame || window.webkitCancelRequestAnimationFrame || window.mozCancelRequestAnimationFrame || window.oCancelRequestAnimationFrame || window.msCancelRequestAnimationFrame || window.clearTimeout;
+        })();
+
+        /*****************************************************************
+         * Check the WebGL context support
+         *****************************************************************/
+
+        gl = setupWebGL(canvas = document.getElementById("canvas"));
+
+        /**
+         * Loads a shader from a script tag.
+         * @param {!WebGLContext} gl The WebGLContext to use.
+         * @param {string} scriptId The id of the script tag.
+         * @param {number} opt_shaderType The type of shader. If not passed in it will
+         * be derived from the type of the script tag.
+         * @param {function(string): void) opt_errorCallback callback for errors.
+         * @return {!WebGLShader} The created shader.
+         */
+
+        gl.createShaderFromScript=function(
+        scriptId, opt_shaderType, opt_errorCallback) {
+            var shaderSource = "";
+            var shaderType;
+            var shaderScript = document.getElementById(scriptId);
+            if (!shaderScript) {
+                throw ("*** Error: unknown script element: '" + scriptId +"'");
+            }
+            shaderSource = shaderScript.text;
+            if (!opt_shaderType) {
+                if (shaderScript.type == "x-shader/x-vertex") {
+                    shaderType = gl.VERTEX_SHADER;
+                }
+                else if (shaderScript.type == "x-shader/x-fragment") {
+                    shaderType = gl.FRAGMENT_SHADER;
+                }
+                else if (shaderType != gl.VERTEX_SHADER && shaderType != gl.FRAGMENT_SHADER) {
+                    throw ("*** Error: unknown shader type");
+                    return null;
+                }
+            }
+            return loadShader(
+            gl, shaderSource, opt_shaderType ? opt_shaderType : shaderType, opt_errorCallback);
+        };
+
+        gl.make2DProjection = function(width, height) {
+            // Note: This matrix flips the Y axis so 0 is at the top.
+            return [
+            2 / width, 0, 0, 0, -2 / height, 0, -1, 1, 1];
+        }
+        gl.makeTranslation = function(tx, ty) {
+            return [
+            1, 0, 0, 0, 1, 0, tx, ty, 1];
+        }
+        gl.makeRotation = function(angleInRadians) {
+            var c = Math.cos(angleInRadians);
+            var s = Math.sin(angleInRadians);
+            return [
+            c, -s, 0, s, c, 0, 0, 0, 1];
+        }
+        gl.makeScale = function(sx, sy) {
+            return [
+            sx, 0, 0, 0, sy, 0, 0, 0, 1];
+        }
+        return canvas;
+    }
+ /***************************************************** 
+  * File path: ./src/vfold/utility/pooling.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+
+function Pooling() {
+   
+   /*****************************************
+     *  Objects in the Pool (Active/Inactive)
+     *****************************************/
+    var availableOBJs = [],
+        activeOBJs = [],
+        /*********************************
+         *  Object Class
+         *********************************/
+        OC,
+        /*****************************************
+         *  If last Object got was instantiated
+         *****************************************/
+        ib;
+
+    function Class(ObjectClass) {
+
+        OC = ObjectClass;
+    }
+
+    Class.prototype = {
+
+        getObject: function() {
+            var o;
+            if (availableOBJs.length > 0) {
+                o = availableOBJs.pop();
+                ib = false;
+            }
+            else {
+                o = new OC();
+                ib = true;
+            }
+            activeOBJs.push(o);
+            return o;
+        },
+
+        returnToPool: function(object) {
+            activeOBJs.splice(activeOBJs.indexOf(object), 1);
+            availableOBJs.push(object);
+        },
+
+        returnAll: function() {
+            while (activeOBJs.length > 0) {
+                var o = activeOBJs[0];
+                activeOBJs.splice(0, 1);
+                availableOBJs.push(o);
+            }
+        },
+
+        getObjects: function() {
+            return activeOBJs;
+        },
+
+        isLastInstantiated: function() {
+            return ib;
+        },
+
+        numActiveObjects: function() {
+            return activeOBJs.length;
+        }
+
+    };
+    Pooling=Class;
+}
+ /***************************************************** 
+  * File path: ./src/vfold/utility/math.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+
+    // Returns a random integer from 0 to range - 1.
+    Math.randomInt = function(range) {
+        return Math.floor(Math.random() * range);
+    };
+ /***************************************************** 
+  * File path: ./src/vfold/display/shape.js 
+  *****************************************************/ 
+/*********************************************************************
+* Licensed under the Open Software License version 3.0 *
+* *
+* This Open Software License (OSL-3.0) applies to any original work *
+* of authorship "vfold" whose owner Raphael Varonos has placed the *
+* following licensing notice adjacent to the copyright notice for *
+* the Original Work *
+*********************************************************************/
+
+function Shape() {
+
+    var p = Class.prototype = new Child();
+
+    function Class() {
+
+        var path,
+
+        /* Color*/
+        r = 1,
+        g = 1,
+        b = 1,
+        a = 1;
+
+        p.beginFill = function(red, green, blue, alpha) {
+
+            r = red;
+            g = green;
+            b = blue;;
+            a = alpha;
+        }
+
+        // Fills the buffer with the values that define a rectangle.
+        p.drawRect = function(x1, y1, width, height) {
+
+            var
+            x2 = x1 + width,
+                y2 = y1 + height;
+
+            path = new Float32Array([
+                x1, y1,
+                x2, y1,
+                x1, y2,
+                x1, y2,
+                x2, y1,
+                x2, y2]);
+
+            draw();
+        }
+        
+        p.bezierTo = function(){
+            
+        }
+
+        function draw() {
+
+            var pr = program.NORMAL;
+
+            gl.useProgram(pr);
+            gl.bindBuffer(gl.ARRAY_BUFFER, p.buffer);
+
+            gl.enableVertexAttribArray(pr.positionLocation);
+            gl.vertexAttribPointer(pr.positionLocation, 2, gl.FLOAT, false, 0, 0);
+
+            gl.uniform4f(pr.colorLocation, r, g, b, a);
+            gl.bufferData(gl.ARRAY_BUFFER, path, gl.STATIC_DRAW);
+
+            p.compute();
+
+            gl.drawArrays(gl.TRIANGLES, 0, 6);
+
+        }
+        p.lineStyle = function(thickness, color, alpha) {}
+        p.moveTo = function(x, y) {
+            path = [x, y];
+        }
+        p.lineTo = function(x, y) {
+            path.push(x, y);
+        }
+    }
+}
+ /***************************************************** 
+  * File path: ./src/vfold/display/sprite.js 
+  *****************************************************/ 
+
+ /***************************************************** 
+  * File path: ./src/vfold/display/stage.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+
+function Stage() {
+
+    var blnInit = false;
+}
+
+Stage.init = function(callback) {
+
+    Stage = gl.init();
+
+    program.init(function() {
+
+
+        var callbacks = [];
+
+        Stage.addResizeCallback = function(func) {
+
+            callbacks.push(func);
+        }
+
+        /*****************************************************************
+         * On Stage resize callback
+         *****************************************************************/
+
+        window.onresize = function() {
+            // set the resolution
+            Stage.width = window.innerWidth;
+            Stage.height = window.innerHeight;
+            gl.viewport(0, 0, Stage.width, Stage.height);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            render();
+            Stage.projectionMatrix = gl.make2DProjection(Stage.width, Stage.height);
+
+            for (var i = 0; i < callbacks.length; i++) {
+                callbacks[i]();
+            }
+
+            gl.flush();
+            gl.finish();
+        }
+
+        callback();
+    });
+};
+ /***************************************************** 
+  * File path: ./src/vfold/display/container.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+
+function Container() {
+
+    var p = Class.prototype;
+
+    function Class() {
+
+        this.children = [];
+        this.childrenIDs = [];
+    }
+
+    /************************************************
+     * Add Child to the container
+     *************************************************/
+
+    p.addChild = function(child) {
+        this.childrenIDs[child.id] = child;
+        child.index = this.children.length;
+        child.parent = this;
+        this.children.push(child);
+    }
+
+    /************************************************
+     * Remove Display Object Child from the container
+     *************************************************/
+
+    p.removeChild = function(child) {
+        this.childrenIDs[child.id] = undefined;
+        this.children.splice(child.index, 1);
+        setChildrenIndices();
+        child = undefined;
+    }
+
+    /************************************************
+     * Add Child at a specified index
+     *************************************************/
+
+    p.addChildAt = function(child, index) {
+        this.childrenIDs[child.id] = child;
+        child.index = index;
+        child.parent = this;
+        this.children.splice(index, 0, child);
+        setChildrenIndices();
+    }
+
+    /************************************************
+     * Remove Child from a specific index
+     *************************************************/
+
+    p.removeChildAt = function(index) {
+        var child = this.children[index];
+        this.childrenIDs[child.id] = undefined;
+        this.children.splice(index, 1);
+        setChildrenIndices();
+        child = undefined;
+    }
+    /************************************************
+     * Reorder Children based on their array index
+     *************************************************/
+
+    function setChildrenIndices() {
+        for (var n = 0; n < this.children.length; n++) {
+            this.children[n].index = n;
+        }
+    }
+}
+ /***************************************************** 
+  * File path: ./src/vfold/display/child.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+
+    function Shape() {
+        
+            var idCount = 0,
+        angleInRadians = 0,
+
+
+        p = Class.prototype;
+
+        /* Position */
+        var x = 0,
+            y = 0,
+            /* Rotation */
+            rotation = 0,
+            /*Scale*/
+            scaleX = 1,
+            scaleY = 1,
+
+            /* Deformation Matrices*/
+            translationMatrix, angleMatrix, scaleMatrix;
+
+        // Increment count and covert to string
+        this.id = (idCount++) + '';
+
+        updateAngle();        
+        updateScale();
+        updateTranslation();
+
+        this.buffer = gl.createBuffer();
+        
+        this.compute=function(){
+                        // Multiply the matrices.
+            var matrix = mat3.multiply(scaleMatrix, angleMatrix);
+            matrix = mat3.multiply(matrix, translationMatrix);
+            matrix = mat3.multiply(matrix, stage.projectionMatrix);
+            // Set the matrix.
+            gl.uniformMatrix3fv(program.NORMAL.matrixLocation, false, matrix);
+        }
+
+        function updateAngle() {
+            var angleInDegrees = 360 - rotation;
+            angleInRadians = angleInDegrees * Math.PI / 180;
+            angleMatrix = gl.makeRotation(angleInRadians);
+        }
+
+        function updateScale() {
+            scaleMatrix = gl.makeScale(scaleX, scaleY);
+        }
+
+        function updateTranslation() {
+            translationMatrix = gl.makeTranslation(x, y);
+        }
+
+        Object.defineProperty(p, "x", {
+            get: function() {
+                return x;
+            },
+            set: function(value) {
+                x = value;
+                updateTranslation();
+            }
+        });
+    }
+ /***************************************************** 
+  * File path: ./src/vfold/display/program.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+
+function Program() {
+
+    Program.init = function(callback) {
+
+        var vertexShaders = {},
+            fragmentShaders = {};
+
+        Program.baseURL = 'vfold/shader/';
+
+        var derivatesExt = "OES_standard_derivatives";
+        var derivatesSupported = (gl.getSupportedExtensions().indexOf(derivatesExt) >= 0);
+        if (derivatesSupported) {
+            gl.getExtension(derivatesExt);
+        }
+
+        loadShaders([
+            'vertex-matrix',
+            'fragment-color',
+            'fragment-bezier'
+                ]);
+
+        function loadShaders(filenames) {
+            var loadCount = 0;
+            for (var i = 0; i < filenames.length; i++) {
+                loadShader(filenames[i], function() {
+                    loadCount++;
+                    if (loadCount == filenames.length) {
+                        makeMaterials();
+                    }
+                })
+            }
+        }
+
+        function loadShader(filename, callback) {
+
+            var arr = filename.split("-");
+            var script = document.createElement('script');
+            script.id = filename;
+
+            var shaders;
+
+            switch (arr[0]) {
+            case "vertex":
+                script.type = "x-shader/x-vertex";
+                shaders = vertexShaders;
+                break;
+            case "fragment":
+                script.type = "x-shader/x-fragment";
+                shaders = fragmentShaders;
+                break;
+            default:
+                return;
+                break;
+            }
+
+            require(["text!" + program.baseURL + filename + ".html"], function(text) {
+                script.text = text;
+                document.getElementsByTagName('head')[0].appendChild(script);
+                shaders[arr[1]] = gl.createShaderFromScript(filename);
+                callback();
+            });
+        }
+
+        function makeMaterials() {
+            /*****************************************************************
+             * Setup a GLSL program for Matrix Positioning and Default Pixel 
+             * Color assignment
+             *****************************************************************/
+            var prog = create([vertexShaders.matrix, fragmentShaders.color]);
+
+            prog.positionLocation = gl.getAttribLocation(prog, "a_position");
+            prog.colorLocation = gl.getUniformLocation(prog, "u_color");
+            prog.matrixLocation = gl.getUniformLocation(prog, "u_matrix");
+
+            program.NORMAL = prog;
+
+            callback();
+        }
+
+        /**
+         * Creates a program, attaches shaders, binds attrib locations
+         * @param {!Array.<!WebGLShader>} shaders The shaders to attach
+         * @param {!Array.<string>} opt_attribs The attribs names.
+         * @param {!Array.<number>} opt_locations The locations for the attribs.
+         */
+
+        function create(shaders, opt_attribs, opt_locations) {
+            var program = gl.createProgram();
+            for (var i = 0; i < shaders.length; i++) {
+                gl.attachShader(program, shaders[i]);
+            }
+            if (opt_attribs) {
+                for (var i = 0; i < opt_attribs.length; i++) {
+                    gl.bindAttribLocation(
+                    program, opt_locations ? opt_locations[i] : i, opt_attribs[i]);
+                }
+            }
+            gl.linkProgram(program);
+            // Check the link status
+            var linked = gl.getProgramParameter(program, gl.LINK_STATUS);
+            if (!linked) {
+                // something went wrong with the link
+                error("Error in program linking:" + gl.getProgramInfoLog(program));
+                gl.deleteProgram(program);
+                return null;
+            }
+            return program;
+        };
+    }
+}
+ /***************************************************** 
+  * File path: ./src/vfold/core.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+
+
+function Core() {
+
+}
+ /***************************************************** 
+  * File path: ./src/vfold/tool/workspaceList.js 
+  *****************************************************/ 
+
+ /***************************************************** 
+  * File path: ./src/vfold/control/menu.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0              *
+ *                                                                   *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the  *
+ * following licensing notice adjacent to the copyright notice for   *
+ * the Original Work                                                 *
+ *********************************************************************/
+
+    /********************************************
+     * Drop down list of menu Buttons that can 
+     * have manu additional attributes
+     ********************************************/
+
+    function Menu() {
+        // Menu Parent
+        var p = new MenuButtons(VFold.color, intGAP);
+
+        // Target Event ParentContainer
+        var intGAP = 7;
+        var fncDWN;
+
+        function Class() {
+
+            var
+            /*********************************
+             * Parent Menu Button
+             *********************************/
+            mbt,
+            /*********************************
+             * Child Menu Buttons
+             *********************************/
+            mbs;
+            
+            addEventListener(MouseEvent.MOUSE_OVER, function(e) {
+                if (MenuButton) {
+
+                    if (mbs) if (mbs != e.target.parent.parent) mbs.fadeOut();
+
+                    mbt = e.target;
+                    mbs = e.target.parent.buttonContainer;
+
+                    mbt.onMouseOver();
+                    mbs.fadeIn();
+                    mbs.previousIndex = mbt.index;
+                }
+            });
+
+            addEventListener(MouseEvent.MOUSE_OUT, function(e) {
+                if (e.target) {
+
+                    mbt = e.target;
+                    mbt.onMouseOut();
+                }
+            });
+
+            addEventListener(MouseEvent.MOUSE_DOWN, function(e) {
+                if (MenuButton) {
+
+                    mbt = e.target;
+                    mbt.onMouseDown();
+                    if (fncDWN) fncDWN(mbt);
+                }
+            });
+        }
+
+        p.getGap = function() {
+            return intGAP;
+        }
+
+        p.setMenuButtonCallback = function(callback) {
+            fncDWN = callback;
+        }
+
+        Menu = Class;
+    }
+
+    /********************************************
+     * Drop down list of menu Buttons that can 
+     * have manu additional attributes
+     ********************************************/
+
+    function MenuButtons() {
+
+        var p = new Container();
+
+        function Class(buttonColor, buttonGap) {
+
+            bC = buttonColor;
+            bG = buttonGap;
+
+           // ttl = new TimelineLite({
+        //        paused: true
+          //  });
+        }
+
+        // Button Vector
+        var bV = [],
+            // Button Color
+            bC,
+            // Button Gap
+            bG,
+            // Tween Time-line Lite
+            ttl,
+            // Tween-Max Array
+            tma = [],
+            // Tween-Objects Array
+            toa = [],
+            // Tween Duration
+            tdr = .35,
+
+            // Previous Index
+            pI;
+
+        p.addButtons = function(dataButtons) {
+
+            var i = 0;
+            var j = bV.length;
+            var mxW = 0;
+
+            for (var button in dataButtons) {
+                bV[i] = new MenuParent(
+                bC, bG, button);
+                bV[i].button.index = i;
+                bV[i].button.alpha = 0;
+                if (i != 0) {
+
+                    bV[i].y += i * (bV[i - 1].height + bG);
+                }
+                if (i != j) {
+
+                    mxW = Math.max(mxW, bV[i].button.width);
+                }
+                else {
+
+                    mxW = bV[i].button.width;
+                }
+                toa.push(bV[i].button);
+                addChild(bV[i]);
+                i++;
+            }
+
+            i = j;
+            if (j > 1) if (mxW > bV[j - 1].button.width) i = 0;
+
+            for (i; i < bV.length; i++) {
+
+                bV[i].width = mxW;
+            }
+            ttl.clear();
+            tma = TweenMax.allFromTo(toa, tdr, {
+                alpha: 0,
+                y: "50"
+            }, {
+                alpha: 1,
+                y: "-50"
+            }, tdr / toa.length);
+            ttl.insertMultiple(tma);
+        }
+        p.fadeIn = function() {
+
+            ttl.play();
+            mouseChildren = true;
+        }
+        p.fadeOut = function() {
+
+            ttl.reverse();
+            mouseChildren = false;
+
+            if (bV.length > 0) {
+
+                bV[pI].buttonContainer.fadeOut();
+            }
+        }
+        p.setPreviousIndex = function(value) {
+            pI = value
+        }
+
+        function MenuParent() {
+
+            var p = MenuParent.prototype;
+
+            // Button Container
+            var bC;
+            // Button Label
+            var bL;
+            // Button Gap
+            var bG;
+
+            function Class(buttonColor, buttonGap, buttonData) {
+                bG = buttonGap;
+                bC = new MenuButtons(buttonColor, bG);
+                bL = new MenuButton(buttonColor, buttonData, buttonData.children.length > 0);
+
+                addChild(bC);
+                addChild(bL);
+
+                if (buttonData) bC.addButtons(buttonData.children);
+            }
+            p.getButtonContainer = function() {
+                return bC;
+            }
+            p.getButton = function() {
+                return bL;
+            }
+
+            p.setWidth = function(value) {
+
+                bL.width = value;
+                bC.x = value + bG;
+            }
+            p.getHeight = function() {
+
+                return bL.height;
+            }
+        }
+    }
+
+    /********************************************
+     * The Child Button of a group belonging in   
+     * menu tree hierarchy
+     ********************************************/
+
+    function MenuButton() {
+
+        var p = new Container();
+
+
+    }
+ /***************************************************** 
+  * File path: ./main.js 
+  *****************************************************/ 
+/*********************************************************************
+ * Licensed under the Open Software License version 3.0 *
+ * *
+ * This Open Software License (OSL-3.0) applies to any original work *
+ * of authorship "vfold" whose owner Raphael Varonos has placed the *
+ * following licensing notice adjacent to the copyright notice for *
+ * the Original Work *
+ *********************************************************************/
+
+/********************************************
+ * Global Constants
+ ********************************************/
+const VFoldEvent = {
+    WORKSPACE_CHANGE: "workspaceChange",
+    WORKSPACE_ADD: "workspaceAdd",
+    FOLDER_CREATE: "FolderAdd",
+    FOLDER_CLOSING: "FolderClose",
+    FOLDER_SELECT: "FolderSelect"
+};
+
+
+(function() {
+
+    var opt = new Options();
+
+    opt.aesKey = "796x9qh27xcrb69q27xcrb61274xcr6b";
+    opt.facebookAppID = "";
+    opt.rootPassword = "w957cbnooo5796";
+    Stage.init(function() {
+        Page.init();
+    });
+})();
+
+/*********************************************
+ * Wrapped logging function.
+ * @param {string} msg The message to log.
+ *********************************************/
+var log = function(msg) {
+        if (window.console && window.console.log) {
+            window.console.log(msg);
+        }
+    };
+/**********************************************
+ * Wrapped logging function.
+ * @param {string} msg The message to log.
+ **********************************************/
+var error = function(msg) {
+        if (window.console) {
+            if (window.console.error) {
+                window.console.error(msg);
+            }
+            else if (window.console.log) {
+                window.console.log(msg);
+            }
+        }
+    };
+
+function inherit(Child, Parent) {
+    Child.prototype = new Parent();
+    Child.prototype.constructor = Child;
+}

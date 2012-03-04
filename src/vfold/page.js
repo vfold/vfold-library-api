@@ -7,7 +7,7 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-function Page() {
+var Page={}
 
     Page.init = function() {
 
@@ -21,4 +21,3 @@ function Page() {
         //shape.endFill();
         //Stage.add(shape);
     }
-}

@@ -26,7 +26,6 @@
  *    3. This notice may not be removed or altered from any source
  *    distribution.
  */
-define(function() {
     // Type declarations
     // account for CommonJS environments
     var _global = (typeof(exports) != 'undefined') ? global : window;
@@ -2112,4 +2111,3 @@ define(function() {
     quat4.str = function(quat) {
         return '[' + quat[0] + ', ' + quat[1] + ', ' + quat[2] + ', ' + quat[3] + ']';
     };
-});

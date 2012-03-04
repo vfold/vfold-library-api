@@ -10,46 +10,43 @@
 function Stage() {
 
     var blnInit = false;
+}
 
-    Stage.init = function(callback) {
+Stage.init = function(callback) {
+
+    Stage = gl.init();
+
+    program.init(function() {
 
 
-        Stage = gl.init();
+        var callbacks = [];
 
-        program.init(function() {
+        Stage.addResizeCallback = function(func) {
 
+            callbacks.push(func);
+        }
 
-            var callbacks = [];
+        /*****************************************************************
+         * On Stage resize callback
+         *****************************************************************/
 
-            Stage.addResizeCallback = function(func) {
+        window.onresize = function() {
+            // set the resolution
+            Stage.width = window.innerWidth;
+            Stage.height = window.innerHeight;
+            gl.viewport(0, 0, Stage.width, Stage.height);
+            gl.clear(gl.COLOR_BUFFER_BIT);
+            render();
+            Stage.projectionMatrix = gl.make2DProjection(Stage.width, Stage.height);
 
-                callbacks.push(func);
+            for (var i = 0; i < callbacks.length; i++) {
+                callbacks[i]();
             }
 
-            /*****************************************************************
-             * On Stage resize callback
-             *****************************************************************/
+            gl.flush();
+            gl.finish();
+        }
 
-            window.onresize = function() {
-                // set the resolution
-                Stage.width = window.innerWidth;
-                Stage.height = window.innerHeight;
-                gl.viewport(0, 0, Stage.width, Stage.height);
-                gl.clear(gl.COLOR_BUFFER_BIT);
-                render();
-                Stage.projectionMatrix = gl.make2DProjection(Stage.width, Stage.height);
-
-                for (var i = 0; i < callbacks.length; i++) {
-                    callbacks[i]();
-                }
-                
-                gl.flush();
-                gl.finish();
-            }
-            function render(){
-                
-            }
-            callback();
-        });
-    };
+        callback();
+    });
 };

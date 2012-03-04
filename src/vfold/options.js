@@ -7,8 +7,6 @@
  * the Original Work                                                 *
  *********************************************************************/
 
-var Options;
-
 function Options(rootPassword, aesKey, facebookAppID) {
 
     /********************************************************************

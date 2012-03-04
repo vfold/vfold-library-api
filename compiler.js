@@ -11,19 +11,23 @@ var pathUglify = "./node_modules/uglify-js/uglify-js",
      * Original Merged -> Abstract Syntax Tree
      ********************************************/
     code = "",
+        /*********************************
+     * Add Main class at end
+     **********************************/
+    pathMain = process.ARGV[2],
     /*********************************
      * read all files from src folder
      * specified in given arguments
      **********************************/
-    pathSource = process.ARGV[2],
+    pathSource = process.ARGV[3],
     /*********************************
      * Output path for compiled data
      **********************************/
-    pathOutput = process.ARGV[3],
+    pathOutput = process.ARGV[4],
     /*********************************
      * Enable debug mode
      **********************************/
-    debug = process.ARGV[4] == "debug" ? true : false;
+    debug = process.ARGV[5] == "debug" ? true : false;
 
 /****************************************
  * Loop through the source folder and 
@@ -42,18 +46,30 @@ function readDir(path) {
             if (stats.isDirectory()) {
                 readDir(pathTemp);
             }
-            else if (stats.isFile() && (file.indexOf(".js") != -1)) {
-                countFile++;
-                code += fs.readFileSync(pathTemp);
-                if (debug) {
-                    code += "\n ---------------------------------------------------------- \n " + pathTemp + "\n ---------------------------------------------------------- \n";
-                }
+            else{
+                addFile(pathTemp);
             }
         }
         catch (e) {
             console.log(pathTemp + ": " + e);
         }
     });
+}
+
+/********************************************
+ * Append .js file to the output code
+ ********************************************/
+
+addFile(pathMain);
+
+function addFile(path){
+   if (stats.isFile() && (path.indexOf(".js") != -1)) {
+                countFile++;
+                if (debug) {
+                    code += "\n /***************************************************** \n  * File path: " + path + " \n  *****************************************************/ \n";
+                }
+                code += fs.readFileSync(path);
+            }
 }
 
 if (!debug) {
@@ -64,14 +80,15 @@ if (!debug) {
      * 3. Get an AST with compression optimizations
      ********************************************/
 
-    code = pro.ast_squeeze(
+    code = pro.gen_code(
+    pro.ast_squeeze(
     pro.ast_mangle(
-    jsp.parse(code)));
+    jsp.parse(code))));
 }
 
 /********************************************
  * Output path for compiled build
  ********************************************/
 
-fs.writeFileSync(pathOutput, pro.gen_code(code));
+fs.writeFileSync(pathOutput, code);
 console.log("----------------------------------- \n" + "Compiled " + countFile + " files \n" + "Output size: " + parseInt(fs.lstatSync(pathOutput).size / 1024) + "KB \n" + "-----------------------------------");
