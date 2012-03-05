@@ -123,8 +123,13 @@ var gl = {};
         /*****************************************************************
          * Check the WebGL context support
          *****************************************************************/
+         
+         var canv = document.createElement("canvas");
+canv.setAttribute('style', "border: none;background-color: #333333;width:100%;height:100%;");
+canv.setAttribute('id', "stage");
+document.body.appendChild(canv);
 
-        gl = setupWebGL(canvas = document.getElementById("canvas"));
+        gl = setupWebGL(canvas = document.getElementById("stage"));
 
         /**
          * Loads a shader from a script tag.

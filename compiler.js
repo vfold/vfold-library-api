@@ -5,16 +5,16 @@ var pathUglify = "./node_modules/uglify-js/uglify-js",
     fs = require("fs"),
     jsp = require(pathUglify).parser,
     pro = require(pathUglify).uglify,
-    files, stats, pathTemp, countFile = 0,
+    path, files, stats, countFile = 0,
     /********************************************
      * javascript Code
      * Original Merged -> Abstract Syntax Tree
      ********************************************/
-    code = "",
-        /*********************************
+    code = "", codeShader = commentBlock("WebGL Shaders") + "\n var Shader;",
+    /*********************************
      * Add Main class at end
      **********************************/
-    pathMain = process.ARGV[2],
+    classMain = process.ARGV[2] + ".js",
     /*********************************
      * read all files from src folder
      * specified in given arguments
@@ -36,22 +36,21 @@ var pathUglify = "./node_modules/uglify-js/uglify-js",
 
 readDir(pathSource);
 
-function readDir(path) {
-
-    files = fs.readdirSync(path);
+function readDir(dir){
+    files = fs.readdirSync(dir);
     files.forEach(function(file) {
-        pathTemp = path + "/" + file;
+        path = dir+"/"+file;
         try {
-            stats = fs.lstatSync(pathTemp);
+            stats = fs.lstatSync(path);
             if (stats.isDirectory()) {
-                readDir(pathTemp);
+                readDir(path);
             }
-            else{
-                addFile(pathTemp);
+            else if (stats.isFile()){
+                addFile(file);
             }
         }
         catch (e) {
-            console.log(pathTemp + ": " + e);
+            console.log(path + ": " + e);
         }
     });
 }
@@ -60,16 +59,33 @@ function readDir(path) {
  * Append .js file to the output code
  ********************************************/
 
-addFile(pathMain);
+path = "./"+classMain;
+addFile(classMain);
 
-function addFile(path){
-   if (stats.isFile() && (path.indexOf(".js") != -1)) {
-                countFile++;
-                if (debug) {
-                    code += "\n /***************************************************** \n  * File path: " + path + " \n  *****************************************************/ \n";
-                }
-                code += fs.readFileSync(path);
-            }
+function addFile(filename) {
+     var comment = "";   
+        if (debug) {
+            comment = commentBlock("File path: " + path);
+        }
+        if (filename.indexOf(".js") != -1) {
+            code += comment + fs.readFileSync(path);
+        }
+        else if (filename.indexOf(".shader") != -1) {
+            codeShader += comment;
+            //codeShader += "\n Shader." + filename.split(".")[1] + '"' + pro.gen_code(jsp.parse(fs.readFileSync(path))) + '"';
+    }
+    countFile++;
+}
+
+code+=codeShader;
+
+/**************************************************
+ * Comment out anything necessary upon compilation
+ **************************************************/
+
+function commentBlock(comment) {
+
+    return "\n /***************************************************** \n  * " + comment + " \n  *****************************************************/ \n"
 }
 
 if (!debug) {
@@ -85,6 +101,7 @@ if (!debug) {
     pro.ast_mangle(
     jsp.parse(code))));
 }
+
 
 /********************************************
  * Output path for compiled build

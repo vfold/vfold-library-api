@@ -18,8 +18,9 @@ const VFoldEvent = {
     FOLDER_SELECT: "FolderSelect"
 };
 
-
-(function() {
+this.addEventListener("DOMContentLoaded", doStuff, true);
+function doStuff(e)
+{
 
     var opt = new Options();
 
@@ -29,7 +30,8 @@ const VFoldEvent = {
     Stage.init(function() {
         Page.init();
     });
-})();
+
+}
 
 /*********************************************
  * Wrapped logging function.

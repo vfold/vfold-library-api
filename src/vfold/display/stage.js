@@ -16,8 +16,7 @@ Stage.init = function(callback) {
 
     Stage = gl.init();
 
-    program.init(function() {
-
+    Program.init(function() {
 
         var callbacks = [];
 
@@ -29,7 +28,6 @@ Stage.init = function(callback) {
         /*****************************************************************
          * On Stage resize callback
          *****************************************************************/
-
         window.onresize = function() {
             // set the resolution
             Stage.width = window.innerWidth;
